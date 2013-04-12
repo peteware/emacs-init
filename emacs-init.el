@@ -1,8 +1,8 @@
-(add-to-list 'load-path "~/usr/emacs")
-;(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0")
-(add-to-list 'load-path "~/usr/emacs/cc-mode")
+(setq my-base-path "~/usr/emacs")
+(add-to-list 'load-path my-base-path)
+(add-to-list 'load-path (concat my-base-path "/cc-mode"))
 (if (boundp 'custom-theme-load-path)
-    (add-to-list 'custom-theme-load-path "~/.emacs.d/themes"))
+    (add-to-list 'custom-theme-load-path (concat my-base-path "/themes")))
 
 (setq x-select-enable-clipboard t)
 (require 'main-init)
@@ -23,8 +23,6 @@
  '(default-input-method "rfc1345")
  '(delete-selection-mode nil nil (delsel))
  '(display-time-mode t)
- '(doxymacs-external-xml-parser-executable "/home/pware/usr/bin/doxymacs_parser")
- '(doxymacs-use-external-xml-parser t)
  '(indicate-empty-lines t)
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
  '(lazy-highlight-max-at-a-time 5)
@@ -34,12 +32,10 @@
  '(size-indication-mode t)
  '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
  '(tool-bar-mode nil)
- '(tramp-default-method "scp")
  '(viper-case-fold-search t)
  '(viper-no-multiple-ESC nil)
  '(viper-vi-style-in-minibuffer nil)
- '(viper-want-ctl-h-help t)
- '(which-function-mode t))
+ '(viper-want-ctl-h-help t))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
