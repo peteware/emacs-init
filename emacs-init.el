@@ -1,6 +1,5 @@
 (setq my-base-path "~/usr/emacs")
 (add-to-list 'load-path my-base-path)
-(add-to-list 'load-path (concat my-base-path "/cc-mode"))
 (if (boundp 'custom-theme-load-path)
     (add-to-list 'custom-theme-load-path (concat my-base-path "/themes")))
 
