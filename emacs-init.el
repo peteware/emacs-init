@@ -21,7 +21,7 @@
  '(case-fold-search t)
  '(current-language-environment "English")
  '(custom-enabled-themes (quote (zenburn)))
- '(custom-safe-themes (quote ("d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
+ '(custom-safe-themes (quote ("b19b642b0d5be8ec4bc96698260575d3eb81a22064911a8036213facf3a9a6fa" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(default-input-method "rfc1345")
  '(delete-selection-mode nil nil (delsel))
  '(display-time-mode t)
@@ -48,20 +48,21 @@
  '(viper-vi-style-in-minibuffer nil)
  '(viper-want-ctl-h-help t))
 
+;; '(ediff-current-diff-A ((t (:background "#656555"))))
+;; '(ediff-current-diff-B ((t (:background "#656555"))))
+;; '(ediff-even-diff-A ((t (:background "6f6f6f"))))
+;; '(ediff-even-diff-B ((t (:background "6f6f6f"))))
+;; '(ediff-fine-diff-A ((t (:inverse-video t))))
+;; '(ediff-fine-diff-Ancestor ((t (:background "dim gray" :foreground "Black"))))
+;; '(ediff-fine-diff-B ((t (:inverse-video t))))
+;; '(ediff-odd-diff-A ((t (:background "6f6f6f"))))
+;; '(ediff-odd-diff-B ((t (:background "6f6f6f"))))
+;;
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ediff-current-diff-A ((t (:background "#656555"))))
- '(ediff-current-diff-B ((t (:background "#656555"))))
- '(ediff-even-diff-A ((t (:background "6f6f6f"))))
- '(ediff-even-diff-B ((t (:background "6f6f6f"))))
- '(ediff-fine-diff-A ((t (:inverse-video t))))
- '(ediff-fine-diff-Ancestor ((t (:background "dim gray" :foreground "Black"))))
- '(ediff-fine-diff-B ((t (:inverse-video t))))
- '(ediff-odd-diff-A ((t (:background "6f6f6f"))))
- '(ediff-odd-diff-B ((t (:background "6f6f6f"))))
  '(mouse ((t (:foreground "green"))))
  '(org-column ((t (:inverse-video t :height 1.0 :family "courier")))))
 
