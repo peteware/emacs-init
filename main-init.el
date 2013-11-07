@@ -47,6 +47,12 @@
 (require 'lrl-mode) 			;Bloomberg
 (require 'csc-mode)			;Bloomberg
 
+;; org-mode provides an outline, todo, diary, calendar like interface.
+(if (not (featurep 'org))
+    (load "org" t))
+;; org-prefs is in my ~/usr/emacs
+(if (fboundp 'org-mode)
+    (require 'org-prefs))
 
 ;; 
 ;; This _sounds_ like something that should be nil but
@@ -100,13 +106,6 @@
 ;; Turn the toolbar off.  I also turn it off in my .Xdefaults
 (if (fboundp 'tool-bar-mode)
     (tool-bar-mode -1))
-
-;; org-mode provides an outline, todo, diary, calendar like interface.
-(if (not (featurep 'org))
-    (load "org" t))
-;; org-prefs is in my ~/usr/emacs
-(if (fboundp 'org-mode)
-    (require 'org-prefs))
 
 ;;
 ;; This causes the set of files being visited to be restored
@@ -295,9 +294,9 @@
 (cond
  ((fboundp 'jit-lock-mode)
   (setq jit-lock-chunk-size 5000
-	jit-lock-context-time 5.0
+	jit-lock-context-time .6
 	jit-lock-defer-time .1
-	jit-lock-stealth-nice 0.2
+	jit-lock-stealth-nice 0.1
 	jit-lock-stealth-time 5
 	jit-lock-stealth-verbose nil)
   (jit-lock-mode t)
@@ -336,13 +335,21 @@
   (other-frame -1))
 
 ;; Make it easy to change the display size
-(global-set-key [(control c) (-)] 'pw/font-size)
+(global-set-key [(control c) (-)] 'pw/font-size-change)
+(defvar pw/font-size-list '(120 140 160 180 280)
+  "List of font sizes for pw/font-size to iterate through.")
+(defun pw/font-size-change()
+  "Cycle through pw/font-size-list of fonts"
+  (interactive)
+  (set-face-attribute 'default (selected-frame) :height (car pw/font-size-list))
+  (setq pw/font-size-list (append (cdr pw/font-size-list) (list (car pw/font-size-list)))))
+
+;; Make it easy to change the display size
+(global-set-key [(control c) (+)] 'pw/font-size)
 (defun pw/font-size(arg)
-  "Set the font size to be 9pts.  With arg, make it 12pts."
-  (interactive "P")
-  (if arg
-      (set-face-attribute 'default (selected-frame) :height 120)
-    (set-face-attribute 'default (selected-frame) :height 90)))
+  "Set the font size to be arg points.  If nil, defaults to "
+  (interactive "p")
+  (set-face-attribute 'default (selected-frame) :height (* 10 arg)))
 
 ;; Compare file with latest version in version control
 (global-set-key [(control c) (=)] 'pw/ediff-current)

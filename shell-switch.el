@@ -103,7 +103,8 @@ the end of the buffer.
   (interactive "b")
   (if (not (bufferp buffer))
       nil
-      (equal 'shell-mode (shell-switch-local 'major-mode buffer))
+      (or (equal 'shell-mode (shell-switch-local 'major-mode buffer))
+          (equal 'term-mode (shell-switch-local 'major-mode buffer)))
       ))
 
 (defun shell-switch-this (name other-window)
