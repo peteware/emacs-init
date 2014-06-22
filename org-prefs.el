@@ -24,6 +24,10 @@
 (setq org-cycle-include-plain-lists t)
 (setq org-agenda-text-search-extra-files '(agenda-archives "~/notes/cmds.org"))
 (setq org-agenda-start-with-follow-mode t)
+(setq org-enforce-todo-dependencies t)
+(setq org-enforce-todo-checkbox-dependencies t)
+ 
+(setq org-agenda-dim-blocked-tasks t)
 (define-key global-map "\C-cr" 'org-capture)
 ;(org-remember-insinuate)
 (setq org-directory "~/notes/")
@@ -38,4 +42,12 @@
         ("XNDF" ?x "** TODO %?%i %t\n" "~/notes/xndf.org" "ToDo")
         ("BREG" ?b "** TODO DRQS %?%i: BREG {BREG} removal %t\n*** TODO BREG {BREG} confirm values, marking *DELETING*\n*** TODO BREG {BREG} find code %t\n*** TODO BREG {BREG} code review %t\n*** TODO BREG {BREG} cscheckin %t\n*** TODO BREG {BREG} Update {TEAM FXPA:FX PRODUCTION CHANGES<GO>} %t\n*** TODO BREG {BREG} test alpha Mon %t\n*** TODO BREG {BREG} enable trace Fri %t\n*** TODO BREG {BREG} check BRTR Mon %t\n*** TODO BREG {BREG} Ask Ken to delete BREG Mon %t" "~/notes/drqs.org" "Active DRQS")
         ("Prot" ?p "** TODO DRQS %?%i: {PROTO} Prototype cleanup %t\n*** TODO Proto {PROTO} find code %t\n    - cscheckout {FILES}\n    - cscheckin --nocommit --drqs {DRQS} -m'DRQS {DRQS}: Prototype cleanup {PROTO}' {FILES}\n*** TODO Proto {PROTO} code review %t\n*** TODO Proto {PROTO} cscheckin %t\n    - cscheckin --drqs {DRQS} -m'DRQS {DRQS}: Prototype cleanup {PROTO}' {FILES}\n*** TODO Proto {PROTO} Update {TEAM FXPA:FX PRODUCTION CHANGES<GO>} %t\n*** TODO Proto {PROTO} Confirm prototype page empty %t\n    - http://sundev3.dev.bloomberg.com/~bldtools/prototypes/Department.html" "~/notes/drqs.org" "Active DRQS")
+        ))
+(setq org-agenda-custom-commands
+      '(("D" "DRQS List"
+         ((tags "DRQS")))
+        ("W" "Weekly Plan"
+         ((agenda)
+          (todo "TODO")
+          (tags-todo "DRQS")))
         ))

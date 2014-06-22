@@ -1,12 +1,10 @@
 (setq my-base-path "~/usr/emacs")
 (add-to-list 'load-path my-base-path)
-(add-to-list 'load-path (concat my-base-path "/org-8.2.1/lisp"))
-(add-to-list 'load-path (concat my-base-path "/org-8.2.1/contrib/lisp"))
+(add-to-list 'load-path (concat my-base-path "/org-8.2.4/lisp"))
+(add-to-list 'load-path (concat my-base-path "/org-8.2.4/contrib/lisp"))
 (if (boundp 'custom-theme-load-path)
     (add-to-list 'custom-theme-load-path (concat my-base-path "/themes")))
 
-(setq x-select-enable-clipboard t)
-(setq x-select-enable-primary t)
 (require 'main-init)
 
 
@@ -15,7 +13,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+ '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#d02090" "#ccaa8f" "#f6f3e8"])
  '(auto-compression-mode t nil (jka-compr))
  '(c-doc-comment-style (quote ((c++-mode . javadoc))))
  '(case-fold-search t)
@@ -24,7 +22,6 @@
  '(custom-safe-themes (quote ("b19b642b0d5be8ec4bc96698260575d3eb81a22064911a8036213facf3a9a6fa" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(default-input-method "rfc1345")
  '(delete-selection-mode nil nil (delsel))
- '(display-time-mode t)
  '(grep-files-aliases (quote (("all" . "* .*") ("el" . "*.el") ("ch" . "*.[ch]") ("c" . "*.c") ("cc" . "*.cc *.cxx *.cpp *.C *.CC *.c++") ("cchh" . "*.cc *.[ch]xx *.[ch]pp *.[CHh] *.CC *.HH *.[ch]++") ("hh" . "*.hxx *.hpp *.[Hh] *.HH *.h++") ("h" . "*.h") ("l" . "[Cc]hange[Ll]og*") ("m" . "[Mm]akefile*") ("tex" . "*.tex") ("texi" . "*.texi") ("asm" . "*.[sS]") ("code" . "*.c *.h *.cpp *.f"))))
  '(indicate-empty-lines t)
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))

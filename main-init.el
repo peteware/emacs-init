@@ -55,6 +55,18 @@
     (require 'org-prefs))
 
 ;; 
+;; Turn on displaying the date and time.
+;; 
+(setq display-time-day-and-date t)
+(display-time-mode)
+
+;;
+;; Highlight matching paren
+;;
+(if (fboundp 'show-paren-mode)
+    (show-paren-mode 1))
+
+;; 
 ;; This _sounds_ like something that should be nil but
 ;; the reality is that when user input stops redisplay 
 ;; a bunch of screen optimizations are lost.  The
@@ -85,6 +97,8 @@
 
 (add-hook 'c++-mode-hook		'pw/linenum-mode)
 (add-hook 'c-mode-hook			'pw/linenum-mode)
+(add-hook 'python-mode-hook             'pw/linenum-mode)
+(add-hook 'fortran-mode-hook            'pw/linenum-mode)
 
 ;; Setup commands and menus to hide/show blocks of code
 (if (fboundp 'hs-minor-mode)
@@ -102,8 +116,27 @@
 (if (fboundp 'pc-selection-mode)
     (pc-selection-mode -1))
 
+;; Weird X11 stuff with the cut-and-paste.  The world uses what is
+;; called a clipboard for copy-and-paste.  X11 had a more flexible
+;; arrangement with a primary cut buffer that some X11 older clients
+;; still use.  I think these settings provide the best compromise.
+;;
+;; This does not put killed text into the X11 primary cut buffer;
+;; instead you use the mouse or the shift selection.  You can use
+;; mouse-2 to paste from X11 clients that use the primary buffer.
+(setq selective-active-regions 'only)
+(setq x-select-enable-clipboard t)
+(setq x-select-enable-primary nil)
 
-;; Turn the toolbar off.  I also turn it off in my .Xdefaults
+;; Do not beep if I kill text in a read-only buffer
+(setq kill-read-only-ok t)
+;; If at beginning of line, the Ctl-K kills including the newline
+;; (I'm hardwired to type Ctl-K twice)
+;(setq kill-whole-line t)
+
+;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
+;; Emacs.toolBar:            0
+;; which keeps it from displaying on startup
 (if (fboundp 'tool-bar-mode)
     (tool-bar-mode -1))
 
@@ -131,7 +164,7 @@
 ;;
 ;; This makes a single file wrap around between two windows.
 ;; Try ^X-3 and then move to the top or bottom of the window
-;; and the other window scrolls.  Or I bound F7 to do get
+;; and the other window scrolls.  I bound F7 to do get
 ;; rid of the other windows and split.
 (if (fboundp 'turn-on-follow-mode)
     (progn
@@ -142,7 +175,6 @@
 ;; This makes saving shell scripts automatically make
 ;; them executable.  It's considered a shell script if
 ;; it starts with #!
-;;
 (if (fboundp 'executable-make-buffer-file-executable-if-script-p)
     (add-hook 'after-save-hook
               'executable-make-buffer-file-executable-if-script-p))
@@ -181,6 +213,7 @@
 (if (fboundp 'global-hl-line-mode)
     (progn
       (setq hl-line-sticky-flag t)
+      (setq global-hl-line-sticky-flag t)
       (global-hl-line-mode 1)))
 
 
@@ -207,7 +240,16 @@
 ;(if (fboundp 'tabbar-mode)
 ;    (tabbar-mode 1))
 
-(setq inhibit-startup-message t)
+;;
+;; Do not display message in the scratch buffer or the startup message
+;; or the message in the echo area
+(setq initial-scratch-message "")
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-echo-area-message "pware")
+
+;;
+;; Usually, my home directory is faster for saving files
+;; then anywhere else.
 (setq backup-directory-alist '(("." . "~/.backups")))
 
 ;; Make it so buffers with the same name are are made unique by added
@@ -334,22 +376,25 @@
   (interactive)
   (other-frame -1))
 
-;; Make it easy to change the display size
-(global-set-key [(control c) (-)] 'pw/font-size-change)
-(defvar pw/font-size-list '(120 140 160 180 280)
+(defvar pw/font-size-list '(120 140 160 180 280 340)
   "List of font sizes for pw/font-size to iterate through.")
-(defun pw/font-size-change()
+(defvar pw/font-size-index 3
+  "Index of current font size for pw/font-size-change to iterate through.")
+(defun pw/font-size-decrease()
   "Cycle through pw/font-size-list of fonts"
   (interactive)
-  (set-face-attribute 'default (selected-frame) :height (car pw/font-size-list))
-  (setq pw/font-size-list (append (cdr pw/font-size-list) (list (car pw/font-size-list)))))
+  (setq pw/font-size-index (max 0 (- pw/font-size-index 1)))
+  (set-face-attribute 'default (selected-frame) :height (nth pw/font-size-index pw/font-size-list)))
+
+(defun pw/font-size-increase()
+  "Set the font size to increase"
+  (interactive)
+  (setq pw/font-size-index (min (- (length pw/font-size-list) 1) (+ pw/font-size-index 1)))
+  (set-face-attribute 'default (selected-frame) :height (nth pw/font-size-index pw/font-size-list)))
 
 ;; Make it easy to change the display size
-(global-set-key [(control c) (+)] 'pw/font-size)
-(defun pw/font-size(arg)
-  "Set the font size to be arg points.  If nil, defaults to "
-  (interactive "p")
-  (set-face-attribute 'default (selected-frame) :height (* 10 arg)))
+(global-set-key [(control c) (-)] 'pw/font-size-decrease)
+(global-set-key [(control c) (+)] 'pw/font-size-increase)
 
 ;; Compare file with latest version in version control
 (global-set-key [(control c) (=)] 'pw/ediff-current)
