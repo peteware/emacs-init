@@ -27,15 +27,6 @@
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
  '(lazy-highlight-max-at-a-time 5)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1) ((control)))))
- '(org-agenda-files (quote ("~/notes/xndf.org" "~/notes/todo.org" "~/notes/drqs.org" "~/notes/code.org")))
- '(org-capture-templates (quote (("t" "Todo" entry (file+headline "~/notes/todo.org" "Bloomberg Current") "** TODO %?%i %t
-") ("c" "Code" entry (file+headline "~/notes/code.org" "Recent Code Reviews") "** TODO %?%t
-*** %i
-") ("n" "Notes" entry (file+datetree "~/notes/notes.org") "** %?
-") ("d" "Drqs" entry (file+headline "~/notes/drqs.org" "Active DRQS") "** TODO %?%i %t
-") ("f" "FXFA" entry (file+headline "~/notes/fxfa.org" "ToDo") "** TODO %?%i %t
-") ("x" "XNDF" entry (file+headline "~/notes/xndf.org" "ToDo") "** TODO %?%i %t
-"))))
  '(scroll-bar-mode nil)
  '(size-indication-mode t)
  '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
