@@ -28,10 +28,24 @@
 ;;; 
 ;;; I switch between Emacs, XEmacs, AquaMacs (Mac OS X) and various
 ;;; versions of these.  They don't always have the same functionality.
-;;; If you are a normal person, you can probably dump most of these
-;;; checks using fboundp and boundp
+;;; (e.g. (require) takes different args) If you are a normal person,
+;;; you can probably dump most of these checks using fboundp and
+;;; boundp
 
 (provide 'main-init)
+
+;;
+;; I prefer to load installed packages early in setup
+;; so the rest of the code can test for the existance
+;; of symbols.  Note that this means you cannot
+;; use customize to configure package variables
+(if (not (featurep 'package))
+    (load "package" t))
+(if (fboundp 'package-initialize)
+    (progn
+      (package-initialize)
+      (setq package-enable-at-startup nil)))
+
 (require 'ediff)
 (require 'uniquify)
 (require 'whitespace)
@@ -73,10 +87,17 @@
 ;; default is prior to emacs-24 is nil
 (setq redisplay-dont-pause t)
 
+;(add-hook 'find-file-hook 'auto-insert)
+
+;;
 ;; I found visiting a file to be really slow and realized
 ;; it was from figuring out the version control
 ;;(setq vc-handled-backends '(CVS Hg))
-(setq vc-handled-backends '(Git SVN))
+;;(setq vc-handled-backends '(Git SVN))
+;; I prefer to use egg for handlig git instead of the built in
+;; so remove git from this list
+;(require 'egg)
+(setq vc-handled-backends '(SVN))
 
 ;; I don't like actual tabs being inserted
 (setq-default indent-tabs-mode nil)
@@ -130,10 +151,12 @@
 
 ;; Do not beep if I kill text in a read-only buffer
 (setq kill-read-only-ok t)
+
 ;; If at beginning of line, the Ctl-K kills including the newline
 ;; (I'm hardwired to type Ctl-K twice)
 ;(setq kill-whole-line t)
 
+;;
 ;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
 ;; Emacs.toolBar:            0
 ;; which keeps it from displaying on startup
@@ -470,3 +493,11 @@ Emacs and XEmacs."
 (if (and (featurep 'color-theme)
 	 (featurep 'color-theme-pw))
     (color-theme-pw))
+
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(setq url-proxy-services
+   '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+     ("http" . "devproxy.bloomberg.com:82")
+     ("https" . "devproxy.bloomberg.com:82")))
+
