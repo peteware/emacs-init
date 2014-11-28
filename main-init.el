@@ -69,16 +69,26 @@
     (require 'org-prefs))
 
 ;; 
-;; Turn on displaying the date and time.
+;; Turn on displaying the date and time in the mode line.
+;; Enable displaying the line and column numbers in the mode line
+;; But don't do that if the buffer is >25k
 ;; 
 (setq display-time-day-and-date t)
 (display-time-mode)
+(setq line-number-display-limit 25000)
+(line-number-mode 1)
+(column-number-mode 1)
 
 ;;
 ;; Highlight matching paren
 ;;
 (if (fboundp 'show-paren-mode)
     (show-paren-mode 1))
+
+;;
+;; Even though I did something with the mouse do not
+;; popup a dialog box but prompt from the mode line
+(setq use-dialog-box nil)
 
 ;; 
 ;; This _sounds_ like something that should be nil but
@@ -120,6 +130,7 @@
 (add-hook 'c-mode-hook			'pw/linenum-mode)
 (add-hook 'python-mode-hook             'pw/linenum-mode)
 (add-hook 'fortran-mode-hook            'pw/linenum-mode)
+(add-hook 'emacs-lisp-mode-hook         'pw/linenum-mode)
 
 ;; Setup commands and menus to hide/show blocks of code
 (if (fboundp 'hs-minor-mode)
@@ -171,17 +182,20 @@
 (if (fboundp 'desktop-save-mode)
     (progn
       (setq desktop-save t)
-      (setq desktop-restore-eager 1)
+      (setq desktop-restore-eager 5)
       (setq desktop-lazy-verbose nil)
       (setq desktop-lazy-del-delay 60)
+      (setq desktop-restore-in-current-display t)
       (desktop-save-mode 1)
       (add-to-list 'desktop-modes-not-to-save 'Info-mode)
       (add-to-list 'desktop-modes-not-to-save 'dired-mode)
-      (defun pw/desktop-save ()
-	(interactive)
-	;; Don't call desktop-save-in-desktop-dir, as it prints a message.
-        (desktop-save desktop-dirname t))
-      (add-hook 'auto-save-hook 'pw/desktop-save)
+      (if (not (boundp 'desktop-auto-save-timeout))
+          (progn
+            (defun pw/desktop-save ()
+              (interactive)
+              ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
+              (desktop-save desktop-dirname t))
+            (add-hook 'auto-save-hook 'pw/desktop-save)))
       ))
 
 ;;
@@ -203,16 +217,19 @@
               'executable-make-buffer-file-executable-if-script-p))
 
 
-;; `iswitchb-mode' provides a nice completion for switching between
-;; buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
-;; adds recent files to the match 
-(if (fboundp 'iswitchb-mode)
+(if (fboundp 'icomplete-mode)
     (progn
-      (setq iswitchb-default-method 'samewindow
-	    iswitchb-max-to-show 5
-	    iswitchb-use-virtual-buffers t)
-      (recentf-mode 1)
-      (iswitchb-mode 1)))
+      (icomplete-mode 1))
+  ;; `iswitchb-mode' provides a nice completion for switching between
+  ;; buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
+  ;; adds recent files to the match 
+  (if (fboundp 'iswitchb-mode)
+      (progn
+        (setq iswitchb-default-method 'samewindow
+              iswitchb-max-to-show 5
+              iswitchb-use-virtual-buffers t)
+        (recentf-mode 1)
+        (iswitchb-mode 1))))
 
 ;; `ido-mode` does for find-file what iswitchb-mode does
 ;; for switch-to-buffer.  It was cool but I found it
@@ -315,6 +332,7 @@
 ;; for the long link lines
 (setq compilation-scroll-output t)
 (add-hook 'compilation-mode-hook 'pw/trunc-lines)
+(add-hook 'compilation-mode-hook 'pw/no-line-column-number)
 
 ;; Hide long lines in .mk
 (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
@@ -337,7 +355,8 @@
 ;; This is mostly for C++ but make it so whitespace that should not be there
 ;; is highlighted.  This causes tabs, and whitespace at beginning
 ;; and end of the buffer as well as at the end of the line to highlight
-(setq whitespace-style '(face trailing tabs empty indentation::space))
+(setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
+(setq whitespace-line-column nil)
 
 ;; Make sure that ediff ignores all whitespace differences and
 ;; highlights the individual differences
@@ -359,6 +378,7 @@
 (cond
  ((fboundp 'jit-lock-mode)
   (setq jit-lock-chunk-size 5000
+        jit-lock-contextually 'syntax-driven
 	jit-lock-context-time .6
 	jit-lock-defer-time .1
 	jit-lock-stealth-nice 0.1
@@ -463,6 +483,12 @@ disable truncate lines."
    (t
     (setq truncate-lines (not truncate-lines)))))
 
+(defun pw/no-line-column-number ()
+  "Turn off line-number-mode and column-number-mode."
+  (interactive)
+  (line-number-mode -1)
+  (column-number-mode -1))
+
 (defun pw/region-is-active-p()
   "Return if the region is active.  Accounts for difference between
 Emacs and XEmacs."
@@ -496,6 +522,7 @@ Emacs and XEmacs."
 
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (setq url-proxy-services
    '(("no_proxy" . "^\\(localhost\\|10.*\\)")
      ("http" . "devproxy.bloomberg.com:82")
