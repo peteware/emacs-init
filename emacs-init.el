@@ -7,80 +7,33 @@
 
 (require 'main-init)
 
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#d02090" "#ccaa8f" "#f6f3e8"])
+ '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#d02090" "#ccaa8f" "#f6f3e8"])
  '(auto-compression-mode t nil (jka-compr))
  '(c-doc-comment-style (quote ((c++-mode . javadoc))))
  '(case-fold-search t)
  '(current-language-environment "English")
- '(custom-enabled-themes (quote (zenburn)))
- '(custom-safe-themes
-   (quote
-    ("b19b642b0d5be8ec4bc96698260575d3eb81a22064911a8036213facf3a9a6fa" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
+ '(custom-enabled-themes (quote (wilson)))
+ '(custom-safe-themes (quote ("ce79400f46bd76bebeba655465f9eadf60c477bd671cbcd091fe871d58002a88" "e890fd7b5137356ef5b88be1350acf94af90d9d6dd5c234978cd59a6b873ea94" "b19b642b0d5be8ec4bc96698260575d3eb81a22064911a8036213facf3a9a6fa" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(default-input-method "rfc1345")
  '(delete-selection-mode nil nil (delsel))
- '(display-time-mode t)
- '(grep-files-aliases
-   (quote
-    (("all" . "* .*")
-     ("el" . "*.el")
-     ("ch" . "*.[ch]")
-     ("c" . "*.c")
-     ("cc" . "*.cc *.cxx *.cpp *.C *.CC *.c++")
-     ("cchh" . "*.cc *.[ch]xx *.[ch]pp *.[CHh] *.CC *.HH *.[ch]++")
-     ("hh" . "*.hxx *.hpp *.[Hh] *.HH *.h++")
-     ("h" . "*.h")
-     ("l" . "[Cc]hange[Ll]og*")
-     ("m" . "[Mm]akefile*")
-     ("tex" . "*.tex")
-     ("texi" . "*.texi")
-     ("asm" . "*.[sS]")
-     ("code" . "*.c *.h *.cpp *.f"))))
+ '(fci-rule-color "#383838")
+ '(grep-files-aliases (quote (("all" . "* .*") ("el" . "*.el") ("ch" . "*.[ch]") ("c" . "*.c") ("cc" . "*.cc *.cxx *.cpp *.C *.CC *.c++") ("cchh" . "*.cc *.[ch]xx *.[ch]pp *.[CHh] *.CC *.HH *.[ch]++") ("hh" . "*.hxx *.hpp *.[Hh] *.HH *.h++") ("h" . "*.h") ("l" . "[Cc]hange[Ll]og*") ("m" . "[Mm]akefile*") ("tex" . "*.tex") ("texi" . "*.texi") ("asm" . "*.[sS]") ("code" . "*.c *.h *.cpp *.f"))))
  '(indicate-empty-lines t)
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
  '(lazy-highlight-max-at-a-time 5)
  '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1) ((control)))))
- '(org-agenda-files
-   (quote
-    ("~/notes/xndf.org" "~/notes/todo.org" "~/notes/drqs.org" "~/notes/code.org")))
- '(org-capture-templates
-   (quote
-    (("t" "Todo" entry
-      (file+headline "~/notes/todo.org" "Bloomberg Current")
-      "** TODO %?%i %t
-")
-     ("c" "Code" entry
-      (file+headline "~/notes/code.org" "Recent Code Reviews")
-      "** TODO %?%t
-*** %i
-")
-     ("n" "Notes" entry
-      (file+datetree "~/notes/notes.org")
-      "** %?
-")
-     ("d" "Drqs" entry
-      (file+headline "~/notes/drqs.org" "Active DRQS")
-      "** TODO %?%i %t
-")
-     ("f" "FXFA" entry
-      (file+headline "~/notes/fxfa.org" "ToDo")
-      "** TODO %?%i %t
-")
-     ("x" "XNDF" entry
-      (file+headline "~/notes/xndf.org" "ToDo")
-      "** TODO %?%i %t
-"))))
  '(scroll-bar-mode nil)
- '(show-paren-mode t)
  '(size-indication-mode t)
  '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
  '(tool-bar-mode nil)
+ '(vc-annotate-background "#2B2B2B")
+ '(vc-annotate-color-map (quote ((20 . "#BC8383") (40 . "#CC9393") (60 . "#DFAF8F") (80 . "#D0BF8F") (100 . "#E0CF9F") (120 . "#F0DFAF") (140 . "#5F7F5F") (160 . "#7F9F7F") (180 . "#8FB28F") (200 . "#9FC59F") (220 . "#AFD8AF") (240 . "#BFEBBF") (260 . "#93E0E3") (280 . "#6CA0A3") (300 . "#7CB8BB") (320 . "#8CD0D3") (340 . "#94BFF3") (360 . "#DC8CC3"))))
+ '(vc-annotate-very-old-color "#DC8CC3")
  '(viper-case-fold-search t)
  '(viper-no-multiple-ESC nil)
  '(viper-vi-style-in-minibuffer nil)
@@ -102,6 +55,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(mouse ((t (:foreground "green"))))
+ '(num3-face-even ((t (:weight bold))))
  '(org-column ((t (:inverse-video t :height 1.0 :family "courier")))))
 
 (put 'narrow-to-region 'disabled nil)
