@@ -40,7 +40,7 @@
         (800 1000 1200 1400 1600 1800 2000)))
 (setq org-agenda-files '("~/notes/frd.org" "~/notes/fwdsvc.org" "~/notes/xndf.org" "~/notes/fxfa.org" "~/notes/todo.org" "~/notes/drqs.org" "~/notes/events.org"))
 (setq org-global-properties
-        '((Effort_ALL . "0 0:10 0:30 1:00 2:00 3:00 4:00 5:00 6:00 7:00")))
+        '((Effort_ALL . ".25d .5d 1d 2d 3d 4d 5d 7d")))
 (setq org-columns-default-format "%60ITEM(Task) %17Effort(Estimated Effort){:} %CLOCKSUM")
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "~/notes/todo.org" "Bloomberg Current")
