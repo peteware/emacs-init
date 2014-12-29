@@ -330,9 +330,19 @@
 ;; `compile'
 ;; I also like my compilation window to truncate long lines mostly
 ;; for the long link lines
-(setq compilation-scroll-output t)
+(setq compilation-scroll-output 'first-error)
 (add-hook 'compilation-mode-hook 'pw/trunc-lines)
 (add-hook 'compilation-mode-hook 'pw/no-line-column-number)
+
+(defun pw/ansi-color (begin end)
+  (interactive "r")
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region begin end)))
+(defun pw/colorize-compilation-buffer ()
+  (pw/ansi-color compilation-filter-start (point-max)))
+  
+(if (fboundp 'ansi-color-for-comint-mode-on)
+    (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))
 
 ;; Hide long lines in .mk
 (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
