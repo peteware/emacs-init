@@ -11,10 +11,6 @@
   (setq orgstruct-heading-prefix-regexp "^// ")
   (turn-on-orgstruct))
 
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
-(global-set-key "\C-cr" 'org-capture)
 ;(define-key global-map "\C-cr" 'org-capture)
 (add-hook 'org-mode-hook 'turn-on-font-lock)  ; Org buffers only
 (add-hook 'c++-mode-hook 'pw/c++-orgstruct)

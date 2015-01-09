@@ -35,7 +35,15 @@
 (provide 'main-init)
 
 (require 'use-package)                  ;Download this!
-(use-package bind-keys)
+(use-package bind-keys)                 ;Download this!
+
+;;
+;; Using bind-key lets you run describe-personal-keybindings
+;; which is a nice way of keep track of what you've changed.
+(bind-key [(control c) (G)] 'goto-line)
+(bind-key [(control c) (g)] 'grep)
+(bind-key [(control c) (o)] 'other-frame)
+
 ;;
 ;; I prefer to load installed packages early in setup
 ;; so the rest of the code can test for the existance
@@ -44,20 +52,18 @@
 (use-package package
   :init
   (progn
+    (setq url-proxy-services
+          '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+            ("http" . "devproxy.bloomberg.com:82")
+            ("https" . "devproxy.bloomberg.com:82")))
     (package-initialize)
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
     (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)))
 
-(setq url-proxy-services
-   '(("no_proxy" . "^\\(localhost\\|10.*\\)")
-     ("http" . "devproxy.bloomberg.com:82")
-     ("https" . "devproxy.bloomberg.com:82")))
-
-
 ;; These are in my ~/usr/emacs directory
-(use-package comint-prefs)      ;Pete specific
-(use-package shell-switch
+(use-package comint-prefs)              ;Pete specific
+(use-package shell-switch               ;Pete specific
   :init
   (progn
     (bind-key [(control c) (s)]  'shell-switch)
@@ -65,7 +71,7 @@
                :prefix "C-c 4"
                ("s" . shell-switch-other-window))))
 
-(use-package bb-style           ;Bloomberg C++ coding style
+(use-package bb-style                   ;Bloomberg C++ coding style
   :init
   (progn
     ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
@@ -87,56 +93,85 @@
     ;; Hide long lines in shell buffers
     (add-hook 'shell-mode-hook 'pw/trunc-lines)))
 
+;;
+;; Some commands I find useful
 (use-package pw-misc
   :init
   (bind-keys
    ([(control c) (p)] . pw/prev-frame)
    ([(control c) (-)] . pw/font-size-decrease)
    ([(control c) (+)] . pw/font-size-increase)
-   ([(control c) (=)] . pw/ediff-current)
    ([(control c) (\\)] . pw/reindent)
    ([(control c) (e)] . pw/eval-region-or-defun)
    ))
 
+;;
+;; Setup compilation buffers
 (use-package compile-prefs
   :init
   (bind-key [(control c) (c)] 'compile))
 
+;;
+;; Use iswitchb-mode or icomplete-mode or ido-mode
 (use-package pw-switch-buffer)
+;;
+;; Setup lazy font locking
 (use-package pw-font-lock)
-
-(bind-key [(control c) (G)] 'goto-line)
-(bind-key [(control c) (g)] 'grep)
-(bind-key [(control c) (o)] 'other-frame)
 
 ;;
 ;; org-mode provides an outline, todo, diary, calendar like interface.
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :init
-  (use-package org-prefs))
+  (use-package org-prefs
+    :init
+    (progn
+      (bind-key [(control c) (l)] 'org-store-link)
+      (bind-key [(control c) (a)] 'org-agenda)
+      (bind-key [(control c) (b)] 'org-iswitchb)
+      (bind-key [(control c) (r)] 'org-capture))))
 
+;;
+;; A nice graphical diff Make sure that ediff ignores all whitespace
+;; differences and highlights the individual differences
+(use-package ediff
+  :init
+  (progn
+    (setq ediff-diff-options "-w")
+    (setq-default ediff-auto-refine 'on)
 
-(use-package ediff)
+    (defun pw/ediff-current (arg)
+      "Run ediff-vc-internal on the current file against it's latest revision.
+If prefix arg, use it as the revision number"
+      (interactive "P")
+      (ediff-load-version-control t)
+      (let ((rev (if arg (format "%d" arg) "")))
+        (funcall
+         (intern (format "ediff-%S-internal" ediff-version-control-package))
+         rev "" nil)))
+    (bind-key [(control c) (=)] 'pw/ediff-current)))
+
+;;
+;; Make it so buffers with the same name are are made unique by added
+;; directory path and killing a buffer renames all of them.
 (use-package uniquify
   :init
   (progn
-    ;; Make it so buffers with the same name are are made unique by added
-    ;; directory path and killing a buffer renames all of them.
     (setq uniquify-buffer-name-style 'post-forward)
     (setq uniquify-after-kill-buffer-p t)))
 
+;; This is mostly for C++ but make it so whitespace that should not be there
+;; is highlighted.  This causes tabs, and whitespace at beginning
+;; and end of the buffer as well as at the end of the line to highlight
 (use-package whitespace
   :init
   (progn
-    ;; This is mostly for C++ but make it so whitespace that should not be there
-    ;; is highlighted.  This causes tabs, and whitespace at beginning
-    ;; and end of the buffer as well as at the end of the line to highlight
     (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
     (setq whitespace-line-column nil)
-    (bind-key [(control c) (\ )] . 'whitespace-mode))
+    (bind-key [(control c) (\ )]  'whitespace-mode))
   )
 
+;;
 ;; Setup commands and menus to hide/show blocks of code
 (use-package hideshow
   :init
@@ -145,15 +180,17 @@
     (add-hook 'c-mode-hook 'hs-minor-mode)))
 
 ;;
-;; Make sure that that any compressed (e.g. .gz) files are
-;; uncompressed when reading
+;; Make visiting a *.gz automatically uncompress file
 (use-package jka-cmpr-hook
   :init
   (auto-compression-mode 1))
 
+;;
 ;; Make sure the mouse wheel scrolls
 (use-package mwheel
   :init
+  (progn
+    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
     (mwheel-install))
 
 ;;
@@ -189,9 +226,10 @@
   :init
   (progn
     (setq desktop-save t)
+    (setq desktop-restore-frames nil)
     (setq desktop-restore-eager 5)
     (setq desktop-lazy-verbose nil)
-    (setq desktop-lazy-del-delay 60)
+    (setq desktop-lazy-idle-delay 60)
     (setq desktop-restore-in-current-display t)
     (desktop-save-mode 1)
     (add-to-list 'desktop-modes-not-to-save 'Info-mode)
@@ -205,6 +243,7 @@
           (add-hook 'auto-save-hook 'pw/desktop-save)))
     ))
 
+;;
 ;; Make it so line numbers show up in left margin
 ;; Used in C/C++ mode.
 (use-package linum
@@ -213,16 +252,6 @@
     (add-hook 'prog-mode-hook 'linum-mode)))
 
 ;;
-;; Make long strings of digits alternate
-;; groups of 3 with bold.  Download package
-;; if not installed
-(use-package num3-mode
-  :ensure t
-  :init
-  (progn
-    (add-hook 'prog-mode-hook 'num3-mode)
-    (set-face-bold 'num3-face-even t)))
-
 ;; `global-hl-line-mode' highlights the current line.  You should make sure
 ;; that `hl-line-face' is an appropriate, subtle color.  The sticky
 ;; flag keeps it highlighted in all windows
@@ -233,7 +262,7 @@
     (setq global-hl-line-sticky-flag t)
     (global-hl-line-mode 1)))
 
-
+;;
 ;; This records the location of every file you visit and
 ;; restores when you vist a file, goes to that location.  I also save
 ;; the file every couple hours because I don't always quit emacs
@@ -244,13 +273,21 @@
     (setq save-place-limit nil)
     (run-at-time 3600  3600 'save-place-alist-to-file)))
 	 
+;;
 ;; If you like windows style cut and paste then try this.  ^C & ^X only
 ;; work when region is active, ^V and ^Z do paste and undo
+;;
 ;; Note: I have this disabled!
 (use-package cua-base
   :disabled t
   :init
   (cua-mode 1))
+
+;;
+;; I can't handle the active region getting deleted
+(use-package delsel
+  :init
+  (delete-selection-mode -1))
 
 ;;
 ;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
@@ -267,6 +304,12 @@
   :init
   (bind-key [(control c) (f)] 'rgrep))
 
+;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
+;; This makes them save automatically
+(use-package bookmark
+  :init
+  (setq bookmark-save-flag 1))
+
 ;;
 ;; Make it so $EDITOR can popup in this emacs
 ;;
@@ -277,16 +320,50 @@
         (setenv "EDITOR" "emacsclient"))
     (server-start t)))
 
+;;
+;; Make long strings of digits alternate
+;; groups of 3 with bold.
+;;
+;; Download package if not installed!
+(use-package num3-mode
+  :ensure t
+  :init
+  (progn
+    (add-hook 'prog-mode-hook 'num3-mode)
+    (set-face-bold 'num3-face-even t)))
+
+;;
+;; I like the wilson theme from the sublime-themes
+;; package.
+;;
+;; Download package if not installed!
+(use-package sublime-themes
+  :ensure t
+  :init
+  (load-theme 'wilson t))
+
 ;; 
 ;; Turn on displaying the date and time in the mode line.
 ;; Enable displaying the line and column numbers in the mode line
 ;; But don't do that if the buffer is >25k
-;; 
 (setq display-time-day-and-date t)
 (display-time-mode)
 (setq line-number-display-limit 25000)
 (line-number-mode 1)
 (column-number-mode 1)
+(size-indication-mode 1)
+
+;;
+;; Incremental search settings
+(setq lazy-highlight-max-at-a-time 10)
+(setq lazy-highlight-initial-delay .5)
+(setq lazy-highlight-interval .1))
+
+;;
+;; Cause the gutter to display little arrows and
+;; boxes if there is more to a file
+(setq indicate-buffer-boundaries '(left))
+(setq indicate-empty-lines t)
 
 ;;
 ;; Even though I did something with the mouse do not
@@ -300,14 +377,9 @@
 ;; default is prior to emacs-24 is nil
 (setq redisplay-dont-pause t)
 
-;(add-hook 'find-file-hook 'auto-insert)
-
 ;;
 ;; I found visiting a file to be really slow and realized
 ;; it was from figuring out the version control
-;; I prefer to use egg for handling git instead of the built in
-;; so remove git from this list
-;(require 'egg)
 (setq vc-handled-backends '(Git SVN))
 
 ;; I don't like actual tabs being inserted
@@ -351,11 +423,6 @@
 (setq line-move-visual nil)
 (setq visual-line-mode nil)
 
-;; I hate buffers displaying in other frames unless I ask it to.
-;; This reduces the set tha display in another buffer.
-(setq obof-other-frame-regexps '("\\*Messages\\*" "\\*mail\\*" "\\*Colors\\*"))
-(setq special-display-regexps '("[ ]?\\*Messages\\*[ ]?" "[ ]?\\*Open Recent\\*[ ]?" ".*SPEEDBAR.*"))
-
 ;; Make it so moving up or down does it one line at a time.
 ;; `scroll-step' 0 works better with Emacs which now supports
 ;; `scroll-conservatively'.
@@ -364,24 +431,13 @@
 ;; `scroll-preserve-screen-position' says when scrolling pages, keep
 ;; point at same physical spot on screen.
 (setq scroll-step 0)
-(setq scroll-margin 2)
 (setq scroll-conservatively 15)
+(setq scroll-margin 2)
 (setq scroll-preserve-screen-position 'keep)
 
-
-;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
-;; This makes them save automatically
-(setq bookmark-save-flag 1)
-
-;; Make visiting a *.gz automatically uncompress file
 ;; Make it so selecting the region highlights it and causes many
 ;; commands to work only on the region
 (setq transient-mark-mode t)
-
-;; Make sure that ediff ignores all whitespace differences and
-;; highlights the individual differences
-(setq ediff-diff-options "-w")
-(setq-default ediff-auto-refine 'on)
 
 ;; Save emacs's internal command history.
 (setq savehist-additional-variables

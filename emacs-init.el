@@ -14,16 +14,11 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#d02090" "#ccaa8f" "#f6f3e8"])
- '(auto-compression-mode t nil (jka-compr))
- '(c-doc-comment-style (quote ((c++-mode . javadoc))))
- '(case-fold-search t)
  '(current-language-environment "English")
- '(custom-enabled-themes (quote (wilson)))
  '(custom-safe-themes
    (quote
     ("96998f6f11ef9f551b427b8853d947a7857ea5a578c75aa9c4e7c73fe04d10b4" "ce79400f46bd76bebeba655465f9eadf60c477bd671cbcd091fe871d58002a88" "e890fd7b5137356ef5b88be1350acf94af90d9d6dd5c234978cd59a6b873ea94" "b19b642b0d5be8ec4bc96698260575d3eb81a22064911a8036213facf3a9a6fa" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(default-input-method "rfc1345")
- '(delete-selection-mode nil nil (delsel))
  '(fci-rule-color "#383838")
  '(grep-files-aliases
    (quote
@@ -41,13 +36,8 @@
      ("texi" . "*.texi")
      ("asm" . "*.[sS]")
      ("code" . "*.c *.h *.cpp *.f"))))
- '(indicate-buffer-boundaries (quote left))
- '(indicate-empty-lines t)
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
- '(lazy-highlight-max-at-a-time 5)
- '(mouse-wheel-scroll-amount (quote (1 ((shift) . 1) ((control)))))
  '(scroll-bar-mode nil)
- '(size-indication-mode t)
  '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
  '(tool-bar-mode nil)
  '(vc-annotate-background "#2B2B2B")
@@ -92,10 +82,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:background nil))))
- '(mouse ((t (:foreground "green"))))
- '(num3-face-even ((t (:weight bold))))
- '(org-column ((t (:inverse-video t :height 1.0 :family "courier")))))
+;; '(default ((t (:background nil))))
+;; '(mouse ((t (:foreground "green"))))
+;; '(num3-face-even ((t (:weight bold))))
+;; '(org-column ((t (:inverse-video t :height 1.0 :family "courier"))))
+ )
 
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)

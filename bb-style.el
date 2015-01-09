@@ -84,6 +84,7 @@ c++-mode-hook and c-mode hook."
 				       space-before-funcall
 				       compact-empty-funcall
 				       defun-close-semi))
+        (c-doc-comment-style       . javadoc)
 	(c-offsets-alist
 	 . ((string                . +)
 	    (inline-open           . 0)
