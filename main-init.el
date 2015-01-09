@@ -35,6 +35,7 @@
 (provide 'main-init)
 
 (require 'use-package)                  ;Download this!
+(use-package bind-keys)
 ;;
 ;; I prefer to load installed packages early in setup
 ;; so the rest of the code can test for the existance
@@ -47,46 +48,15 @@
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
     (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)))
-;;(if (not (featurep 'package))
-;;    (load "package" t))
-;;(if (fboundp 'package-initialize)
-;;    (progn
-;;      (package-initialize)
-;;      (setq package-enable-at-startup nil)))
-;;
+
 (setq url-proxy-services
    '(("no_proxy" . "^\\(localhost\\|10.*\\)")
      ("http" . "devproxy.bloomberg.com:82")
      ("https" . "devproxy.bloomberg.com:82")))
 
 
-(use-package ediff)
-(use-package uniquify
-  :init
-  (progn
-    ;; Make it so buffers with the same name are are made unique by added
-    ;; directory path and killing a buffer renames all of them.
-    (setq uniquify-buffer-name-style 'post-forward)
-    (setq uniquify-after-kill-buffer-p t)))
-(use-package whitespace
-  :init
-  (progn
-    ;; This is mostly for C++ but make it so whitespace that should not be there
-    ;; is highlighted.  This causes tabs, and whitespace at beginning
-    ;; and end of the buffer as well as at the end of the line to highlight
-    (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
-    (setq whitespace-line-column nil))
-  ;;:bind
-  ;;(([(control c) (\ )] . 'whitespace-mode))
-  )
-(use-package hideshow)
-
 ;; These are in my ~/usr/emacs directory
 (use-package comint-prefs)      ;Pete specific
-;(defvar ctl-c-4-keymap (make-keymap)
-;  "Keymap used for C-c 4 commands.")
-;(define-key ctl-c-4-keymap "s" 'shell-switch-other-window)
-;(global-set-key [(control c) (?4)] ctl-c-4-keymap)
 (use-package shell-switch
   :init
   (progn
@@ -107,12 +77,72 @@
 (use-package lrl-mode) 			;Bloomberg
 (use-package csc-mode)			;Bloomberg
 
+;; Toggle truncation of long lines
+(use-package pw-trunc-lines
+  :init
+  (progn
+    (bind-key [(control c) ($)]  'pw/trunc-lines)
+    ;; Hide long lines in .mk
+    (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
+    ;; Hide long lines in shell buffers
+    (add-hook 'shell-mode-hook 'pw/trunc-lines)))
+
+(use-package pw-misc
+  :init
+  (bind-keys
+   ([(control c) (p)] . pw/prev-frame)
+   ([(control c) (-)] . pw/font-size-decrease)
+   ([(control c) (+)] . pw/font-size-increase)
+   ([(control c) (=)] . pw/ediff-current)
+   ([(control c) (\\)] . pw/reindent)
+   ([(control c) (e)] . pw/eval-region-or-defun)
+   ))
+
+(use-package compile-prefs
+  :init
+  (bind-key [(control c) (c)] 'compile))
+
+(use-package pw-switch-buffer)
+(use-package pw-font-lock)
+
+(bind-key [(control c) (G)] 'goto-line)
+(bind-key [(control c) (g)] 'grep)
+(bind-key [(control c) (o)] 'other-frame)
+
 ;;
 ;; org-mode provides an outline, todo, diary, calendar like interface.
 (use-package org
   :mode ("\\.org\\'" . org-mode)
   :init
   (use-package org-prefs))
+
+
+(use-package ediff)
+(use-package uniquify
+  :init
+  (progn
+    ;; Make it so buffers with the same name are are made unique by added
+    ;; directory path and killing a buffer renames all of them.
+    (setq uniquify-buffer-name-style 'post-forward)
+    (setq uniquify-after-kill-buffer-p t)))
+
+(use-package whitespace
+  :init
+  (progn
+    ;; This is mostly for C++ but make it so whitespace that should not be there
+    ;; is highlighted.  This causes tabs, and whitespace at beginning
+    ;; and end of the buffer as well as at the end of the line to highlight
+    (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
+    (setq whitespace-line-column nil)
+    (bind-key [(control c) (\ )] . 'whitespace-mode))
+  )
+
+;; Setup commands and menus to hide/show blocks of code
+(use-package hideshow
+  :init
+  (progn
+    (add-hook 'c++-mode-hook 'hs-minor-mode)
+    (add-hook 'c-mode-hook 'hs-minor-mode)))
 
 ;;
 ;; Make sure that that any compressed (e.g. .gz) files are
@@ -128,7 +158,6 @@
 
 ;;
 ;; Highlight matching paren
-;;
 (use-package paren
   :init
   (show-paren-mode 1))
@@ -175,13 +204,6 @@
             (desktop-save desktop-dirname t))
           (add-hook 'auto-save-hook 'pw/desktop-save)))
     ))
-
-;; Setup commands and menus to hide/show blocks of code
-(use-package hideshow
-  :init
-    (progn
-      (add-hook 'c++-mode-hook 'hs-minor-mode)
-      (add-hook 'c-mode-hook 'hs-minor-mode)))
 
 ;; Make it so line numbers show up in left margin
 ;; Used in C/C++ mode.
@@ -254,82 +276,6 @@
     (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
         (setenv "EDITOR" "emacsclient"))
     (server-start t)))
-
-;; Toggle truncation of long lines
-(use-package pw-trunc-lines
-  :init
-  (progn
-    (bind-key [(control c) ($)]  'pw/trunc-lines)
-    ;; Hide long lines in .mk
-    (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
-    ;; Hide long lines in shell buffers
-    (add-hook 'shell-mode-hook 'pw/trunc-lines)))
-
-(use-package pw-misc
-  :init
-  (bind-keys
-   ([(control c) (p)] . pw/prev-frame)
-   ([(control c) (-)] . pw/font-size-decrease)
-   ([(control c) (+)] . pw/font-size-increase)
-   ([(control c) (=)] . pw/ediff-current)
-   ([(control c) (\\)] . pw/reindent)
-   ([(control c) (e)] . pw/eval-region-or-defun)
-   ))
-
-(use-package compile-prefs
-  :init
-  (bind-key [(control c) (c)] 'compile))
-
-(bind-key [(control c) (G)] 'goto-line)
-(bind-key [(control c) (g)] 'grep)
-(bind-key [(control c) (o)] 'other-frame)
-
-(cond
- ((fboundp 'iswitchb-mode)
-    ;; `iswitchb-mode' provides a nice completion for switching between
-    ;; buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
-    ;; adds recent files to the match 
-    (setq iswitchb-default-method 'samewindow
-          iswitchb-max-to-show 5
-          iswitchb-use-virtual-buffers t)
-    (recentf-mode 1)
-    (iswitchb-mode 1))
- ((fboundp 'icomplete-mode)
-  (icomplete-mode 1))
- ((fboundp 'ido-mode)
-  ;; `ido-mode` does for find-file what iswitchb-mode does
-  ;; for switch-to-buffer.  It was cool but I found it
-  ;; it slowed down on big directories too much and
-  ;; some very annoying interaction with tramp
-  (setq ido-default-buffer-method 'samewindow)
-  (setq ido-enable-tramp-completion nil)
-  (setq ido-ignore-buffers
-        (list "\\'" ".*Completions.*"))
-  (setq ido-work-directory-list-ignore-regexps
-        (list "/bb/bin" "/bb/data" "/bb/data/tmp" "/bbsrc/apputil"))
-  (ido-mode 1)
-  ))
-
-;; Various ways of delaying fontification.  With these, the file is first
-;; displayed and then in the background it is highlighted.  There are
-;; different schemes between Emacs (jit-lock) and versions of XEmacs
-(cond
- ((fboundp 'jit-lock-mode)
-  (setq jit-lock-chunk-size 5000
-        jit-lock-contextually 'syntax-driven
-	jit-lock-context-time .6
-	jit-lock-defer-time .1
-	jit-lock-stealth-nice 0.1
-	jit-lock-stealth-time 5
-	jit-lock-stealth-verbose nil)
-  (jit-lock-mode t)
-  )
- ((fboundp 'turn-on-lazy-shot)
-  (add-hook 'font-lock-mode-hook 'turn-on-lazy-shot))
- ((fboundp 'turn-on-lazy-lock)
-  (add-hook 'font-lock-mode-hook 'turn-on-lazy-lock)
-  (setq lazy-lock-stealth-time 10)
-  (setq lazy-lock-minimum-size 10000)))
 
 ;; 
 ;; Turn on displaying the date and time in the mode line.
