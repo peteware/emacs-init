@@ -52,10 +52,12 @@
 (use-package package
   :init
   (progn
-    (setq url-proxy-services
-          '(("no_proxy" . "^\\(localhost\\|10.*\\)")
-            ("http" . "devproxy.bloomberg.com:82")
-            ("https" . "devproxy.bloomberg.com:82")))
+    ;; Try to detect being at Bloomberg
+    (when (getenv "BBPATH")
+      (setq url-proxy-services
+            '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+              ("http" . "devproxy.bloomberg.com:82")
+              ("https" . "devproxy.bloomberg.com:82"))))
     (package-initialize)
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
     (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
