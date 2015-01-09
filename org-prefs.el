@@ -39,8 +39,9 @@
           (org-heading t))
         (800 1000 1200 1400 1600 1800 2000)))
 (setq org-agenda-files '("~/notes/frd.org" "~/notes/fwdsvc.org" "~/notes/xndf.org" "~/notes/fxfa.org" "~/notes/todo.org" "~/notes/drqs.org" "~/notes/events.org"))
+(setq org-time-clocksum-format '(:days "%dd " :hours "%d" :minutes ":%02d"))
 (setq org-global-properties
-        '((Effort_ALL . ".25d .5d 1d 2d 3d 4d 5d 7d")))
+        '((Effort_ALL . "0d 1d 2d 3d 4d 5d 7d")))
 (setq org-columns-default-format "%60ITEM(Task) %17Effort(Estimated Effort){:} %CLOCKSUM")
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "~/notes/todo.org" "Bloomberg Current")
