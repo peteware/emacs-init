@@ -64,52 +64,52 @@ c++-mode-hook and c-mode hook."
 (add-hook 'c++-mode-hook		'bb-c-mode)
 (add-hook 'c-mode-hook			'bb-c-mode)
 
-(setq bb-style
+(setq bb-style-alist
       '((c-basic-offset                 . 4)
-	(c-comment-only-line-offset . (0 . -1000))
-	;; Put newline before&after braces
-	(c-hanging-braces-alist     . ((substatement-open . (before after))
-				       (statement  . (before after))
-				       (namespace-open . ())
-				       (brace-list-open . (before after))))
-	;; 
-	;;(c-hanging-colons-alist     . ((member-init-intro before)
-	;;			       (inher-intro)
-	;;			       (case-label after)
-	;;			       (label after)
-	;;			       (access-label after)))
-	;; This only works with auto-newline but helps a lot
-	(c-cleanup-list             . (scope-operator
-				       list-close-comma
-				       space-before-funcall
-				       compact-empty-funcall
-				       defun-close-semi))
+        (c-comment-only-line-offset . (0 . -1000))
+        ;; Put newline before&after braces
+        (c-hanging-braces-alist     . ((substatement-open . (before after))
+                                       (statement  . (before after))
+                                       (namespace-open . ())
+                                       (brace-list-open . (before after))))
+        ;;
+        ;;(c-hanging-colons-alist     . ((member-init-intro before)
+        ;;			       (inher-intro)
+        ;;			       (case-label after)
+        ;;			       (label after)
+        ;;			       (access-label after)))
+        ;; This only works with auto-newline but helps a lot
+        (c-cleanup-list             . (scope-operator
+                                       list-close-comma
+                                       space-before-funcall
+                                       compact-empty-funcall
+                                       defun-close-semi))
         (c-doc-comment-style       . javadoc)
-	(c-offsets-alist
-	 . ((string                . +)
-	    (inline-open           . 0)
-	    (extern-lang-open      . 0)
-	    (extern-lang-close     . 0)
-	    (func-decl-cont        . 0)
-	    (knr-argdecl-intro     . 0)
-	    (topmost-intro         . 0)
-	    (topmost-intro-cont    . 0)
-	    ;;(inher-cont            . +)
-	    (statement-case-open   . 0)
-	    (substatement-open     . 0)
-	    (label                 . 0)
-	    ;;(comment-intro         . 0)
-	    (arglist-cont          . c-lineup-argcont)
-	    (arglist-cont-nonempty . c-lineup-arglist)
-	    (arglist-close         . c-lineup-arglist)
-	    (stream-op             . +)
-	    (inclass               . +)
-	    (inextern-lang         . 0)
-	    (cpp-macro             . -100)
-	    (innamespace           . 0)
-	    (namespace-open        . nil)
-	    (namespace-close       . nil)
-	    ))
-	))
+        (c-offsets-alist
+         . ((string                . +)
+            (inline-open           . 0)
+            (extern-lang-open      . 0)
+            (extern-lang-close     . 0)
+            (func-decl-cont        . 0)
+            (knr-argdecl-intro     . 0)
+            (topmost-intro         . 0)
+            (topmost-intro-cont    . 0)
+            ;;(inher-cont            . +)
+            (statement-case-open   . 0)
+            (substatement-open     . 0)
+            (label                 . 0)
+            ;;(comment-intro         . 0)
+            (arglist-cont          . c-lineup-argcont)
+            (arglist-cont-nonempty . c-lineup-arglist)
+            (arglist-close         . c-lineup-arglist)
+            (stream-op             . +)
+            (inclass               . +)
+            (inextern-lang         . 0)
+            (cpp-macro             . -100)
+            (innamespace           . 0)
+            (namespace-open        . nil)
+            (namespace-close       . nil)
+            ))
+        ))
 (if (fboundp 'c-add-style)
-    (c-add-style "bb" bb-style))
+    (c-add-style "bb" bb-style-alist))

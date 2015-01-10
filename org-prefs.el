@@ -11,7 +11,6 @@
   (setq orgstruct-heading-prefix-regexp "^// ")
   (turn-on-orgstruct))
 
-;(define-key global-map "\C-cr" 'org-capture)
 (add-hook 'org-mode-hook 'turn-on-font-lock)  ; Org buffers only
 (add-hook 'c++-mode-hook 'pw/c++-orgstruct)
 (add-hook 'c-mode-hook 'pw/c++-orgstruct)

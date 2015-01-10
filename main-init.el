@@ -35,7 +35,7 @@
 (provide 'main-init)
 
 (require 'use-package)                  ;Download this!
-(use-package bind-keys)                 ;Download this!
+(use-package bind-key)                  ;Download this!
 
 ;;
 ;; Using bind-key lets you run describe-personal-keybindings
@@ -90,9 +90,8 @@
   :init
   (progn
     (bind-key [(control c) ($)]  'pw/trunc-lines)
-    ;; Hide long lines in .mk
+    (add-hook 'prog-mode-hook 'pw/trunc-lines)
     (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
-    ;; Hide long lines in shell buffers
     (add-hook 'shell-mode-hook 'pw/trunc-lines)))
 
 ;;
@@ -230,9 +229,9 @@ If prefix arg, use it as the revision number"
     (setq desktop-save t)
     (setq desktop-restore-frames nil)
     (setq desktop-restore-eager 5)
+    (setq desktop-restore-in-current-display t)
     (setq desktop-lazy-verbose nil)
     (setq desktop-lazy-idle-delay 60)
-    (setq desktop-restore-in-current-display t)
     (desktop-save-mode 1)
     (add-to-list 'desktop-modes-not-to-save 'Info-mode)
     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
@@ -304,7 +303,23 @@ If prefix arg, use it as the revision number"
 ;; files and headers.
 (use-package grep
   :init
-  (bind-key [(control c) (f)] 'rgrep))
+  (progn
+    (bind-key [(control c) (f)] 'rgrep)
+    (setq grep-files-aliases
+          '(("all" . "* .*")
+            ("el" . "*.el")
+            ("ch" . "*.[ch]")
+            ("c" . "*.c")
+            ("cc" . "*.cc *.cxx *.cpp *.C *.CC *.c++")
+            ("cchh" . "*.cc *.[ch]xx *.[ch]pp *.[CHh] *.CC *.HH *.[ch]++")
+            ("hh" . "*.hxx *.hpp *.[Hh] *.HH *.h++")
+            ("h" . "*.h")
+            ("l" . "[Cc]hange[Ll]og*")
+            ("m" . "[Mm]akefile*")
+            ("tex" . "*.tex")
+            ("texi" . "*.texi")
+            ("asm" . "*.[sS]")
+            ("code" . "*.c *.h *.cpp *.f")))))
 
 ;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
 ;; This makes them save automatically
@@ -314,7 +329,6 @@ If prefix arg, use it as the revision number"
 
 ;;
 ;; Make it so $EDITOR can popup in this emacs
-;;
 (use-package server
   :init
   (progn
@@ -328,7 +342,8 @@ If prefix arg, use it as the revision number"
 ;;
 ;; Download package if not installed!
 (use-package num3-mode
-  :ensure t
+  ;;:ensure t
+  :diminish num3-mode
   :init
   (progn
     (add-hook 'prog-mode-hook 'num3-mode)
@@ -340,9 +355,50 @@ If prefix arg, use it as the revision number"
 ;;
 ;; Download package if not installed!
 (use-package sublime-themes
-  :ensure t
+  ;;:ensure t
   :init
-  (load-theme 'wilson t))
+  (progn
+    (if (load-theme 'wilson t nil)
+        (message "load-theme wilson"))))
+;;
+;; Force Mac OS X to use Consolas at 16pt
+(if (eq (window-system) 'ns)
+    (custom-set-faces '(default ((t (:height 160 :family "Consolas"))))))
+
+;;
+;; Make *scratch* buffers get saved
+;;
+;(use-package scratch-persist)
+(use-package scratch-ext)
+
+;;
+;; Do not display these minor modes in mode-line
+;;
+;; Download package if not installed!
+(use-package diminish
+  :init
+  (diminish 'orgstruct-mode)
+  (diminish 'abbrev-mode)
+  (diminish 'num3-mode))
+
+;;
+;; Freaky way to insert text
+;; 1. Enter anyins-mode
+;; 2. Move around; mark spots you want to insert text with RET
+;; 3. To insert text
+;;    a. ``y'' inserts each line from kill ring at each marked spot, or
+;;    b.  ``!'' runs a shell command line 'seq -s ". \n" 1 3' generates
+;; numbers "1. "  "2. " "3. " and inserts it at each markets tpot
+(use-package anyins
+  :init
+  (bind-key [(control c) (i)] 'anyins-mode))
+
+;;
+;; Do not display message in the scratch buffer or the startup message
+;; or the message in the echo area
+(setq initial-scratch-message "")
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-echo-area-message "pware")
 
 ;; 
 ;; Turn on displaying the date and time in the mode line.
@@ -355,11 +411,37 @@ If prefix arg, use it as the revision number"
 (column-number-mode 1)
 (size-indication-mode 1)
 
+;; If at beginning of line, the Ctl-K kills including the newline
+;; (I'm hardwired to type Ctl-K twice)
+;(setq kill-whole-line t)
+
+;; Latest Emacs can wrap lines at word boundaries and will move the cursor
+;; so it stays in the same column on screen.  I'm too used to the old style.
+(setq-default word-wrap nil)
+(setq line-move-visual nil)
+(setq visual-line-mode nil)
+
+;; Make it so moving up or down does it one line at a time.
+;; `scroll-step' 0 works better with Emacs which now supports
+;; `scroll-conservatively'.
+;; `scroll-margin' says to keep this many lines
+;; above or below so you get some context.
+;; `scroll-preserve-screen-position' says when scrolling pages, keep
+;; point at same physical spot on screen.
+(setq scroll-step 0)
+(setq scroll-conservatively 15)
+(setq scroll-margin 2)
+(setq scroll-preserve-screen-position 'keep)
+
 ;;
 ;; Incremental search settings
 (setq lazy-highlight-max-at-a-time 10)
 (setq lazy-highlight-initial-delay .5)
 (setq lazy-highlight-interval .1))
+
+;;
+;; Turn off the scroll bars
+(scroll-bar-mode -1)
 
 ;;
 ;; Cause the gutter to display little arrows and
@@ -403,39 +485,10 @@ If prefix arg, use it as the revision number"
 ;; Do not beep if I kill text in a read-only buffer
 (setq kill-read-only-ok t)
 
-;; If at beginning of line, the Ctl-K kills including the newline
-;; (I'm hardwired to type Ctl-K twice)
-;(setq kill-whole-line t)
-
-;;
-;; Do not display message in the scratch buffer or the startup message
-;; or the message in the echo area
-(setq initial-scratch-message "")
-(setq inhibit-startup-screen t)
-(setq inhibit-startup-echo-area-message "pware")
-
 ;;
 ;; Usually, my home directory is faster for saving files
 ;; then anywhere else.
 (setq backup-directory-alist '(("." . "~/.backups")))
-
-;; Latest Emacs can wrap lines at word boundaries and will move the cursor
-;; so it stays in the same column on screen.  I'm to used to the old style.
-(setq-default word-wrap nil)
-(setq line-move-visual nil)
-(setq visual-line-mode nil)
-
-;; Make it so moving up or down does it one line at a time.
-;; `scroll-step' 0 works better with Emacs which now supports
-;; `scroll-conservatively'.
-;; `scroll-margin' says to keep this many lines
-;; above or below so you get some context.
-;; `scroll-preserve-screen-position' says when scrolling pages, keep
-;; point at same physical spot on screen.
-(setq scroll-step 0)
-(setq scroll-conservatively 15)
-(setq scroll-margin 2)
-(setq scroll-preserve-screen-position 'keep)
 
 ;; Make it so selecting the region highlights it and causes many
 ;; commands to work only on the region
@@ -449,7 +502,3 @@ If prefix arg, use it as the revision number"
 	grep-regexp-history
 	grep-files-history))
 (savehist-mode 1)
-
-(if (and (featurep 'color-theme)
-	 (featurep 'color-theme-pw))
-    (color-theme-pw))
