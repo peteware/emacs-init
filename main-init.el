@@ -58,10 +58,18 @@
             '(("no_proxy" . "^\\(localhost\\|10.*\\)")
               ("http" . "devproxy.bloomberg.com:82")
               ("https" . "devproxy.bloomberg.com:82"))))
-    (package-initialize)
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
     (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-    (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)))
+    (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+    (package-initialize)
+    (use-package pw-pkg-install
+      :init
+      (pw/ensure-pkg-installed
+       'alect-themes 'anyins 'diminish 'num3-mode
+       'scratch-ext 'sublime-themes 'zen-and-art-theme))))
+
+;; activate installed packages
+(package-initialize)
 
 ;; These are in my ~/usr/emacs directory
 (use-package comint-prefs)              ;Pete specific
@@ -109,8 +117,7 @@
 ;;
 ;; Setup compilation buffers
 (use-package compile-prefs
-  :init
-  (bind-key [(control c) (c)] 'compile))
+  :bind ("C-c c" . compile))
 
 ;;
 ;; Use iswitchb-mode or icomplete-mode or ido-mode
@@ -123,19 +130,21 @@
 ;; org-mode provides an outline, todo, diary, calendar like interface.
 (use-package org
   :mode ("\\.org\\'" . org-mode)
-  :init
-  (use-package org-prefs
-    :init
-    (progn
-      (bind-key [(control c) (l)] 'org-store-link)
-      (bind-key [(control c) (a)] 'org-agenda)
-      (bind-key [(control c) (b)] 'org-iswitchb)
-      (bind-key [(control c) (r)] 'org-capture))))
+  :commands orgstruct-mode
+  :diminish orgstruct-mode
+  :bind (("C-c l" . org-store-link)
+         ("C-c a" . org-agenda)
+         ("C-c b" . org-iswitchb)
+         ("C-c r" . org-capture))
+  :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
+  :config
+  (use-package org-prefs))
 
 ;;
 ;; A nice graphical diff Make sure that ediff ignores all whitespace
 ;; differences and highlights the individual differences
 (use-package ediff
+  :commands ediff-load-version-control
   :init
   (progn
     (setq ediff-diff-options "-w")
@@ -165,16 +174,16 @@ If prefix arg, use it as the revision number"
 ;; is highlighted.  This causes tabs, and whitespace at beginning
 ;; and end of the buffer as well as at the end of the line to highlight
 (use-package whitespace
+  :bind ("C-c SPC" . whitespace-mode)
   :init
   (progn
     (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
-    (setq whitespace-line-column nil)
-    (bind-key [(control c) (\ )]  'whitespace-mode))
-  )
+    (setq whitespace-line-column nil)))
 
 ;;
 ;; Setup commands and menus to hide/show blocks of code
 (use-package hideshow
+  :commands hs-minor-mode
   :init
   (progn
     (add-hook 'c++-mode-hook 'hs-minor-mode)
@@ -192,7 +201,7 @@ If prefix arg, use it as the revision number"
   :init
   (progn
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
-    (mwheel-install))
+    (mwheel-install)))
 
 ;;
 ;; Highlight matching paren
@@ -206,8 +215,7 @@ If prefix arg, use it as the revision number"
 ;; and the other window scrolls.  I bound F7 to do get
 ;; rid of the other windows and split.
 (use-package follow
-  :init
-  (bind-key [f7]  'follow-delete-other-windows-and-split))
+  :bind ("<f7>" . follow-delete-other-windows-and-split))
 
 ;;
 ;; This makes saving shell scripts automatically make
@@ -248,9 +256,9 @@ If prefix arg, use it as the revision number"
 ;; Make it so line numbers show up in left margin
 ;; Used in C/C++ mode.
 (use-package linum
-  :init
-  (progn
-    (add-hook 'prog-mode-hook 'linum-mode)))
+  :commands linum-mode
+  :init (add-hook 'prog-mode-hook 'linum-mode)
+  :config (setq linum-format 'dynamic))
 
 ;;
 ;; `global-hl-line-mode' highlights the current line.  You should make sure
@@ -302,9 +310,9 @@ If prefix arg, use it as the revision number"
 ;; filenames and ignores directories like CVS.  "cchh" is all C++
 ;; files and headers.
 (use-package grep
+  :bind ("C-c f" . rgrep)
   :init
   (progn
-    (bind-key [(control c) (f)] 'rgrep)
     (setq grep-files-aliases
           '(("all" . "* .*")
             ("el" . "*.el")
@@ -343,11 +351,10 @@ If prefix arg, use it as the revision number"
 ;; Download package if not installed!
 (use-package num3-mode
   ;;:ensure t
+  :commands num3-mode
   :diminish num3-mode
-  :init
-  (progn
-    (add-hook 'prog-mode-hook 'num3-mode)
-    (set-face-bold 'num3-face-even t)))
+  :init (add-hook 'prog-mode-hook 'num3-mode)
+  :config (set-face-bold 'num3-face-even t))
 
 ;;
 ;; I like the wilson theme from the sublime-themes
@@ -369,7 +376,11 @@ If prefix arg, use it as the revision number"
 ;; Make *scratch* buffers get saved
 ;;
 ;(use-package scratch-persist)
-(use-package scratch-ext)
+(use-package scratch-ext
+  :init
+  (save-excursion
+    (scratch-ext-create-scratch)
+    (scratch-ext-restore-last-scratch)))
 
 ;;
 ;; Do not display these minor modes in mode-line
@@ -377,9 +388,7 @@ If prefix arg, use it as the revision number"
 ;; Download package if not installed!
 (use-package diminish
   :init
-  (diminish 'orgstruct-mode)
-  (diminish 'abbrev-mode)
-  (diminish 'num3-mode))
+  (diminish 'abbrev-mode))
 
 ;;
 ;; Freaky way to insert text
@@ -390,8 +399,7 @@ If prefix arg, use it as the revision number"
 ;;    b.  ``!'' runs a shell command line 'seq -s ". \n" 1 3' generates
 ;; numbers "1. "  "2. " "3. " and inserts it at each markets tpot
 (use-package anyins
-  :init
-  (bind-key [(control c) (i)] 'anyins-mode))
+  :bind ("C-c i" . anyins-mode))
 
 ;;
 ;; Do not display message in the scratch buffer or the startup message
@@ -405,8 +413,8 @@ If prefix arg, use it as the revision number"
 ;; Enable displaying the line and column numbers in the mode line
 ;; But don't do that if the buffer is >25k
 (setq display-time-day-and-date t)
-(display-time-mode)
 (setq line-number-display-limit 25000)
+(display-time-mode)
 (line-number-mode 1)
 (column-number-mode 1)
 (size-indication-mode 1)
@@ -437,7 +445,7 @@ If prefix arg, use it as the revision number"
 ;; Incremental search settings
 (setq lazy-highlight-max-at-a-time 10)
 (setq lazy-highlight-initial-delay .5)
-(setq lazy-highlight-interval .1))
+(setq lazy-highlight-interval .1)
 
 ;;
 ;; Turn off the scroll bars
