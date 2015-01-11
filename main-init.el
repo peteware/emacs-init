@@ -354,7 +354,7 @@ If prefix arg, use it as the revision number"
   :commands num3-mode
   :diminish num3-mode
   :init (add-hook 'prog-mode-hook 'num3-mode)
-  :config (set-face-bold 'num3-face-even t))
+  :config (make-face-bold 'num3-face-even))
 
 ;;
 ;; I like the wilson theme from the sublime-themes
