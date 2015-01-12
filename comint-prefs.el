@@ -53,8 +53,8 @@ Setup M-p finds matching input."
   (interactive)
   (font-lock-mode 0))
 
-(add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
-(add-hook 'comint-mode-hook		'comint-for-pete)
-;(add-hook 'comint-shell-hook		'turn-off-fontlock)
-(add-hook 'dbx-mode-hook 'dbx-for-pete)
+;(add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
+;(add-hook 'comint-mode-hook		'comint-for-pete)
+;;(add-hook 'comint-shell-hook		'turn-off-fontlock)
+;(add-hook 'dbx-mode-hook 'dbx-for-pete)
 

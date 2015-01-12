@@ -1,7 +1,5 @@
 (provide 'lrl-mode)
 
-(add-to-list 'auto-mode-alist '("\\.lrl$" . lrl-mode))
-
 (defvar lrl-mode-map (make-sparse-keymap)
   "Local keymap for lrl-mode buffers.")
 

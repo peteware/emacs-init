@@ -1,7 +1,5 @@
 (provide 'csc-mode)
 
-(add-to-list 'auto-mode-alist '("\\.csc2$" . csc-mode))
-
 (defvar csc-mode-map (make-sparse-keymap)
   "Local keymap for csc-mode buffers.")
 
