@@ -379,6 +379,9 @@ If prefix arg, use it as the revision number"
 (use-package scratch-ext
   :init
   (save-excursion
+    (setq scratch-ext-log-directory "~/.emacs.d/scratch")
+    (if (not (file-exists-p scratch-ext-log-directory))
+	(mkdir scratch-ext-log-directory t))
     (scratch-ext-create-scratch)
     (scratch-ext-restore-last-scratch)))
 
