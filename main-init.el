@@ -107,7 +107,7 @@
     (setq desktop-restore-eager 5)
     (setq desktop-restore-in-current-display t)
     (setq desktop-lazy-verbose nil)
-    (setq desktop-lazy-idle-delay 60)
+    (setq desktop-lazy-idle-delay 20)
     (desktop-save-mode 1)
     (add-to-list 'desktop-modes-not-to-save 'Info-mode)
     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
