@@ -67,32 +67,17 @@
 
 ;;;
 ;;;----------------------------------------------------------------------
-;;; This section is for packages that are loaded (if they exist) right now
+;;; This section is for packages that are always loaded.
+;;; The next section gives those that are loaded on demand
 ;;;----------------------------------------------------------------------
 ;;;
 
-;;
-;; `global-hl-line-mode' highlights the current line.  You should make sure
-;; that `hl-line-face' is an appropriate, subtle color.  The sticky
-;; flag keeps it highlighted in all windows
-(use-package hl-line
+;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
+;; This makes them save automatically
+(use-package bookmark
   :init
-  (progn
-    (setq hl-line-sticky-flag t)
-    (setq global-hl-line-sticky-flag t)
-    (global-hl-line-mode 1)))
+  (setq bookmark-save-flag 1))
 
-;;
-;; This records the location of every file you visit and
-;; restores when you vist a file, goes to that location.  I also save
-;; the file every couple hours because I don't always quit emacs
-(use-package saveplace
-  :init
-  (progn
-    (setq-default save-place t)
-    (setq save-place-limit nil)
-    (run-at-time 3600  3600 'save-place-alist-to-file)))
-	 
 ;;
 ;; If you like windows style cut and paste then try this.  ^C & ^X only
 ;; work when region is active, ^V and ^Z do paste and undo
@@ -108,52 +93,6 @@
 (use-package delsel
   :init
   (delete-selection-mode -1))
-
-;;
-;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
-;; Emacs.toolBar:            0
-;; which keeps it from displaying on startup
-(use-package tool-bar
-  :init
-  (tool-bar-mode -1))
-
-;;
-;; Make it so buffers with the same name are are made unique by added
-;; directory path and killing a buffer renames all of them.
-(use-package uniquify
-  :init
-  (progn
-    (setq uniquify-buffer-name-style 'post-forward)
-    (setq uniquify-after-kill-buffer-p t)))
-
-;;
-;; Make visiting a *.gz automatically uncompress file
-(use-package jka-cmpr-hook
-  :init
-  (auto-compression-mode 1))
-
-;;
-;; Make sure the mouse wheel scrolls
-(use-package mwheel
-  :init
-  (progn
-    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
-    (mwheel-install)))
-
-;;
-;; Highlight matching paren
-(use-package paren
-  :init
-  (show-paren-mode 1))
-
-;;
-;; This makes saving shell scripts automatically make
-;; them executable.  It's considered a shell script if
-;; it starts with #!
-(use-package executable
-  :init
-  (add-hook 'after-save-hook
-            'executable-make-buffer-file-executable-if-script-p))
 
 ;;
 ;; This causes the set of files being visited to be restored
@@ -182,79 +121,33 @@
           (add-hook 'auto-save-hook 'pw/desktop-save)))
     ))
 
-;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
-;; This makes them save automatically
-(use-package bookmark
+;;
+;; This makes saving shell scripts automatically make
+;; them executable.  It's considered a shell script if
+;; it starts with #!
+(use-package executable
   :init
-  (setq bookmark-save-flag 1))
+  (add-hook 'after-save-hook
+            'executable-make-buffer-file-executable-if-script-p))
 
 ;;
-;; Make it so $EDITOR can popup in this emacs
-(use-package server
-  :init
-  (progn
-    (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
-        (setenv "EDITOR" "emacsclient"))
-    (server-start t)))
-
-;;
-;; Save emacs's internal command history.
-(use-package savehist
+;; `global-hl-line-mode' highlights the current line.  You should make sure
+;; that `hl-line-face' is an appropriate, subtle color.  The sticky
+;; flag keeps it highlighted in all windows
+(use-package hl-line
   :init
   (progn
-    (setq savehist-additional-variables
-          '(compile-command
-            grep-find-history
-            grep-history
-            grep-regexp-history
-            grep-files-history))
-    (savehist-mode 1)))
+    (setq hl-line-sticky-flag t)
+    (setq global-hl-line-sticky-flag t)
+    (global-hl-line-mode 1)))
 
 ;;
-;; Setup lazy font locking
-(use-package pw-font-lock)
-
+;; The new emacs way of doing various completions
 ;;
-;; Bloomberg C++ coding style
-(use-package bb-style
-  :init
-  (progn
-    ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
-    ;; c-mode
-    (setq c-default-style "bb")
-    (setq c-tab-always-indent nil)
-    (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
-  ))
-
-;;
-;; I like the wilson theme from the sublime-themes
-;; package.
-;;
-;; Download package if not installed!
-(use-package sublime-themes
-  ;;:ensure t
-  :init
-  (load-theme 'wilson t nil))
-
-;;
-;; Make *scratch* buffers get saved
-;;
-(use-package scratch-ext
-  :init
-  (save-excursion
-    (setq scratch-ext-log-directory "~/.emacs.d/scratch")
-    (if (not (file-exists-p scratch-ext-log-directory))
-	(mkdir scratch-ext-log-directory t))
-    (scratch-ext-create-scratch)
-    (scratch-ext-restore-last-scratch)))
-
-;;
-;; Do not display these minor modes in mode-line
-;;
-;; Download package if not installed!
-(use-package diminish
-  :init
-  (diminish 'abbrev-mode))
+;; DISABLED (use ido instead)
+(use-package icomplete
+  :disabled t
+  (icomplete-mode 1))
 
 ;;
 ;; Use a fancy auto-complete for buffers and files
@@ -266,7 +159,7 @@
     (setq ido-enable-flex-matching t)
     (setq ido-enable-dot-prefix t)
     (setq ido-enable-tramp-completion nil)
-    (setq ido-max-directory-size 30000)
+    (setq ido-max-directory-size 100000)
     (setq ido-rotate-file-list-default t)
     (setq ido-enter-matching-directory 'first)
     (setq ido-use-virtual-buffers 'auto)
@@ -294,65 +187,134 @@
     (recentf-mode 1)
     (iswitchb-mode 1)))
 
+;;
+;; Make visiting a *.gz automatically uncompress file
+(use-package jka-cmpr-hook
+  :init
+  (auto-compression-mode 1))
+
+;;
+;; Make sure the mouse wheel scrolls
+(use-package mwheel
+  :init
+  (progn
+    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
+    (mwheel-install)))
+
+;;
+;; Highlight matching paren
+(use-package paren
+  :init
+  (show-paren-mode 1))
+
+;;
+;; Save emacs's internal command history.
+(use-package savehist
+  :init
+  (progn
+    (setq savehist-additional-variables
+          '(compile-command
+            grep-find-history
+            grep-history
+            grep-regexp-history
+            grep-files-history))
+    (savehist-mode 1)))
+
+;;
+;; This records the location of every file you visit and
+;; restores when you vist a file, goes to that location.  I also save
+;; the file every couple hours because I don't always quit emacs
+(use-package saveplace
+  :init
+  (progn
+    (setq-default save-place t)
+    (setq save-place-limit nil)
+    (run-at-time 3600  3600 'save-place-alist-to-file)))
+	 
+;;
+;; Make it so $EDITOR can popup in this emacs
+(use-package server
+  :init
+  (progn
+    (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
+        (setenv "EDITOR" "emacsclient"))
+    (server-start t)))
   
 ;;
-;; The new emacs way of doing various completions
+;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
+;; Emacs.toolBar:            0
+;; which keeps it from displaying on startup
+(use-package tool-bar
+  :init
+  (tool-bar-mode -1))
+
 ;;
-;; DISABLED (use ido instead)
-(use-package icomplete
-  :disabled t
-  (icomplete-mode 1))
+;; Make it so buffers with the same name are are made unique by added
+;; directory path and killing a buffer renames all of them.
+(use-package uniquify
+  :init
+  (progn
+    (setq uniquify-buffer-name-style 'post-forward)
+    (setq uniquify-after-kill-buffer-p t)))
 
 ;;;
 ;;;----------------------------------------------------------------------
-;;; These packages defer loading until they are called (e.g. minimal
+;;; This section are non-standard packages that are always loaded
+;;;----------------------------------------------------------------------
+;;;
+
+;;
+;; Bloomberg C++ coding style
+(use-package bb-style
+  :init
+  (progn
+    ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
+    ;; c-mode
+    (setq c-default-style "bb")
+    (setq c-tab-always-indent nil)
+    (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+  ))
+
+;;
+;; Do not display these minor modes in mode-line
+;;
+;; Download package if not installed!
+(use-package diminish
+  :init
+  (diminish 'abbrev-mode))
+
+;;
+;; Setup lazy font locking
+(use-package pw-font-lock)
+
+;;
+;; Make *scratch* buffers get saved
+;;
+(use-package scratch-ext
+  :init
+  (save-excursion
+    (setq scratch-ext-log-directory "~/.emacs.d/scratch")
+    (if (not (file-exists-p scratch-ext-log-directory))
+	(mkdir scratch-ext-log-directory t))
+    (scratch-ext-create-scratch)
+    (scratch-ext-restore-last-scratch)))
+
+;;
+;; I like the wilson theme from the sublime-themes
+;; package.
+;;
+;; Download package if not installed!
+(use-package sublime-themes
+  ;;:ensure t
+  :init
+  (load-theme 'wilson t nil))
+
+;;;
+;;;----------------------------------------------------------------------
+;;; Standard packages that defer loading until they are called (e.g. minimal
 ;;; cost on startup)
 ;;;----------------------------------------------------------------------
 ;;;
-(use-package comint-prefs               ;Pete specific
-  :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt)
-  :init
-  (progn
-    (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
-    (add-hook 'comint-mode-hook 'comint-for-pete)
-    (add-hook 'dbx-mode-hook 'dbx-for-pete))  )
-
-(use-package shell-switch               ;Pete specific
-  :commands (shell-switch shell-switch-other-window)
-  :init
-  (progn
-    (bind-key [(control c) (s)]  'shell-switch)
-    (bind-keys :prefix-map clt-c-4-keymap
-               :prefix "C-c 4"
-               ("s" . shell-switch-other-window))))
-
-(use-package lrl-mode                   ;Bloomberg
-  :mode ("\\.lrl\\'" . lrl-mode))
-
-(use-package csc-mode			;Bloomberg
-  :mode ("\\.csc2$" . csc-mode))
-
-;; Toggle truncation of long lines
-(use-package pw-trunc-lines
-  :commands pw/trunc-lines
-  :bind ("C-c $" . pw/trunc-lines)
-  :init
-  (progn
-    (add-hook 'prog-mode-hook 'pw/trunc-lines)
-    (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
-    (add-hook 'compilation-mode-hook 'pw/trunc-lines)
-    (add-hook 'shell-mode-hook 'pw/trunc-lines)))
-
-;;
-;; Some commands I find useful
-(use-package pw-misc
-  :bind (("C-c p" . pw/prev-frame)
-         ("C-c p" . pw/prev-frame)
-         ("C-c -" . pw/font-size-decrease)
-         ("C-c +" . pw/font-size-increase)
-         ("C-c \\" . pw/reindent)
-         ("C-c e" . pw/eval-region-or-defun)
-   ))
 
 ;;
 ;; Setup compilation buffers
@@ -374,20 +336,6 @@
             (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))))))
   
 ;;
-;; org-mode provides an outline, todo, diary, calendar like interface.
-(use-package org
-  :mode ("\\.org\\'" . org-mode)
-  :commands orgstruct-mode
-  :diminish orgstruct-mode
-  :bind (("C-c l" . org-store-link)
-         ("C-c a" . org-agenda)
-         ("C-c b" . org-iswitchb)
-         ("C-c r" . org-capture))
-  :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
-  :config
-  (use-package org-prefs))
-
-;;
 ;; A nice graphical diff Make sure that ediff ignores all whitespace
 ;; differences and highlights the individual differences
 (use-package ediff
@@ -408,25 +356,6 @@ If prefix arg, use it as the revision number"
          rev "" nil)))
     (bind-key [(control c) (=)] 'pw/ediff-current)))
 
-;; This is mostly for C++ but make it so whitespace that should not be there
-;; is highlighted.  This causes tabs, and whitespace at beginning
-;; and end of the buffer as well as at the end of the line to highlight
-(use-package whitespace
-  :bind ("C-c SPC" . whitespace-mode)
-  :init
-  (progn
-    (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
-    (setq whitespace-line-column nil)))
-
-;;
-;; Setup commands and menus to hide/show blocks of code
-(use-package hideshow
-  :commands hs-minor-mode
-  :init
-  (progn
-    (add-hook 'c++-mode-hook 'hs-minor-mode)
-    (add-hook 'c-mode-hook 'hs-minor-mode)))
-
 ;;
 ;; This makes a single file wrap around between two windows.
 ;; Try ^X-3 and then move to the top or bottom of the window
@@ -434,14 +363,6 @@ If prefix arg, use it as the revision number"
 ;; rid of the other windows and split.
 (use-package follow
   :bind ("<f7>" . follow-delete-other-windows-and-split))
-
-;;
-;; Make it so line numbers show up in left margin
-;; Used in C/C++ mode.
-(use-package linum
-  :commands linum-mode
-  :init (add-hook 'prog-mode-hook 'linum-mode)
-  :config (setq linum-format 'dynamic))
 
 ;; `rgrep' recursively greps for a pattern.  It uses a key to specify
 ;; filenames and ignores directories like CVS.  "cchh" is all C++
@@ -467,16 +388,53 @@ If prefix arg, use it as the revision number"
             ("code" . "*.c *.h *.cpp *.f")))))
 
 ;;
-;; Make long strings of digits alternate
-;; groups of 3 with bold.
+;; Setup commands and menus to hide/show blocks of code
+(use-package hideshow
+  :commands hs-minor-mode
+  :init
+  (progn
+    (add-hook 'c++-mode-hook 'hs-minor-mode)
+    (add-hook 'c-mode-hook 'hs-minor-mode)))
+
 ;;
-;; Download package if not installed!
-(use-package num3-mode
-  ;;:ensure t
-  :commands num3-mode
-  :diminish num3-mode
-  :init (add-hook 'prog-mode-hook 'num3-mode)
-  :config (make-face-bold 'num3-face-even))
+;; Make it so line numbers show up in left margin
+;; Used in C/C++ mode.
+(use-package linum
+  :commands linum-mode
+  :init (add-hook 'prog-mode-hook 'linum-mode)
+  :config (setq linum-format 'dynamic))
+
+;;
+;; org-mode provides an outline, todo, diary, calendar like interface.
+(use-package org
+  :mode ("\\.org\\'" . org-mode)
+  :commands orgstruct-mode
+  :diminish orgstruct-mode
+  :bind (("C-c l" . org-store-link)
+         ("C-c a" . org-agenda)
+         ("C-c b" . org-iswitchb)
+         ("C-c r" . org-capture))
+  :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
+  :config
+  (use-package org-prefs))
+
+;; This is mostly for C++ but make it so whitespace that should not be there
+;; is highlighted.  This causes tabs, and whitespace at beginning
+;; and end of the buffer as well as at the end of the line to highlight
+(use-package whitespace
+  :bind ("C-c SPC" . whitespace-mode)
+  :init
+  (progn
+    (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
+    (setq whitespace-line-column nil)))
+
+;;;
+;;;----------------------------------------------------------------------
+;;; Non-standard packages that defer loading until they are called (e.g. minimal
+;;; cost on startup)
+;;;----------------------------------------------------------------------
+;;;
+
 
 ;;
 ;; Freaky way to insert text
@@ -490,6 +448,81 @@ If prefix arg, use it as the revision number"
 ;; Download package if not installed!
 (use-package anyins
   :bind ("C-c i" . anyins-mode))
+
+;;
+;; Setup preferences for shell, compile and other comint based commands
+;;
+;; Pete specific
+(use-package comint-prefs
+  :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt)
+  :init
+  (progn
+    (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
+    (add-hook 'comint-mode-hook 'comint-for-pete)
+    (add-hook 'dbx-mode-hook 'dbx-for-pete))  )
+
+;;
+;; Bloomberg database schema
+(use-package csc-mode
+  :mode ("\\.csc2$" . csc-mode))
+
+;;
+;; Bloomberg database params
+(use-package lrl-mode
+  :mode ("\\.lrl\\'" . lrl-mode))
+
+;;
+;; Make long strings of digits alternate
+;; groups of 3 with bold.
+;;
+;; Download package if not installed!
+(use-package num3-mode
+  ;;:ensure t
+  :commands num3-mode
+  :diminish num3-mode
+  :init (add-hook 'prog-mode-hook 'num3-mode)
+  :config (make-face-bold 'num3-face-even))
+
+;;
+;; Some commands I find useful
+;;
+;; Pete specific
+(use-package pw-misc
+  :bind (("C-c p" . pw/prev-frame)
+         ("C-c p" . pw/prev-frame)
+         ("C-c -" . pw/font-size-decrease)
+         ("C-c +" . pw/font-size-increase)
+         ("C-c \\" . pw/reindent)
+         ("C-c e" . pw/eval-region-or-defun)
+   ))
+
+;;
+;; Toggle truncation of long lines
+;;
+;; Pete specific
+(use-package pw-trunc-lines
+  :commands pw/trunc-lines
+  :bind ("C-c $" . pw/trunc-lines)
+  :init
+  (progn
+    (add-hook 'prog-mode-hook 'pw/trunc-lines)
+    (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
+    (add-hook 'compilation-mode-hook 'pw/trunc-lines)
+    (add-hook 'shell-mode-hook 'pw/trunc-lines)))
+
+;;
+;; Pete's back to make switching to a shell buffer
+;; faster
+;;
+;; Pete specific
+(use-package shell-switch
+  :commands (shell-switch shell-switch-other-window)
+  :init
+  (progn
+    (bind-key [(control c) (s)]  'shell-switch)
+    (bind-keys :prefix-map clt-c-4-keymap
+               :prefix "C-c 4"
+               ("s" . shell-switch-other-window))))
 
 ;;;
 ;;;----------------------------------------------------------------------
