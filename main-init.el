@@ -40,9 +40,8 @@
 ;;
 ;; Using bind-key lets you run describe-personal-keybindings
 ;; which is a nice way of keep track of what you've changed.
-(bind-key [(control c) (G)] 'goto-line)
-(bind-key [(control c) (g)] 'grep)
-(bind-key [(control c) (o)] 'other-frame)
+(bind-key "C-c G" 'goto-line)
+(bind-key "C-c o" 'other-frame)
 
 ;;
 ;; Use the emacs packaging system to automatically install some packages
@@ -354,7 +353,7 @@ If prefix arg, use it as the revision number"
         (funcall
          (intern (format "ediff-%S-internal" ediff-version-control-package))
          rev "" nil)))
-    (bind-key [(control c) (=)] 'pw/ediff-current)))
+    (bind-key "C-c =" 'pw/ediff-current)))
 
 ;;
 ;; This makes a single file wrap around between two windows.
@@ -368,7 +367,8 @@ If prefix arg, use it as the revision number"
 ;; filenames and ignores directories like CVS.  "cchh" is all C++
 ;; files and headers.
 (use-package grep
-  :bind ("C-c f" . rgrep)
+  :bind (("C-c f" . rgrep)
+         ("C-c g" . grep))
   :init
   (progn
     (setq grep-files-aliases
@@ -519,7 +519,7 @@ If prefix arg, use it as the revision number"
   :commands (shell-switch shell-switch-other-window)
   :init
   (progn
-    (bind-key [(control c) (s)]  'shell-switch)
+    (bind-key "C-c s" 'shell-switch)
     (bind-keys :prefix-map clt-c-4-keymap
                :prefix "C-c 4"
                ("s" . shell-switch-other-window))))
@@ -639,5 +639,5 @@ If prefix arg, use it as the revision number"
 
 ;;
 ;; Ignore some other file extensions
-(setq completion-ignored-extensions (append completion-ignored-extensions '(".d", ".dd" ".tsk")))
+(setq completion-ignored-extensions (append completion-ignored-extensions '(".d" ".dd" ".tsk")))
 
