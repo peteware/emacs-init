@@ -54,8 +54,8 @@
             '(("no_proxy" . "^\\(localhost\\|10.*\\)")
               ("http" . "devproxy.bloomberg.com:82")
               ("https" . "devproxy.bloomberg.com:82"))))
-    (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+    (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
     (package-initialize)
     (use-package pw-pkg-install
@@ -250,7 +250,8 @@
   (progn
     (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
         (setenv "EDITOR" "emacsclient"))
-    (server-start t)))
+    (message "server-start")
+    (server-start)))
   
 ;;
 ;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
