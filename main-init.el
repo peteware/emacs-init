@@ -54,20 +54,33 @@
             '(("no_proxy" . "^\\(localhost\\|10.*\\)")
               ("http" . "devproxy.bloomberg.com:82")
               ("https" . "devproxy.bloomberg.com:82"))))
-    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
     (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
     (package-initialize)
     (use-package pw-pkg-install
       :init
       (pw/ensure-pkg-installed
-       'alect-themes 'anyins 'diminish 'num3-mode
+       'alect-themes 'anyins 'diminish 'magit 'num3-mode
        'scratch-ext 'sublime-themes 'zen-and-art-theme))))
 
 ;;;
 ;;;----------------------------------------------------------------------
-;;; This section is for packages that are always loaded.
-;;; The next section gives those that are loaded on demand
+;;; If a package is not available then ``use-package'' ignores it.
+;;;
+;;; This file is organized so that:
+;;;  1. Section for standard packages that are loaded immediately
+;;;  2. Section for non-standard packages that are loaded immediately
+;;;  3. Section for standard packages that are loaded on demand
+;;;  4. Section for non-standard packages that are loaded on demand
+;;;----------------------------------------------------------------------
+;;;
+
+
+
+;;;
+;;;----------------------------------------------------------------------
+;;; This section is for standard packages that are loaded immediately
 ;;;----------------------------------------------------------------------
 ;;;
 
@@ -472,8 +485,13 @@ If prefix arg, use it as the revision number"
   :mode ("\\.lrl\\'" . lrl-mode))
 
 ;;
-;; Make long strings of digits alternate
-;; groups of 3 with bold.
+;; Provide a way of interacting with a Git repository.
+;;
+;; Download package if not installed!
+(use-package magit
+  :bind ("C-c m" . magit-status))
+;;
+;; Make long strings of digits alternate groups of 3 with bold.
 ;;
 ;; Download package if not installed!
 (use-package num3-mode
