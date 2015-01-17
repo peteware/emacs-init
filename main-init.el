@@ -54,9 +54,9 @@
             '(("no_proxy" . "^\\(localhost\\|10.*\\)")
               ("http" . "devproxy.bloomberg.com:82")
               ("https" . "devproxy.bloomberg.com:82"))))
+    (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
     (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-    (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
     (package-initialize)
     (use-package pw-pkg-install
       :init
