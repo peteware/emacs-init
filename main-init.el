@@ -262,6 +262,12 @@
   (tool-bar-mode -1))
 
 ;;
+;; Turn the menubar off.
+(use-package menu-bar
+  :init
+  (menu-bar-mode -1))
+
+;;
 ;; Make it so buffers with the same name are are made unique by added
 ;; directory path and killing a buffer renames all of them.
 (use-package uniquify
