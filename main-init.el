@@ -34,6 +34,8 @@
 
 (provide 'main-init)
 
+;;;
+;;; If a package is not available then ``use-package'' ignores it.
 (require 'use-package)                  ;Download this!
 (use-package bind-key)                  ;Download this!
 
@@ -61,13 +63,11 @@
     (use-package pw-pkg-install
       :init
       (pw/ensure-pkg-installed
-       'alect-themes 'anyins 'diminish 'magit 'num3-mode
+       'alect-themes 'anyins 'diminish 'ido-vertical-mode 'magit 'num3-mode
        'scratch-ext 'sublime-themes 'zen-and-art-theme))))
 
 ;;;
 ;;;----------------------------------------------------------------------
-;;; If a package is not available then ``use-package'' ignores it.
-;;;
 ;;; This file is organized so that:
 ;;;  1. Section for standard packages that are loaded immediately
 ;;;  2. Section for non-standard packages that are loaded immediately
@@ -75,8 +75,6 @@
 ;;;  4. Section for non-standard packages that are loaded on demand
 ;;;----------------------------------------------------------------------
 ;;;
-
-
 
 ;;;
 ;;;----------------------------------------------------------------------
@@ -175,10 +173,10 @@
     (setq ido-rotate-file-list-default t)
     (setq ido-enter-matching-directory 'first)
     (setq ido-use-virtual-buffers 'auto)
-    (setq ido-separator "|")
-    (setq ido-ignore-files (append ido-ignore-files '("\\`00")))
+    ;(setq ido-separator "|")
+    (setq ido-ignore-files (append ido-ignore-files '("\\`00" "\\'*.tsk")))
     (setq ido-ignore-buffers
-          (list "\\` " ".*Completions.*"))
+          (list "\\` " ".*Completions.*" "\\*Buffer List\\*" "\\*Messages\\*"))
     (setq ido-work-directory-list-ignore-regexps
           (list "/bb/bin" "/bb/data" "/bb/data/tmp" "/bbsrc/apputil"))
     (ido-mode 1)))
@@ -211,6 +209,7 @@
   :init
   (progn
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
+    (setq mouse-wheel-progressive-speed nil)
     (mwheel-install)))
 
 ;;
@@ -278,7 +277,7 @@
 
 ;;;
 ;;;----------------------------------------------------------------------
-;;; This section are non-standard packages that are always loaded
+;;; This section are non-standard packages that are loaded immediately
 ;;;----------------------------------------------------------------------
 ;;;
 
@@ -301,6 +300,15 @@
 (use-package diminish
   :init
   (diminish 'abbrev-mode))
+
+;;
+;; Causes ido-mode to display completions vertically
+;; and ``Ctl n'' and ``Ctl p'' move down and up in list
+;;
+;; Download package if not installed!
+(use-package ido-vertical-mode
+  :init
+  (ido-vertical-mode 1))
 
 ;;
 ;; Setup lazy font locking
@@ -497,6 +505,7 @@ If prefix arg, use it as the revision number"
 ;; Download package if not installed!
 (use-package magit
   :bind ("C-c m" . magit-status))
+
 ;;
 ;; Make long strings of digits alternate groups of 3 with bold.
 ;;
@@ -536,7 +545,7 @@ If prefix arg, use it as the revision number"
     (add-hook 'shell-mode-hook 'pw/trunc-lines)))
 
 ;;
-;; Pete's back to make switching to a shell buffer
+;; Pete's hack to make switching to a shell buffer
 ;; faster
 ;;
 ;; Pete specific
@@ -637,15 +646,26 @@ If prefix arg, use it as the revision number"
 ;; I don't like actual tabs being inserted
 (setq-default indent-tabs-mode nil)
 
-
-;; Weird X11 stuff with the cut-and-paste.  The world uses what is
-;; called a clipboard for copy-and-paste.  X11 had a more flexible
-;; arrangement with a primary cut buffer that some X11 older clients
-;; still use.  I think these settings provide the best compromise.
 ;;
-;; This does not put killed text into the X11 primary cut buffer;
-;; instead you use the mouse or the shift selection.  You can use
-;; mouse-2 to paste from X11 clients that use the primary buffer.
+;; Weird X11 stuff with the cut-and-paste.  I think these settings
+;; provide the best compromise.
+;;
+;; The world uses what is called a clipboard for copy-and-paste.  X11
+;; had a more flexible arrangement with a primary cut buffer that some
+;; X11 older clients still use.  Older clients typically means xterm
+;; and mrxvt.
+;;
+;; In Exceed, you need to set the config so that the "X Selection" tab
+;; has the "X Selection Associated with Edit Operations:" be
+;; "CLIPBOARD".
+;;
+;; This does not put killed text into the X11 primary cut buffer.  To
+;; copy from an xterm use middle mouse to paste the xterm selected
+;; text into emacs.  To copy to an xterm use left-mouse to select the
+;; text in emacs and then usual paste with middle-mouse to paste to
+;; the xterm.  All other cut&paste uses ``C-y'' to paste into emacs
+;; and either ``C-w'' to cut from emacs or ``M-w'' to copy from
+;; emacs (technically, any operations with kill ring).
 (setq selective-active-regions 'only)
 (setq x-select-enable-clipboard t)
 (setq x-select-enable-primary nil)
@@ -665,4 +685,3 @@ If prefix arg, use it as the revision number"
 ;;
 ;; Ignore some other file extensions
 (setq completion-ignored-extensions (append completion-ignored-extensions '(".d" ".dd" ".tsk")))
-
