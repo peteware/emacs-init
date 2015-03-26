@@ -1,5 +1,5 @@
 (provide 'org-prefs)
-(require 'org)
+;(require 'org)
 
 ;(if (not (fboundp 'assoc-default))
 ;    (defun assoc-default (key alist &optional test default)

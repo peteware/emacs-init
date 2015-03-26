@@ -37,8 +37,10 @@
 ;;;
 ;;; If a package is not available then ``use-package'' ignores it.
 ;;; You can also not use a package by add :disable to use-package
-(require 'use-package)                  ;Download this!
-(use-package bind-key)                  ;Download this!
+(eval-when-compile
+  (require 'use-package))               ;Download this!
+(setq use-package-verbose t)
+(require 'bind-key)                      ;Download this!
 
 ;;
 ;; Using bind-key lets you run describe-personal-keybindings
@@ -49,7 +51,7 @@
 ;;
 ;; Use the emacs packaging system to automatically install some packages
 (use-package package
-  :init
+  :config
   (progn
     ;; Try to detect being at Bloomberg
     (when (getenv "BBPATH")
@@ -60,12 +62,13 @@
     (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
     (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
     (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-    (package-initialize)
-    (use-package pw-pkg-install
-      :init
-      (pw/ensure-pkg-installed
-       'alect-themes 'anyins 'diminish 'ido-vertical-mode 'magit 'num3-mode
-       'scratch-ext 'sublime-themes 'zen-and-art-theme))))
+    (package-initialize)))
+
+;    (use-package pw-pkg-install
+;      :config
+;      (pw/ensure-pkg-installed
+;       'alect-themes 'anyins 'diminish 'ido-vertical-mode 'magit 'num3-mode
+;       'scratch-ext 'sublime-themes 'zen-and-art-theme))))
 
 ;;;
 ;;;----------------------------------------------------------------------
@@ -87,7 +90,7 @@
 ;; Cause the buffer to be automatically update when the
 ;; file changes.
 (use-package autorevert
-  :init
+  :config
   (setq auto-revert-check-vc-info t)
   (global-auto-revert-mode))
 
@@ -95,7 +98,7 @@
 ;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
 ;; This makes them save automatically
 (use-package bookmark
-  :init
+  :config
   (setq bookmark-save-flag 1))
 
 ;;
@@ -105,13 +108,13 @@
 ;; DISABLED
 (use-package cua-base
   :disabled t
-  :init
+  :config
   (cua-mode 1))
 
 ;;
 ;; I can't handle the active region getting deleted
 (use-package delsel
-  :init
+  :config
   (delete-selection-mode -1))
 
 ;;
@@ -120,7 +123,7 @@
 ;; be written more often as I found myself leaving emacs running
 ;; until it is killed.
 (use-package desktop
-  :init
+  :config
   (progn
     (setq desktop-save t)
     (setq desktop-restore-frames nil)
@@ -146,7 +149,7 @@
 ;; them executable.  It's considered a shell script if
 ;; it starts with #!
 (use-package executable
-  :init
+  :config
   (add-hook 'after-save-hook
             'executable-make-buffer-file-executable-if-script-p))
 
@@ -155,7 +158,7 @@
 ;; that `hl-line-face' is an appropriate, subtle color.  The sticky
 ;; flag keeps it highlighted in all windows
 (use-package hl-line
-  :init
+  :config
   (progn
     (setq hl-line-sticky-flag t)
     (setq global-hl-line-sticky-flag t)
@@ -172,7 +175,7 @@
 ;;
 ;; Use a fancy auto-complete for buffers and files
 (use-package ido
-  :init
+  :config
   (progn
     (setq ido-default-buffer-method 'selected-window)
     (setq ido-default-file-method 'selected-window)
@@ -199,7 +202,7 @@
 ;; DISABLED (use ido instead)
 (use-package iswitchb
   :disabled t
-  :init
+  :config
   (progn
     (setq iswitchb-default-method 'samewindow
           iswitchb-max-to-show 5
@@ -210,13 +213,13 @@
 ;;
 ;; Make visiting a *.gz automatically uncompress file
 (use-package jka-cmpr-hook
-  :init
+  :config
   (auto-compression-mode 1))
 
 ;;
 ;; Make sure the mouse wheel scrolls
 (use-package mwheel
-  :init
+  :config
   (progn
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
     (setq mouse-wheel-progressive-speed nil)
@@ -225,13 +228,13 @@
 ;;
 ;; Highlight matching paren
 (use-package paren
-  :init
+  :config
   (show-paren-mode 1))
 
 ;;
 ;; Save emacs's internal command history.
 (use-package savehist
-  :init
+  :config
   (progn
     (setq savehist-additional-variables
           '(compile-command
@@ -246,7 +249,7 @@
 ;; restores when you vist a file, goes to that location.  I also save
 ;; the file every couple hours because I don't always quit emacs
 (use-package saveplace
-  :init
+  :config
   (progn
     (setq-default save-place t)
     (setq save-place-limit nil)
@@ -255,7 +258,7 @@
 ;;
 ;; Make it so $EDITOR can popup in this emacs
 (use-package server
-  :init
+  :config
   (progn
     (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
         (setenv "EDITOR" "emacsclient"))
@@ -267,7 +270,7 @@
 ;; Emacs.toolBar:            0
 ;; which keeps it from displaying on startup
 (use-package tool-bar
-  :init
+  :config
   (tool-bar-mode -1))
 
 ;;
@@ -275,14 +278,14 @@
 ;; I like the menu-bar!  Disabled this
 (use-package menu-bar
   :disabled t
-  :init
+  :config
   (menu-bar-mode -1))
 
 ;;
 ;; Make it so buffers with the same name are are made unique by added
 ;; directory path and killing a buffer renames all of them.
 (use-package uniquify
-  :init
+  :config
   (progn
     (setq uniquify-buffer-name-style 'post-forward)
     (setq uniquify-after-kill-buffer-p t)))
@@ -296,7 +299,7 @@
 ;;
 ;; Bloomberg C++ coding style
 (use-package bb-style
-  :init
+  :config
   (progn
     ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
     ;; c-mode
@@ -310,7 +313,7 @@
 ;;
 ;; Download package if not installed!
 (use-package diminish
-  :init
+  :config
   (diminish 'abbrev-mode))
 
 ;;
@@ -319,7 +322,8 @@
 ;;
 ;; Download package if not installed!
 (use-package ido-vertical-mode
-  :init
+  :ensure t
+  :config
   (ido-vertical-mode 1))
 
 ;;
@@ -330,7 +334,8 @@
 ;; Make *scratch* buffers get saved
 ;;
 (use-package scratch-ext
-  :init
+  :ensure t
+  :config
   (save-excursion
     (setq scratch-ext-log-directory "~/.emacs.d/scratch")
     (if (not (file-exists-p scratch-ext-log-directory))
@@ -344,8 +349,8 @@
 ;;
 ;; Download package if not installed!
 (use-package sublime-themes
-  ;;:ensure t
-  :init
+  :ensure t
+  :config
   (load-theme 'wilson t nil))
 
 ;;;
@@ -363,10 +368,10 @@
   (progn
     (setq compilation-scroll-output 'first-error)
     (use-package pw-misc
-      :init 
+      :config
       (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
     (use-package ansi-color
-      :init
+      :config
       (progn
         (defun pw/colorize-compilation-buffer ()
           (let ((inhibit-read-only t))
@@ -379,11 +384,12 @@
 ;; differences and highlights the individual differences
 (use-package ediff
   :commands ediff-load-version-control
-  :init
+  :config
   (progn
     (setq ediff-diff-options "-w")
-    (setq-default ediff-auto-refine 'on)
-
+    (setq-default ediff-auto-refine 'on))
+  :init
+  (progn
     (defun pw/ediff-current (arg)
       "Run ediff-vc-internal on the current file against it's latest revision.
 If prefix arg, use it as the revision number"
@@ -409,7 +415,7 @@ If prefix arg, use it as the revision number"
 (use-package grep
   :bind (("C-c f" . rgrep)
          ("C-c g" . grep))
-  :init
+  :config
   (progn
     (setq grep-files-aliases
           '(("all" . "* .*")
@@ -463,7 +469,7 @@ If prefix arg, use it as the revision number"
 ;; and end of the buffer as well as at the end of the line to highlight
 (use-package whitespace
   :bind ("C-c SPC" . whitespace-mode)
-  :init
+  :config
   (progn
     (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
     (setq whitespace-line-column nil)))
@@ -487,6 +493,7 @@ If prefix arg, use it as the revision number"
 ;;
 ;; Download package if not installed!
 (use-package anyins
+  :ensure t
   :bind ("C-c i" . anyins-mode))
 
 ;;
@@ -516,6 +523,7 @@ If prefix arg, use it as the revision number"
 ;;
 ;; Download package if not installed!
 (use-package magit
+  :ensure t
   :bind ("C-c m" . magit-status))
 
 ;;
@@ -523,7 +531,7 @@ If prefix arg, use it as the revision number"
 ;;
 ;; Download package if not installed!
 (use-package num3-mode
-  ;;:ensure t
+  :ensure t
   :commands num3-mode
   :diminish num3-mode
   :init (add-hook 'prog-mode-hook 'num3-mode)
