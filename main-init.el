@@ -36,6 +36,7 @@
 
 ;;;
 ;;; If a package is not available then ``use-package'' ignores it.
+;;; You can also not use a package by add :disable to use-package
 (require 'use-package)                  ;Download this!
 (use-package bind-key)                  ;Download this!
 
@@ -82,6 +83,15 @@
 ;;;----------------------------------------------------------------------
 ;;;
 
+;;
+;; Cause the buffer to be automatically update when the
+;; file changes.
+(use-package autorevert
+  :init
+  (setq auto-revert-check-vc-info t)
+  (global-auto-revert-mode))
+
+;;
 ;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
 ;; This makes them save automatically
 (use-package bookmark
@@ -261,8 +271,10 @@
   (tool-bar-mode -1))
 
 ;;
-;; Turn the menubar off.
+;; Turn the menubar off.  Turns out
+;; I like the menu-bar!  Disabled this
 (use-package menu-bar
+  :disabled t
   :init
   (menu-bar-mode -1))
 
@@ -426,7 +438,7 @@ If prefix arg, use it as the revision number"
 
 ;;
 ;; Make it so line numbers show up in left margin
-;; Used in C/C++ mode.
+;; Used in C/C++ mode. (replaced with nlinum
 (use-package linum
   :commands linum-mode
   :init (add-hook 'prog-mode-hook 'linum-mode)
@@ -580,13 +592,15 @@ If prefix arg, use it as the revision number"
 ;; 
 ;; Turn on displaying the date and time in the mode line.
 ;; Enable displaying the line and column numbers in the mode line
-;; But don't do that if the buffer is >25k
+;; But don't do that if the buffer is >250k
+;; Do not blink the cursor
 (setq display-time-day-and-date t)
-(setq line-number-display-limit 25000)
+(setq line-number-display-limit 250000)
 (display-time-mode)
 (line-number-mode 1)
 (column-number-mode 1)
 (size-indication-mode 1)
+(blink-cursor-mode -1)
 
 ;; If at beginning of line, the Ctl-K kills including the newline
 ;; (I'm hardwired to type Ctl-K twice)
@@ -623,8 +637,8 @@ If prefix arg, use it as the revision number"
 ;;
 ;; Cause the gutter to display little arrows and
 ;; boxes if there is more to a file
-(setq indicate-buffer-boundaries '(left))
-(setq indicate-empty-lines t)
+(setq-default indicate-buffer-boundaries 'left)
+(setq-default indicate-empty-lines t)
 
 ;;
 ;; Even though I did something with the mouse do not
