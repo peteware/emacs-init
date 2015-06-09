@@ -610,16 +610,19 @@ If prefix arg, use it as the revision number"
 (size-indication-mode 1)
 (blink-cursor-mode -1)
 
+;;
 ;; If at beginning of line, the Ctl-K kills including the newline
 ;; (I'm hardwired to type Ctl-K twice)
 ;(setq kill-whole-line t)
 
+;;
 ;; Latest Emacs can wrap lines at word boundaries and will move the cursor
 ;; so it stays in the same column on screen.  I'm too used to the old style.
 (setq-default word-wrap nil)
 (setq line-move-visual nil)
 (setq visual-line-mode nil)
 
+;;
 ;; Make it so moving up or down does it one line at a time.
 ;; `scroll-step' 0 works better with Emacs which now supports
 ;; `scroll-conservatively'.
@@ -665,6 +668,7 @@ If prefix arg, use it as the revision number"
 ;; it was from figuring out the version control
 (setq vc-handled-backends '(Git SVN))
 
+;;
 ;; I don't like actual tabs being inserted
 (setq-default indent-tabs-mode nil)
 
@@ -679,7 +683,10 @@ If prefix arg, use it as the revision number"
 ;;
 ;; In Exceed, you need to set the config so that the "X Selection" tab
 ;; has the "X Selection Associated with Edit Operations:" be
-;; "CLIPBOARD".
+;; "CLIPBOARD".  Then set these values in your .emacs:
+;; (setq x-select-enable-clipboard t)
+;; (setq x-select-enable-primary nil)
+;;
 ;;
 ;; This does not put killed text into the X11 primary cut buffer.  To
 ;; copy from an xterm use middle mouse to paste the xterm selected
@@ -688,10 +695,14 @@ If prefix arg, use it as the revision number"
 ;; the xterm.  All other cut&paste uses ``C-y'' to paste into emacs
 ;; and either ``C-w'' to cut from emacs or ``M-w'' to copy from
 ;; emacs (technically, any operations with kill ring).
-(setq selective-active-regions 'only)
-(setq x-select-enable-clipboard t)
-(setq x-select-enable-primary nil)
+;;
+;; Alternatively, in Exceed, set the "X Selection Associated with
+;; Edit Operations:" to be "PRIMARY" and use these settings.  This lets
+;; older xterm/mrxvt co-exist:
+(setq x-select-enable-clipboard nil)
+(setq x-select-enable-primary t)
 
+;;
 ;; Do not beep if I kill text in a read-only buffer
 (setq kill-read-only-ok t)
 
