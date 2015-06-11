@@ -36,7 +36,7 @@
 
 ;;;
 ;;; If a package is not available then ``use-package'' ignores it.
-;;; You can also not use a package by add :disable to use-package
+;;; You can also not use a package by add :disabled to use-package
 (eval-when-compile
   (require 'use-package))               ;Download this!
 (setq use-package-verbose t)
@@ -211,6 +211,12 @@
     (iswitchb-mode 1)))
 
 ;;
+;; Setup lazy font locking
+(use-package jit-lock
+  :config
+  (jit-lock-mode t))
+
+;;
 ;; Make visiting a *.gz automatically uncompress file
 (use-package jka-cmpr-hook
   :config
@@ -325,10 +331,6 @@
   :ensure t
   :config
   (ido-vertical-mode 1))
-
-;;
-;; Setup lazy font locking
-(use-package pw-font-lock)
 
 ;;
 ;; Make *scratch* buffers get saved
@@ -683,24 +685,30 @@ If prefix arg, use it as the revision number"
 ;;
 ;; In Exceed, you need to set the config so that the "X Selection" tab
 ;; has the "X Selection Associated with Edit Operations:" be
-;; "CLIPBOARD".  Then set these values in your .emacs:
-;; (setq x-select-enable-clipboard t)
-;; (setq x-select-enable-primary nil)
+;; "CLIPBOARD".
 ;;
+;; The following puts killed text into the clipboard which makes it
+;; avaiable for all Windows clients given the above Exceed setting.
+(setq x-select-enable-clipboard t)
 ;;
-;; This does not put killed text into the X11 primary cut buffer.  To
-;; copy from an xterm use middle mouse to paste the xterm selected
-;; text into emacs.  To copy to an xterm use left-mouse to select the
-;; text in emacs and then usual paste with middle-mouse to paste to
-;; the xterm.  All other cut&paste uses ``C-y'' to paste into emacs
-;; and either ``C-w'' to cut from emacs or ``M-w'' to copy from
-;; emacs (technically, any operations with kill ring).
+;; The following puts killed text into the X11 primary cut buffer.
+;; Text copied in an xterm can either be pasted into emacs with a
+;; middle-mouse or the usual yank operations like ``C-y''.  You cannot
+;; paste such text into other Window's applications without going through
+;; emacs.  Usualy middle mouse button in an xterm pastes the text
+;; from emacs.
+(setq x-select-enable-primary t)
+
 ;;
 ;; Alternatively, in Exceed, set the "X Selection Associated with
 ;; Edit Operations:" to be "PRIMARY" and use these settings.  This lets
-;; older xterm/mrxvt co-exist:
-(setq x-select-enable-clipboard nil)
-(setq x-select-enable-primary t)
+;; older xterm/mrxvt co-exist with Windows applications.
+;;
+;; To copy to an xterm use left-mouse to select the text in emacs and
+;; then usual paste with middle-mouse to paste to the xterm.
+;;
+;; (setq x-select-enable-clipboard nil)
+;; (setq x-select-enable-primary t)
 
 ;;
 ;; Do not beep if I kill text in a read-only buffer
