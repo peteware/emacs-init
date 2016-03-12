@@ -16,16 +16,16 @@
 ;;; !     $ xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-m*'
 ;;; !     $ xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-c*'
 ;;; ! The "m" means monospace; "c" for character cell.
-;;; ! 
+;;; !
 ;;; ! You want this to be "loose" enough to handle bold and oblique.
 ;;; ! The "140" is point size time 10 (e.g. 14 points); "100" is
 ;;; !Emacs.font: -adobe-courier-*-*-normal--*-170-100-*-m-*-iso8859-1
-;;; 
+;;;
 ;;; ! Or if in linux with real fonts
 ;;; ! fc-list :spacing=mono
 ;;; ! fc-list :space=cell
 ;;; Emacs.font: Bitstream Vera Sans Mono-16
-;;; 
+;;;
 ;;; I switch between Emacs, XEmacs, AquaMacs (Mac OS X) and various
 ;;; versions of these.  They don't always have the same functionality.
 ;;; (e.g. (require) takes different args) If you are a normal person,
@@ -36,9 +36,12 @@
 
 ;;;
 ;;; If a package is not available then ``use-package'' ignores it.
-;;; You can also not use a package by add :disabled to use-package
+;;; You can also not use a package by adding :disabled t to use-package
+
 (eval-when-compile
   (require 'use-package))               ;Download this!
+(require 'use-package)
+
 (setq use-package-verbose t)
 (require 'bind-key)                      ;Download this!
 
@@ -54,14 +57,14 @@
   :config
   (progn
     ;; Try to detect being at Bloomberg
-    (when (getenv "BBPATH")
-      (setq url-proxy-services
-            '(("no_proxy" . "^\\(localhost\\|10.*\\)")
-              ("http" . "devproxy.bloomberg.com:82")
-              ("https" . "devproxy.bloomberg.com:82"))))
-    (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-    (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-    (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+    ;(when (getenv "BBPATH")
+    ;  (setq url-proxy-services
+    ;        '(("no_proxy" . "^\\(localhost\\|10.*\\)")
+    ;          ("http" . "devproxy.bloomberg.com:82")
+    ;          ("https" . "devproxy.bloomberg.com:82"))))
+    ;(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+    (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+    ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
     (package-initialize)))
 
 ;    (use-package pw-pkg-install
@@ -89,7 +92,9 @@
 ;;
 ;; Cause the buffer to be automatically update when the
 ;; file changes.
+;; TEMP DISABLE
 (use-package autorevert
+  :disabled t
   :config
   (setq auto-revert-check-vc-info t)
   (global-auto-revert-mode))
@@ -97,7 +102,9 @@
 ;;
 ;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
 ;; This makes them save automatically
+;; TEMP DISABLE
 (use-package bookmark
+  :disabled t
   :config
   (setq bookmark-save-flag 1))
 
@@ -119,10 +126,12 @@
 
 ;;
 ;; This causes the set of files being visited to be restored
-;; on startup.  The hook below causes the save file to 
+;; on startup.  The hook below causes the save file to
 ;; be written more often as I found myself leaving emacs running
 ;; until it is killed.
+;; TEMP DISABLE
 (use-package desktop
+  :disabled t
   :config
   (progn
     (setq desktop-save t)
@@ -157,6 +166,8 @@
 ;; `global-hl-line-mode' highlights the current line.  You should make sure
 ;; that `hl-line-face' is an appropriate, subtle color.  The sticky
 ;; flag keeps it highlighted in all windows
+;;
+;; TEMP DISABLE
 (use-package hl-line
   :config
   (progn
@@ -185,7 +196,8 @@
     (setq ido-max-directory-size 100000)
     (setq ido-rotate-file-list-default t)
     (setq ido-enter-matching-directory 'first)
-    (setq ido-use-virtual-buffers 'auto)
+    (setq ido-use-virtual-buffers nil)
+    ;(setq ido-use-virtual-buffers 'auto)
     ;(setq ido-separator "|")
     (setq ido-ignore-files (append ido-ignore-files '("\\`00" "\\'*.tsk")))
     (setq ido-ignore-buffers
@@ -197,7 +209,7 @@
 ;;
 ;; `iswitchb-mode' provides a nice completion for switching between
 ;; buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
-;; adds recent files to the match 
+;; adds recent files to the match
 ;;
 ;; DISABLED (use ido instead)
 (use-package iswitchb
@@ -212,6 +224,7 @@
 
 ;;
 ;; Setup lazy font locking
+;; TEMP DISABLE
 (use-package jit-lock
   :config
   (jit-lock-mode t))
@@ -233,13 +246,17 @@
 
 ;;
 ;; Highlight matching paren
+;; TEMP DISABLE
 (use-package paren
+  :disabled t
   :config
   (show-paren-mode 1))
 
 ;;
 ;; Save emacs's internal command history.
+;; TEMP DISABLE
 (use-package savehist
+  :disabled t
   :config
   (progn
     (setq savehist-additional-variables
@@ -254,13 +271,15 @@
 ;; This records the location of every file you visit and
 ;; restores when you vist a file, goes to that location.  I also save
 ;; the file every couple hours because I don't always quit emacs
+;; TEMP DISABLE
 (use-package saveplace
+  :disabled t
   :config
   (progn
     (setq-default save-place t)
     (setq save-place-limit nil)
     (run-at-time 3600  3600 'save-place-alist-to-file)))
-	 
+
 ;;
 ;; Make it so $EDITOR can popup in this emacs
 (use-package server
@@ -270,7 +289,7 @@
         (setenv "EDITOR" "emacsclient"))
     (message "server-start")
     (server-start)))
-  
+
 ;;
 ;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
 ;; Emacs.toolBar:            0
@@ -341,7 +360,7 @@
   (save-excursion
     (setq scratch-ext-log-directory "~/.emacs.d/scratch")
     (if (not (file-exists-p scratch-ext-log-directory))
-	(mkdir scratch-ext-log-directory t))
+        (mkdir scratch-ext-log-directory t))
     (scratch-ext-create-scratch)
     (scratch-ext-restore-last-scratch)))
 
@@ -380,7 +399,7 @@
             (ansi-color-apply-on-region compilation-filter-start (point-max))))
         (if (and (boundp 'compilation-fiter-hook) (fboundp 'ansi-color-apply-on-region))
             (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))))))
-  
+
 ;;
 ;; A nice graphical diff Make sure that ediff ignores all whitespace
 ;; differences and highlights the individual differences
@@ -414,9 +433,9 @@ If prefix arg, use it as the revision number"
 ;; `rgrep' recursively greps for a pattern.  It uses a key to specify
 ;; filenames and ignores directories like CVS.  "cchh" is all C++
 ;; files and headers.
+;;
 (use-package grep
-  :bind (("C-c f" . rgrep)
-         ("C-c g" . grep))
+  :bind (("C-c g" . grep))
   :config
   (progn
     (setq grep-files-aliases
@@ -429,11 +448,11 @@ If prefix arg, use it as the revision number"
             ("hh" . "*.hxx *.hpp *.[Hh] *.HH *.h++")
             ("h" . "*.h")
             ("l" . "[Cc]hange[Ll]og*")
-            ("m" . "[Mm]akefile*")
+            ("m" . "[Mm]akefile* *.mk")
             ("tex" . "*.tex")
             ("texi" . "*.texi")
             ("asm" . "*.[sS]")
-            ("code" . "*.c *.h *.cpp *.f")))))
+            ("code" . "*.c *.C *.h *.cpp *.cc *.f *.py")))))
 
 ;;
 ;; Setup commands and menus to hide/show blocks of code
@@ -447,6 +466,8 @@ If prefix arg, use it as the revision number"
 ;;
 ;; Make it so line numbers show up in left margin
 ;; Used in C/C++ mode. (replaced with nlinum
+;;
+;; TEMP DISABLE
 (use-package linum
   :commands linum-mode
   :init (add-hook 'prog-mode-hook 'linum-mode)
@@ -466,9 +487,24 @@ If prefix arg, use it as the revision number"
   :config
   (use-package org-prefs))
 
-;; This is mostly for C++ but make it so whitespace that should not be there
-;; is highlighted.  This causes tabs, and whitespace at beginning
-;; and end of the buffer as well as at the end of the line to highlight
+(use-package smart-mode-line
+  :disabled t
+  :config
+  (progn
+    (setq sml/theme 'dark)
+    (sml/setup)))
+
+(use-package powerline
+  :config
+  (progn
+    (powerline-center-theme)))
+;(use-package smart-mode-line-powerline-theme)
+
+;; Make "bad" whitespace be visible.  This causes tabs, and whitespace
+;; at beginning and end of the buffer as well as at the end of the
+;; line to highlight
+;;
+;; Use ``M-x whitespace-cleanup'' to fix all problems
 (use-package whitespace
   :bind ("C-c SPC" . whitespace-mode)
   :config
@@ -516,6 +552,15 @@ If prefix arg, use it as the revision number"
   :mode ("\\.csc2$" . csc-mode))
 
 ;;
+;; Make a vertical bar show at fill-column
+;;
+;; TEMP DISABLE
+(use-package fill-column-indicator
+  :disabled t
+  :commands (fci-mode)
+  :init (add-hook 'prog-mode-hook 'fci-mode))
+  
+;;
 ;; Bloomberg database params
 (use-package lrl-mode
   :mode ("\\.lrl\\'" . lrl-mode))
@@ -524,7 +569,9 @@ If prefix arg, use it as the revision number"
 ;; Provide a way of interacting with a Git repository.
 ;;
 ;; Download package if not installed!
+;; TEMP DISABLE
 (use-package magit
+  :disabled t
   :ensure t
   :bind ("C-c m" . magit-status))
 
@@ -532,13 +579,21 @@ If prefix arg, use it as the revision number"
 ;; Make long strings of digits alternate groups of 3 with bold.
 ;;
 ;; Download package if not installed!
+;;
+;; Disabled: I got tired of this highlight
 (use-package num3-mode
+  :disabled t
   :ensure t
   :commands num3-mode
   :diminish num3-mode
   :init (add-hook 'prog-mode-hook 'num3-mode)
   :config (make-face-bold 'num3-face-even))
 
+(use-package ag
+  :ensure t
+  :bind (("C-c f" . ag))
+  :config (setq ag-reuse-buffers t))
+  
 ;;
 ;; Some commands I find useful
 ;;
@@ -575,10 +630,10 @@ If prefix arg, use it as the revision number"
   :commands (shell-switch shell-switch-other-window)
   :init
   (progn
-    (bind-key "C-c s" 'shell-switch)
-    (bind-keys :prefix-map clt-c-4-keymap
-               :prefix "C-c 4"
-               ("s" . shell-switch-other-window))))
+    (bind-key* "C-c s" 'shell-switch)
+    (bind-keys* :prefix-map clt-c-4-keymap
+                :prefix "C-c 4"
+                ("s" . shell-switch-other-window))))
 
 ;;;
 ;;;----------------------------------------------------------------------
@@ -599,7 +654,7 @@ If prefix arg, use it as the revision number"
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-echo-area-message "pware")
 
-;; 
+;;
 ;; Turn on displaying the date and time in the mode line.
 ;; Enable displaying the line and column numbers in the mode line
 ;; But don't do that if the buffer is >250k
@@ -658,9 +713,9 @@ If prefix arg, use it as the revision number"
 ;; popup a dialog box but prompt from the mode line
 (setq use-dialog-box nil)
 
-;; 
+;;
 ;; This _sounds_ like something that should be nil but
-;; the reality is that when user input stops redisplay 
+;; the reality is that when user input stops redisplay
 ;; a bunch of screen optimizations are lost.  The
 ;; default is prior to emacs-24 is nil
 (setq redisplay-dont-pause t)

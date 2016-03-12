@@ -16,9 +16,12 @@ Setup M-p finds matching input."
   (setq column-number-mode nil)
   (setq comint-scroll-show-maximum-output nil)
   (setq comint-input-ignoredups t)
-  (local-set-key "\M-p" 'comint-previous-matching-input-from-input))
+  (local-set-key "\M-p" 'comint-previous-matching-input-from-input)
+  )
 
 (defun pw/comint-reset-display (use-sh-syntax)
+  "Figure out what emacs uses for X11 DISPLAY and send it in a form suitable to cut&paste.
+A prefix arguments is sh syntax, default is csh syntax"
   (interactive "P")
   (let* ((proc (get-buffer-process (current-buffer)))
 	 (pmark (process-mark proc))
