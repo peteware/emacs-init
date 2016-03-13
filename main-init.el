@@ -362,6 +362,7 @@
     (if (not (file-exists-p scratch-ext-log-directory))
         (mkdir scratch-ext-log-directory t))
     (scratch-ext-create-scratch)
+    (set-buffer "*scratch*")
     (scratch-ext-restore-last-scratch)))
 
 ;;
