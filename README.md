@@ -1,7 +1,10 @@
+# Emacs setup
 My customizations for emacs are contained principally in the file
 main-init.el but there are a number of additional customizations that
 you can load directly (usually each file has documentation about
 customizing it)
+
+## Files
 
 - emacs-init.el - My .emacs file
 - main-init.el - My main customization file
@@ -13,34 +16,35 @@ customizing it)
 - org-wiki.el - A partial attempt to export org files with wiki markup
 - shell-switch.el - Binds ``C-c s'' to switch between shell-mode buffers.
 
-Setup:
+## Setup
 
-1. Choose where you want to have your emacs setup::
-
+1. Choose where you want to have your emacs setup:
+   ```sh
      $ mkdir ~/usr
      $ cd ~/usr
-
-2. Clone my emacs config files::
-
+   ```
+2. Clone this repository emacs config files::
+   ```sh
      $ git clone git@bbgithub.dev.bloomberg.com:pware/emacs-init emacs
-
+   ```
 3. Choose which branch a release-M.N is most stable,
    "master" is pretty stable and "pete" is
-   what I'm actually using::
-
+   what I'm actually using:
+   ```sh
      $ cd emacs
      $ git branch
        master
        pete
      * release-1.0
      $ git branch release-1.0
-
+   ```
 4. I setup my .emacs like this.  You can do the same except
-   it has my customizations so it may not be great for you::
-
+   it has my customizations so it may not be great for you:
+   ```sh
      $ ln -s ~/usr/emacs/emacs-init.el ~/.emacs
-
+   ```
 5. Alterantively setup your .emacs with::
-
+   ```lisp
      (add-to-list 'load-path "~/usr/emacs")
      (require 'main-init)
+   ```
