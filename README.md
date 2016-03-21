@@ -19,17 +19,22 @@ customizing it)
 ## Setup
 
 1. Choose where you want to have your emacs setup:
+
    ```sh
      $ mkdir ~/usr
      $ cd ~/usr
    ```
-2. Clone this repository emacs config files::
-   ```sh
+
+1. Clone this repository emacs config files::
+ 
+  ```sh
      $ git clone git@bbgithub.dev.bloomberg.com:pware/emacs-init emacs
    ```
-3. Choose which branch a release-M.N is most stable,
+
+1. Choose which branch a release-M.N is most stable,
    "master" is pretty stable and "pete" is
    what I'm actually using:
+
    ```sh
      $ cd emacs
      $ git branch
@@ -38,12 +43,16 @@ customizing it)
      * release-1.0
      $ git branch release-1.0
    ```
-4. I setup my .emacs like this.  You can do the same except
+
+1. I setup my .emacs like this.  You can do the same except
    it has my customizations so it may not be great for you:
+
    ```sh
      $ ln -s ~/usr/emacs/emacs-init.el ~/.emacs
    ```
-5. Alterantively setup your .emacs with::
+
+1. Alterantively setup your .emacs with::
+
    ```lisp
      (add-to-list 'load-path "~/usr/emacs")
      (require 'main-init)
