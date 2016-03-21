@@ -26,11 +26,6 @@
 ;;; ! fc-list :space=cell
 ;;; Emacs.font: Bitstream Vera Sans Mono-16
 ;;;
-;;; I switch between Emacs, XEmacs, AquaMacs (Mac OS X) and various
-;;; versions of these.  They don't always have the same functionality.
-;;; (e.g. (require) takes different args) If you are a normal person,
-;;; you can probably dump most of these checks using fboundp and
-;;; boundp
 
 (provide 'main-init)
 
@@ -41,8 +36,6 @@
 (eval-when-compile
   (require 'use-package))               ;Download this!
 (require 'use-package)
-
-(setq use-package-verbose t)
 (require 'bind-key)                      ;Download this!
 
 ;;
@@ -102,9 +95,7 @@
 ;;
 ;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
 ;; This makes them save automatically
-;; TEMP DISABLE
 (use-package bookmark
-  :disabled t
   :config
   (setq bookmark-save-flag 1))
 
@@ -167,7 +158,6 @@
 ;; that `hl-line-face' is an appropriate, subtle color.  The sticky
 ;; flag keeps it highlighted in all windows
 ;;
-;; TEMP DISABLE
 (use-package hl-line
   :config
   (progn
@@ -224,7 +214,6 @@
 
 ;;
 ;; Setup lazy font locking
-;; TEMP DISABLE
 (use-package jit-lock
   :config
   (jit-lock-mode t))
@@ -246,17 +235,13 @@
 
 ;;
 ;; Highlight matching paren
-;; TEMP DISABLE
 (use-package paren
-  :disabled t
   :config
   (show-paren-mode 1))
 
 ;;
 ;; Save emacs's internal command history.
-;; TEMP DISABLE
 (use-package savehist
-  :disabled t
   :config
   (progn
     (setq savehist-additional-variables
@@ -467,8 +452,6 @@ If prefix arg, use it as the revision number"
 ;;
 ;; Make it so line numbers show up in left margin
 ;; Used in C/C++ mode. (replaced with nlinum
-;;
-;; TEMP DISABLE
 (use-package linum
   :commands linum-mode
   :init (add-hook 'prog-mode-hook 'linum-mode)
@@ -554,10 +537,7 @@ If prefix arg, use it as the revision number"
 
 ;;
 ;; Make a vertical bar show at fill-column
-;;
-;; TEMP DISABLE
 (use-package fill-column-indicator
-  :disabled t
   :commands (fci-mode)
   :init (add-hook 'prog-mode-hook 'fci-mode))
   
