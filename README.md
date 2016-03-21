@@ -53,7 +53,7 @@ customizing it)
 
 1. Alterantively setup your .emacs with::
 
-   ```lisp
+   ```elisp
      (add-to-list 'load-path "~/usr/emacs")
      (require 'main-init)
    ```
