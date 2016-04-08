@@ -117,12 +117,8 @@
 
 ;;
 ;; This causes the set of files being visited to be restored
-;; on startup.  The hook below causes the save file to
-;; be written more often as I found myself leaving emacs running
-;; until it is killed.
-;; TEMP DISABLE
+;; on startup.
 (use-package desktop
-  :disabled t
   :config
   (progn
     (setq desktop-save t)
@@ -131,17 +127,10 @@
     (setq desktop-restore-in-current-display t)
     (setq desktop-lazy-verbose nil)
     (setq desktop-lazy-idle-delay 20)
+    (setq desktop-auto-save-timeout 7200)
     (desktop-save-mode 1)
     (add-to-list 'desktop-modes-not-to-save 'Info-mode)
     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
-    (if (not (boundp 'desktop-auto-save-timeout))
-        (progn
-          (defun pw/desktop-save ()
-            (interactive)
-            (when desktop-save-mode
-            ;; Don't call desktop-save-in-desktop-dir, as it prints a message.
-              (desktop-save desktop-dirname t)))
-          (add-hook 'auto-save-hook 'pw/desktop-save)))
     ))
 
 ;;
@@ -186,7 +175,7 @@
     (setq ido-max-directory-size 100000)
     (setq ido-rotate-file-list-default t)
     (setq ido-enter-matching-directory 'first)
-    (setq ido-use-virtual-buffers nil)
+    (setq ido-use-virtual-buffers t)
     ;(setq ido-use-virtual-buffers 'auto)
     ;(setq ido-separator "|")
     (setq ido-ignore-files (append ido-ignore-files '("\\`00" "\\'*.tsk")))
@@ -240,6 +229,13 @@
   (show-paren-mode 1))
 
 ;;
+;; Save list of recently visited files
+(use-package recentf
+  :config
+  (progn
+    (setq recentf-max-saved-items 100)
+    (recentf-mode 1)))
+;;
 ;; Save emacs's internal command history.
 (use-package savehist
   :config
@@ -256,9 +252,7 @@
 ;; This records the location of every file you visit and
 ;; restores when you vist a file, goes to that location.  I also save
 ;; the file every couple hours because I don't always quit emacs
-;; TEMP DISABLE
 (use-package saveplace
-  :disabled t
   :config
   (progn
     (setq-default save-place t)
