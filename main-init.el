@@ -37,6 +37,7 @@
   (require 'use-package))               ;Download this!
 (require 'use-package)
 (require 'bind-key)                      ;Download this!
+(setq use-package-verbose t)
 
 ;;
 ;; Using bind-key lets you run describe-personal-keybindings
@@ -44,27 +45,13 @@
 (bind-key "C-c G" 'goto-line)
 (bind-key "C-c o" 'other-frame)
 
-;;
-;; Use the emacs packaging system to automatically install some packages
 (use-package package
+  ;;
+  ;; Use the emacs packaging system to automatically install some packages
   :config
   (progn
-    ;; Try to detect being at Bloomberg
-    ;(when (getenv "BBPATH")
-    ;  (setq url-proxy-services
-    ;        '(("no_proxy" . "^\\(localhost\\|10.*\\)")
-    ;          ("http" . "devproxy.bloomberg.com:82")
-    ;          ("https" . "devproxy.bloomberg.com:82"))))
-    ;(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-    ;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
     (package-initialize)))
-
-;    (use-package pw-pkg-install
-;      :config
-;      (pw/ensure-pkg-installed
-;       'alect-themes 'anyins 'diminish 'ido-vertical-mode 'magit 'num3-mode
-;       'scratch-ext 'sublime-themes 'zen-and-art-theme))))
 
 ;;;
 ;;;----------------------------------------------------------------------
@@ -82,43 +69,41 @@
 ;;;----------------------------------------------------------------------
 ;;;
 
-;;
-;; Cause the buffer to be automatically update when the
-;; file changes.
-;; TEMP DISABLE
 (use-package autorevert
+  ;; Cause the buffer to be automatically update when the
+  ;; file changes.
+  ;;
+  ;; DISABLED.  I found the emacs display would stop refreshing
+  ;;            after a number of files were loaded.
   :disabled t
   :config
   (setq auto-revert-check-vc-info t)
   (global-auto-revert-mode))
 
-;;
-;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
-;; This makes them save automatically
 (use-package bookmark
+  ;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
+  ;; This makes them save automatically
   :config
   (setq bookmark-save-flag 1))
 
-;;
-;; If you like windows style cut and paste then try this.  ^C & ^X only
-;; work when region is active, ^V and ^Z do paste and undo
-;;
-;; DISABLED
 (use-package cua-base
+  ;; If you like windows style cut and paste then try this.  ^C & ^X only
+  ;; work when region is active, ^V and ^Z do paste and undo
+  ;;
+  ;; DISABLED (I hate this)
   :disabled t
   :config
   (cua-mode 1))
 
-;;
-;; I can't handle the active region getting deleted
 (use-package delsel
+  ;; I can't handle the active region getting deleted
   :config
   (delete-selection-mode -1))
 
-;;
-;; This causes the set of files being visited to be restored
-;; on startup.
 (use-package desktop
+  ;;
+  ;; This causes the set of files being visited to be restored
+  ;; on startup.
   :config
   (progn
     (setq desktop-save t)
@@ -133,38 +118,46 @@
     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
     ))
 
-;;
-;; This makes saving shell scripts automatically make
-;; them executable.  It's considered a shell script if
-;; it starts with #!
 (use-package executable
+  ;;
+  ;; This makes saving shell scripts automatically make
+  ;; them executable.  It's considered a shell script if
+  ;; it starts with #!
   :config
   (add-hook 'after-save-hook
             'executable-make-buffer-file-executable-if-script-p))
 
-;;
-;; `global-hl-line-mode' highlights the current line.  You should make sure
-;; that `hl-line-face' is an appropriate, subtle color.  The sticky
-;; flag keeps it highlighted in all windows
-;;
+(use-package face-remap
+  ;;
+  ;; Change the font size in the current buffer (not the window)
+  :bind (("C-c -" . text-scale-decrease)
+         ("C-c +" . text-scale-increase)))
+
 (use-package hl-line
+  ;;
+  ;; `global-hl-line-mode' highlights the current line.  You should make sure
+  ;; that `hl-line-face' is an appropriate, subtle color.  The sticky
+  ;; flag keeps it highlighted in all windows
+  ;;
+  ;; DISABLED (trying out beacon-mode which briefly highlights line)
+  :disabled t
   :config
   (progn
     (setq hl-line-sticky-flag t)
     (setq global-hl-line-sticky-flag t)
     (global-hl-line-mode 1)))
 
-;;
-;; The new emacs way of doing various completions
-;;
-;; DISABLED (use ido instead)
 (use-package icomplete
+  ;;
+  ;; The new emacs way of doing various completions
+  ;;
+  ;; DISABLED (use ido instead)
   :disabled t
   (icomplete-mode 1))
 
-;;
-;; Use a fancy auto-complete for buffers and files
 (use-package ido
+  ;;
+  ;; Use a fancy auto-complete for buffers and files
   :config
   (progn
     (setq ido-default-buffer-method 'selected-window)
@@ -185,13 +178,13 @@
           (list "/bb/bin" "/bb/data" "/bb/data/tmp" "/bbsrc/apputil"))
     (ido-mode 1)))
 
-;;
-;; `iswitchb-mode' provides a nice completion for switching between
-;; buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
-;; adds recent files to the match
-;;
-;; DISABLED (use ido instead)
 (use-package iswitchb
+  ;;
+  ;; `iswitchb-mode' provides a nice completion for switching between
+  ;; buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
+  ;; adds recent files to the match
+  ;;
+  ;; DISABLED (use ido instead)
   :disabled t
   :config
   (progn
@@ -201,43 +194,44 @@
     (recentf-mode 1)
     (iswitchb-mode 1)))
 
-;;
-;; Setup lazy font locking
 (use-package jit-lock
+  ;;
+  ;; Setup lazy font locking
   :config
   (jit-lock-mode t))
 
-;;
-;; Make visiting a *.gz automatically uncompress file
 (use-package jka-cmpr-hook
+  ;;
+  ;; Make visiting a *.gz automatically uncompress file
   :config
   (auto-compression-mode 1))
 
-;;
-;; Make sure the mouse wheel scrolls
 (use-package mwheel
+  ;;
+  ;; Make sure the mouse wheel scrolls
   :config
   (progn
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
     (setq mouse-wheel-progressive-speed nil)
     (mwheel-install)))
 
-;;
-;; Highlight matching paren
 (use-package paren
+  ;;
+  ;; Highlight matching paren
   :config
   (show-paren-mode 1))
 
-;;
-;; Save list of recently visited files
 (use-package recentf
+  ;;
+  ;; Save list of recently visited files
   :config
   (progn
     (setq recentf-max-saved-items 100)
     (recentf-mode 1)))
-;;
-;; Save emacs's internal command history.
+
 (use-package savehist
+  ;;
+  ;; Save emacs's internal command history.
   :config
   (progn
     (setq savehist-additional-variables
@@ -248,20 +242,26 @@
             grep-files-history))
     (savehist-mode 1)))
 
-;;
-;; This records the location of every file you visit and
-;; restores when you vist a file, goes to that location.  I also save
-;; the file every couple hours because I don't always quit emacs
 (use-package saveplace
-  :config
+  ;;
+  ;; This records the location of every file you visit and
+  ;; restores when you vist a file, goes to that location.  I also save
+  ;; the file every couple hours because I don't always quit emacs 
+ :config
   (progn
     (setq-default save-place t)
     (setq save-place-limit nil)
     (run-at-time 3600  3600 'save-place-alist-to-file)))
 
-;;
-;; Make it so $EDITOR can popup in this emacs
+(use-package scroll-bar
+  ;;
+  ;; Turn off the scroll bars
+  :config
+  (scroll-bar-mode -1))
+
 (use-package server
+  ;;
+  ;; Make it so $EDITOR can popup in this emacs
   :config
   (progn
     (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
@@ -269,26 +269,27 @@
     (message "server-start")
     (server-start)))
 
-;;
-;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
-;; Emacs.toolBar:            0
-;; which keeps it from displaying on startup
 (use-package tool-bar
+  ;;
+  ;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
+  ;; Emacs.toolBar:            0
+  ;; which keeps it from displaying on startup
   :config
   (tool-bar-mode -1))
 
-;;
-;; Turn the menubar off.  Turns out
-;; I like the menu-bar!  Disabled this
 (use-package menu-bar
+  ;;
+  ;; Turn the menubar off.
+  ;;
+  ;; DISABLED (Turns out I like the menu-bar!)
   :disabled t
   :config
   (menu-bar-mode -1))
 
-;;
-;; Make it so buffers with the same name are are made unique by added
-;; directory path and killing a buffer renames all of them.
 (use-package uniquify
+  ;;
+  ;; Make it so buffers with the same name are are made unique by added
+  ;; directory path and killing a buffer renames all of them.
   :config
   (progn
     (setq uniquify-buffer-name-style 'post-forward)
@@ -300,9 +301,9 @@
 ;;;----------------------------------------------------------------------
 ;;;
 
-;;
-;; Bloomberg C++ coding style
 (use-package bb-style
+  ;;
+  ;; Bloomberg C++ coding style
   :config
   (progn
     ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
@@ -312,28 +313,32 @@
     (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
   ))
 
-;;
-;; Do not display these minor modes in mode-line
-;;
-;; Download package if not installed!
 (use-package diminish
+  ;;
+  ;; Do not display these minor modes in mode-line
   :config
   (diminish 'abbrev-mode))
 
-;;
-;; Causes ido-mode to display completions vertically
-;; and ``Ctl n'' and ``Ctl p'' move down and up in list
-;;
-;; Download package if not installed!
+(use-package fancy-narrow
+  ;;
+  ;; Causes narrow region to dim the
+  ;; rest of the buffer giving a much
+  ;; more natual look.
+  :diminish fancy-narrow-mode
+  :config
+  (fancy-narrow-mode 1))
+
 (use-package ido-vertical-mode
+  ;;
+  ;; Causes ido-mode to display completions vertically
+  ;; and ``Ctl n'' and ``Ctl p'' move down and up in list
   :ensure t
   :config
   (ido-vertical-mode 1))
 
-;;
-;; Make *scratch* buffers get saved
-;;
 (use-package scratch-ext
+  ;;
+  ;; Make *scratch* buffers get saved
   :ensure t
   :config
   (save-excursion
@@ -344,12 +349,10 @@
     (set-buffer "*scratch*")
     (scratch-ext-restore-last-scratch)))
 
-;;
-;; I like the wilson theme from the sublime-themes
-;; package.
-;;
-;; Download package if not installed!
 (use-package sublime-themes
+  ;;
+  ;; I like the wilson theme from the sublime-themes
+  ;; package.
   :ensure t
   :config
   (load-theme 'wilson t nil))
@@ -361,9 +364,9 @@
 ;;;----------------------------------------------------------------------
 ;;;
 
-;;
-;; Setup compilation buffers
 (use-package compile
+  ;;
+  ;; Setup compilation buffers
   :bind ("C-c c" . compile)
   :config
   (progn
@@ -380,10 +383,10 @@
         (if (and (boundp 'compilation-fiter-hook) (fboundp 'ansi-color-apply-on-region))
             (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))))))
 
-;;
-;; A nice graphical diff Make sure that ediff ignores all whitespace
-;; differences and highlights the individual differences
 (use-package ediff
+  ;;
+  ;; A nice graphical diff Make sure that ediff ignores all whitespace
+  ;; differences and highlights the individual differences
   :commands ediff-load-version-control
   :config
   (progn
@@ -402,19 +405,19 @@ If prefix arg, use it as the revision number"
          rev "" nil)))
     (bind-key "C-c =" 'pw/ediff-current)))
 
-;;
-;; This makes a single file wrap around between two windows.
-;; Try ^X-3 and then move to the top or bottom of the window
-;; and the other window scrolls.  I bound F7 to do get
-;; rid of the other windows and split.
 (use-package follow
+  ;;
+  ;; This makes a single file wrap around between two windows.
+  ;; Try ^X-3 and then move to the top or bottom of the window
+  ;; and the other window scrolls.  I bound F7 to do get
+  ;; rid of the other windows and split.
   :bind ("<f7>" . follow-delete-other-windows-and-split))
 
-;; `rgrep' recursively greps for a pattern.  It uses a key to specify
-;; filenames and ignores directories like CVS.  "cchh" is all C++
-;; files and headers.
-;;
 (use-package grep
+  ;; `rgrep' recursively greps for a pattern.  It uses a key to specify
+  ;; filenames and ignores directories like CVS.  "cchh" is all C++
+  ;; files and headers.
+  ;;
   :bind (("C-c g" . grep))
   :config
   (progn
@@ -434,26 +437,26 @@ If prefix arg, use it as the revision number"
             ("asm" . "*.[sS]")
             ("code" . "*.c *.C *.h *.cpp *.cc *.f *.py")))))
 
-;;
-;; Setup commands and menus to hide/show blocks of code
 (use-package hideshow
+  ;;
+  ;; Setup commands and menus to hide/show blocks of code
   :commands hs-minor-mode
   :init
   (progn
     (add-hook 'c++-mode-hook 'hs-minor-mode)
     (add-hook 'c-mode-hook 'hs-minor-mode)))
 
-;;
-;; Make it so line numbers show up in left margin
-;; Used in C/C++ mode. (replaced with nlinum
 (use-package linum
+  ;;
+  ;; Make it so line numbers show up in left margin
+  ;; Used in C/C++ mode. (replaced with nlinum
   :commands linum-mode
   :init (add-hook 'prog-mode-hook 'linum-mode)
   :config (setq linum-format 'dynamic))
 
-;;
-;; org-mode provides an outline, todo, diary, calendar like interface.
 (use-package org
+  ;;
+  ;; org-mode provides an outline, todo, diary, calendar like interface.
   :mode ("\\.org\\'" . org-mode)
   :commands orgstruct-mode
   :diminish orgstruct-mode
@@ -466,6 +469,10 @@ If prefix arg, use it as the revision number"
   (use-package org-prefs))
 
 (use-package smart-mode-line
+  ;;
+  ;; Smart mode line displays a more graphical modeline.
+  ;;
+  ;; DISABLED (Use powerline mode instead)
   :disabled t
   :config
   (progn
@@ -473,17 +480,18 @@ If prefix arg, use it as the revision number"
     (sml/setup)))
 
 (use-package powerline
+  ;;
+  ;; Make the modeline have lots of pretty graphics.
   :config
   (progn
     (powerline-center-theme)))
-;(use-package smart-mode-line-powerline-theme)
 
-;; Make "bad" whitespace be visible.  This causes tabs, and whitespace
-;; at beginning and end of the buffer as well as at the end of the
-;; line to highlight
-;;
-;; Use ``M-x whitespace-cleanup'' to fix all problems
 (use-package whitespace
+  ;; Make "bad" whitespace be visible.  This causes tabs, and whitespace
+  ;; at beginning and end of the buffer as well as at the end of the
+  ;; line to highlight
+  ;;
+  ;; Use ``M-x whitespace-cleanup'' to fix all problems
   :bind ("C-c SPC" . whitespace-mode)
   :config
   (progn
@@ -498,25 +506,32 @@ If prefix arg, use it as the revision number"
 ;;;
 
 
-;;
-;; Freaky way to insert text
-;; 1. Enter anyins-mode
-;; 2. Move around; mark spots you want to insert text with RET
-;; 3. To insert text
-;;    a. ``y'' inserts each line from kill ring at each marked spot, or
-;;    b.  ``!'' runs a shell command line 'seq -s ". \n" 1 3' generates
-;; numbers "1. "  "2. " "3. " and inserts it at each markets tpot
-;;
-;; Download package if not installed!
 (use-package anyins
+  ;;
+  ;; Freaky way to insert text
+  ;; 1. Enter anyins-mode
+  ;; 2. Move around; mark spots you want to insert text with RET
+  ;; 3. To insert text
+  ;;    a. ``y'' inserts each line from kill ring at each marked spot, or
+  ;;    b.  ``!'' runs a shell command line 'seq -s ". \n" 1 3' generates
+  ;; numbers "1. "  "2. " "3. " and inserts it at each markets tpot
+  ;;
+  ;; Download package if not installed!
   :ensure t
   :bind ("C-c i" . anyins-mode))
 
-;;
-;; Setup preferences for shell, compile and other comint based commands
-;;
-;; Pete specific
+(use-package beacon
+  ;; Highlight the line the point is on when the screen jumps around.
+  :config
+  (progn
+    (beacon-mode 1)
+    (setq beacon-push-mark 35)
+    (setq beacon-color "#666600")))
 (use-package comint-prefs
+  ;;
+  ;; Setup preferences for shell, compile and other comint based commands
+  ;;
+  ;; Pete specific
   :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt)
   :init
   (progn
@@ -524,40 +539,37 @@ If prefix arg, use it as the revision number"
     (add-hook 'comint-mode-hook 'comint-for-pete)
     (add-hook 'dbx-mode-hook 'dbx-for-pete))  )
 
-;;
-;; Bloomberg database schema
 (use-package csc-mode
+  ;;
+  ;; Bloomberg database schema
   :mode ("\\.csc2$" . csc-mode))
 
-;;
-;; Make a vertical bar show at fill-column
 (use-package fill-column-indicator
-  :disabled t
+  ;;
+  ;; Make a vertical bar show at fill-column
   :commands (fci-mode)
   :init (add-hook 'prog-mode-hook 'fci-mode))
   
-;;
-;; Bloomberg database params
 (use-package lrl-mode
+  ;;
+  ;; Bloomberg database params
   :mode ("\\.lrl\\'" . lrl-mode))
 
-;;
-;; Provide a way of interacting with a Git repository.
-;;
-;; Download package if not installed!
-;; TEMP DISABLE
 (use-package magit
+  ;;
+  ;; Provide a way of interacting with a Git repository.
+  ;;
+  ;; Download package if not installed!
+  ;; TEMP DISABLE
   :disabled t
   :ensure t
   :bind ("C-c m" . magit-status))
 
-;;
-;; Make long strings of digits alternate groups of 3 with bold.
-;;
-;; Download package if not installed!
-;;
-;; Disabled: I got tired of this highlight
 (use-package num3-mode
+  ;;
+  ;; Make long strings of digits alternate groups of 3 with bold.
+  ;;
+  ;; DISABLED (I got tired of this highlight)
   :disabled t
   :ensure t
   :commands num3-mode
@@ -566,28 +578,51 @@ If prefix arg, use it as the revision number"
   :config (make-face-bold 'num3-face-even))
 
 (use-package ag
+  ;;
+  ;; A fast search across lots of files.  Relies
+  ;; on package silver searcher for the executable
+  ;; to be installed.
   :ensure t
   :bind (("C-c f" . ag))
   :config (setq ag-reuse-buffers t))
   
-;;
-;; Some commands I find useful
-;;
-;; Pete specific
-(use-package pw-misc
-  :bind (("C-c p" . pw/prev-frame)
-         ("C-c p" . pw/prev-frame)
-         ("C-c -" . pw/font-size-decrease)
-         ("C-c +" . pw/font-size-increase)
-         ("C-c \\" . pw/reindent)
-         ("C-c e" . pw/eval-region-or-defun)
-   ))
+(use-package color-identifiers-mode
+  ;;
+  ;; Make each variable in a different color
+  ;;
+  ;; DISABLED (too many colors)
+  :disabled t
+  :defer
+  :init
+  (add-hook 'prog-mode-hook
+            'color-identifiers-mode)
+  :diminish color-identifiers-mode)
 
-;;
-;; Toggle truncation of long lines
-;;
-;; Pete specific
+(use-package rainbow-identifiers
+  ;;
+  ;; Make each variable a different color
+  ;;
+  ;; DISABLED (using color-identifies-mode instead)
+  :disabled t
+  :config
+  (progn
+    (add-hook 'prog-mode-hook
+              'rainbow-identifiers-mode)))
+
+(use-package pw-misc
+  ;;
+  ;; Some commands I find useful
+  ;;
+  ;; Pete specific
+  :bind (("C-c p" . pw/prev-frame)
+         ("C-c \\" . pw/reindent)
+         ("C-c e" . pw/eval-region-or-defun)))
+
 (use-package pw-trunc-lines
+  ;;
+  ;; Toggle truncation of long lines
+  ;;
+  ;; Pete specific
   :commands pw/trunc-lines
   :bind ("C-c $" . pw/trunc-lines)
   :init
@@ -597,12 +632,12 @@ If prefix arg, use it as the revision number"
     (add-hook 'compilation-mode-hook 'pw/trunc-lines)
     (add-hook 'shell-mode-hook 'pw/trunc-lines)))
 
-;;
-;; Pete's hack to make switching to a shell buffer
-;; faster
-;;
-;; Pete specific
 (use-package shell-switch
+  ;;
+  ;; Pete's hack to make switching to a shell buffer
+  ;; faster
+  ;;
+  ;; Pete specific
   :commands (shell-switch shell-switch-other-window)
   :init
   (progn
@@ -673,10 +708,6 @@ If prefix arg, use it as the revision number"
 (setq lazy-highlight-max-at-a-time 10)
 (setq lazy-highlight-initial-delay .5)
 (setq lazy-highlight-interval .1)
-
-;;
-;; Turn off the scroll bars
-(scroll-bar-mode -1)
 
 ;;
 ;; Cause the gutter to display little arrows and
