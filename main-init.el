@@ -547,6 +547,7 @@ If prefix arg, use it as the revision number"
 (use-package fill-column-indicator
   ;;
   ;; Make a vertical bar show at fill-column
+  :disabled t
   :commands (fci-mode)
   :init (add-hook 'prog-mode-hook 'fci-mode))
   
