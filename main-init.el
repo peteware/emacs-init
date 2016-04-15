@@ -130,8 +130,8 @@
 (use-package face-remap
   ;;
   ;; Change the font size in the current buffer (not the window)
-  :bind (("C-c -" . text-scale-decrease)
-         ("C-c +" . text-scale-increase)))
+  :bind* (("C-c -" . text-scale-decrease)
+          ("C-c +" . text-scale-increase)))
 
 (use-package hl-line
   ;;
@@ -449,10 +449,17 @@ If prefix arg, use it as the revision number"
 (use-package linum
   ;;
   ;; Make it so line numbers show up in left margin
-  ;; Used in C/C++ mode. (replaced with nlinum
+  ;; Used in C/C++ mode. (replaced with nlinum)
+  :disabled t
   :commands linum-mode
   :init (add-hook 'prog-mode-hook 'linum-mode)
   :config (setq linum-format 'dynamic))
+
+(use-package nlinum
+  ;;
+  ;; Make it so line numbers show up in left margin
+  :commands nlinum-mode
+  :init (add-hook 'prog-mode-hook 'nlinum-mode))
 
 (use-package org
   ;;
@@ -527,6 +534,7 @@ If prefix arg, use it as the revision number"
     (beacon-mode 1)
     (setq beacon-push-mark 35)
     (setq beacon-color "#666600")))
+
 (use-package comint-prefs
   ;;
   ;; Setup preferences for shell, compile and other comint based commands
@@ -646,6 +654,14 @@ If prefix arg, use it as the revision number"
     (bind-keys* :prefix-map clt-c-4-keymap
                 :prefix "C-c 4"
                 ("s" . shell-switch-other-window))))
+
+(use-package zoom-frm
+  ;;
+  ;; Much like face-remap that adds test-scale-increase and
+  ;; text-scale-decrease I use this to change the entire window
+  ;; instead of the buffer
+  :bind* (([C-mouse-4] . zoom-frm-in)
+          ([C-mouse-5] . zoom-frm-out)))
 
 ;;;
 ;;;----------------------------------------------------------------------

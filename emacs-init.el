@@ -20,9 +20,7 @@
    (quote
     ("c1af7190a6855a376f7a7563445687064af6d8bdca423136cb013c93fbfd1b00" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "96998f6f11ef9f551b427b8853d947a7857ea5a578c75aa9c4e7c73fe04d10b4" "ce79400f46bd76bebeba655465f9eadf60c477bd671cbcd091fe871d58002a88" "e890fd7b5137356ef5b88be1350acf94af90d9d6dd5c234978cd59a6b873ea94" "b19b642b0d5be8ec4bc96698260575d3eb81a22064911a8036213facf3a9a6fa" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "f5e56ac232ff858afb08294fc3a519652ce8a165272e3c65165c42d6fe0262a0" default)))
  '(default-input-method "rfc1345")
- '(fci-rule-color "#383838")
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
- '(text-mode-hook (quote (turn-on-auto-fill text-mode-hook-identify)))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote
