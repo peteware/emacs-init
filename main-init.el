@@ -448,9 +448,8 @@ If prefix arg, use it as the revision number"
 
 (use-package linum
   ;;
-  ;; Make it so line numbers show up in left margin
-  ;; Used in C/C++ mode. (replaced with nlinum)
-  :disabled t
+  ;; Make it so line numbers show up in left margin Used in C/C++
+  ;; mode.  (Tried nlinum but had refres problems)
   :commands linum-mode
   :init (add-hook 'prog-mode-hook 'linum-mode)
   :config (setq linum-format 'dynamic))
@@ -458,6 +457,9 @@ If prefix arg, use it as the revision number"
 (use-package nlinum
   ;;
   ;; Make it so line numbers show up in left margin
+  ;;
+  ;; DISABLED (refresh problems on Mac OS X)
+  :disabled t
   :commands nlinum-mode
   :init (add-hook 'prog-mode-hook 'nlinum-mode))
 
@@ -555,6 +557,8 @@ If prefix arg, use it as the revision number"
 (use-package fill-column-indicator
   ;;
   ;; Make a vertical bar show at fill-column
+  ;;
+  ;; DISABLED (didn't like it anymore)
   :disabled t
   :commands (fci-mode)
   :init (add-hook 'prog-mode-hook 'fci-mode))
@@ -661,7 +665,9 @@ If prefix arg, use it as the revision number"
   ;; text-scale-decrease I use this to change the entire window
   ;; instead of the buffer
   :bind* (([C-mouse-4] . zoom-frm-in)
-          ([C-mouse-5] . zoom-frm-out)))
+          ([C-mouse-5] . zoom-frm-out)
+          ([control shift +] . zoom-frm-in)
+          ([control shift -] . zoom-frm-out)))
 
 ;;;
 ;;;----------------------------------------------------------------------
