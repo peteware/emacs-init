@@ -689,6 +689,10 @@ If prefix arg, use it as the revision number"
 ;;;
 
 ;;
+;; Allow narrow to region (`C-X n n`)
+(put 'narrow-to-region 'disabled nil)
+
+;;
 ;; Force Mac OS X to use Consolas at 16pt
 (if (eq (window-system) 'ns)
     (custom-set-faces '(default ((t (:height 160 :family "Consolas"))))))
