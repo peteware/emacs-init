@@ -666,14 +666,18 @@ If prefix arg, use it as the revision number"
   ;; instead of the buffer
   :bind* (([C-mouse-4] . zoom-frm-in)
           ([C-mouse-5] . zoom-frm-out)
-          ([control shift +] . zoom-frm-in)
-          ([control shift -] . zoom-frm-out)))
+          ([meta shift +] . zoom-frm-in)  ; M-+
+          ([meta shift -] . zoom-frm-out)))
 
 ;;;
 ;;;----------------------------------------------------------------------
 ;;; Various preferences
 ;;;----------------------------------------------------------------------
 ;;;
+
+;;
+;; Allow narrow to region (`C-X n n`)
+(put 'narrow-to-region 'disabled nil)
 
 ;;
 ;; Force Mac OS X to use Consolas at 16pt
