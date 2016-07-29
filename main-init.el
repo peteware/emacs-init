@@ -83,6 +83,7 @@
 (use-package bookmark
   ;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
   ;; This makes them save automatically
+  :defer 60
   :config
   (setq bookmark-save-flag 1))
 
@@ -104,6 +105,7 @@
   ;;
   ;; This causes the set of files being visited to be restored
   ;; on startup.
+  :defer 10
   :config
   (progn
     (setq desktop-save t)
@@ -123,6 +125,7 @@
   ;; This makes saving shell scripts automatically make
   ;; them executable.  It's considered a shell script if
   ;; it starts with #!
+  :defer 60
   :config
   (add-hook 'after-save-hook
             'executable-make-buffer-file-executable-if-script-p))
@@ -158,6 +161,7 @@
 (use-package ido
   ;;
   ;; Use a fancy auto-complete for buffers and files
+  :defer 5
   :config
   (progn
     (setq ido-default-buffer-method 'selected-window)
@@ -209,6 +213,7 @@
 (use-package mwheel
   ;;
   ;; Make sure the mouse wheel scrolls
+  :defer 60
   :config
   (progn
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
@@ -218,6 +223,7 @@
 (use-package paren
   ;;
   ;; Highlight matching paren
+  :defer 60
   :config
   (show-paren-mode 1))
 
@@ -227,6 +233,7 @@
   :config
   (progn
     (setq recentf-max-saved-items 100)
+    (setq recentf-auto-cleanup 3600)    ;cleanup after idle 1hr
     (recentf-mode 1)))
 
 (use-package savehist
@@ -304,6 +311,7 @@
 (use-package bb-style
   ;;
   ;; Bloomberg C++ coding style
+  :defer 10
   :config
   (progn
     ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
@@ -529,6 +537,16 @@ If prefix arg, use it as the revision number"
   :ensure t
   :bind ("C-c i" . anyins-mode))
 
+(use-package avy
+  ;;
+  ;; Fast way to jump to a specific character.  Prompts for
+  ;; a character and then displays all of them but replaced
+  ;; with leters a,b,c,...  You then type in which one to jump
+  ;; to.
+  :ensure t
+  :bind (("M-s" . avy-goto-word-1))
+  :config (setq avi-all-windows nil))
+
 (use-package beacon
   ;; Highlight the line the point is on when the screen jumps around.
   :config
@@ -573,10 +591,8 @@ If prefix arg, use it as the revision number"
   ;; Provide a way of interacting with a Git repository.
   ;;
   ;; Download package if not installed!
-  ;; TEMP DISABLE
-  :disabled t
   :ensure t
-  :bind ("C-c m" . magit-status))
+  :bind (("C-c m" . magit-status)))
 
 (use-package num3-mode
   ;;
@@ -605,7 +621,6 @@ If prefix arg, use it as the revision number"
   ;;
   ;; DISABLED (too many colors)
   :disabled t
-  :defer
   :init
   (add-hook 'prog-mode-hook
             'color-identifiers-mode)
@@ -664,10 +679,8 @@ If prefix arg, use it as the revision number"
   ;; Much like face-remap that adds test-scale-increase and
   ;; text-scale-decrease I use this to change the entire window
   ;; instead of the buffer
-  :bind* (([C-mouse-4] . zoom-frm-in)
-          ([C-mouse-5] . zoom-frm-out)
-          ([control shift +] . zoom-frm-in)
-          ([control shift -] . zoom-frm-out)))
+  :bind* (("C-c [" . zoom-frm-out)
+          ("C-c ]" . zoom-frm-in)))
 
 ;;;
 ;;;----------------------------------------------------------------------

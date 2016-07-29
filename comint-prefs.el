@@ -47,6 +47,10 @@ A prefix arguments is sh syntax, default is csh syntax"
 	   "<" "Up (numeric arg) stack frames. --pete")
   (gud-def gud-down "down %p; echo stopped in $vfunc at line $vlineno in file \\\"$vfile\\\""
 	   ">" "Down (numeric arg) stack frames. --pete")
+  (gud-def gud-next "next %p; echo stopped in $vfunc at line $vlineno in file \\\"$vfile\\\""
+	   "n" "Next statement (numeric arg). --pete")
+  (gud-def gud-step "step %p; echo stopped in $vfunc at line $vlineno in file \\\"$vfile\\\""
+	   "s" "Step into (numeric arg). --pete")
   ; I had trouble with "field" properties working with dbx
   (make-local-variable 'comint-use-prompt-regexp)
   (setq comint-use-prompt-regexp t))
