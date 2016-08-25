@@ -109,6 +109,7 @@
   :config
   (progn
     (setq desktop-save t)
+    (setq desktop-dirname "~")
     (setq desktop-restore-frames nil)
     (setq desktop-restore-eager 5)
     (setq desktop-restore-in-current-display t)
