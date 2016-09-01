@@ -105,11 +105,11 @@
   ;;
   ;; This causes the set of files being visited to be restored
   ;; on startup.
-  :defer 10
+  ;:defer 10
   :config
   (progn
     (setq desktop-save t)
-    (setq desktop-dirname "~")
+    (setq desktop-dirname "~/.emacs.d/")
     (setq desktop-restore-frames nil)
     (setq desktop-restore-eager 5)
     (setq desktop-restore-in-current-display t)
@@ -593,7 +593,11 @@ If prefix arg, use it as the revision number"
   ;;
   ;; Download package if not installed!
   :ensure t
-  :bind (("C-c m" . magit-status)))
+  :bind (("C-c m" . magit-status))
+  :config (progn
+            (magit-wip-after-save-mode)
+            (magit-wip-after-apply-mode)
+            (setq vc-handled-backends nil)))
 
 (use-package num3-mode
   ;;
