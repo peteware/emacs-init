@@ -337,6 +337,14 @@
   :config
   (fancy-narrow-mode 1))
 
+(use-package git-gutter-fringe+
+  ;;
+  ;; Display lines that have changed in the left margin.
+  ;; This works with linum-mode but not in a tty
+  :config (progn
+            (setq git-gutter-fr+-side 'right-fringe)
+            (global-git-gutter+-mode)))
+
 (use-package ido-vertical-mode
   ;;
   ;; Causes ido-mode to display completions vertically
@@ -593,7 +601,8 @@ If prefix arg, use it as the revision number"
   ;;
   ;; Download package if not installed!
   :ensure t
-  :bind (("C-c m" . magit-status))
+  :bind (("C-c m" . magit-status)
+         ("C-c C-m" . magit-dispatch-popup))
   :config (progn
             (magit-wip-after-save-mode)
             (magit-wip-after-apply-mode)

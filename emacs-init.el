@@ -1,3 +1,10 @@
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (setq my-base-path "~/usr/emacs")
 (add-to-list 'load-path my-base-path)
 ;(add-to-list 'load-path (concat my-base-path "/org-8.2.4/lisp"))
@@ -22,6 +29,9 @@
  '(default-input-method "rfc1345")
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
  '(linum-format " %7i ")
+ '(package-selected-packages
+   (quote
+    (git-gutter-fringe+ git-gutter-fringe git-timemachine git-wip-timemachine zoom-frm zerodark-theme zenburn-theme use-package sublime-themes steady-theme smart-mode-line scratch-ext rainbow-identifiers powerline num3-mode nlinum magit log4j-mode ido-vertical-mode fill-column-indicator fastnav fancy-narrow ctags color-theme-modern color-identifiers-mode beacon babcore avy anyins alect-themes ag)))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote
