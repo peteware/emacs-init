@@ -341,6 +341,9 @@
   ;;
   ;; Display lines that have changed in the left margin.
   ;; This works with linum-mode but not in a tty
+  ;;
+  ;; DISABLED (slow loading)
+  :disabled t
   :config (progn
             (setq git-gutter-fr+-side 'right-fringe)
             (global-git-gutter+-mode)))
