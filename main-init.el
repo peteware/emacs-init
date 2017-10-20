@@ -29,6 +29,10 @@
 
 (provide 'main-init)
 
+(when (string-equal system-type "windows-nt")
+  (setq password-cache-expiry nil)
+  (setq url-proxy-services '(("http" . "proxy.bloomberg.com:81"))))
+
 ;;;
 ;;; If a package is not available then ``use-package'' ignores it.
 ;;; You can also not use a package by adding :disabled t to use-package
@@ -170,7 +174,7 @@
     (setq ido-default-file-method 'selected-window)
     (setq ido-enable-flex-matching t)
     (setq ido-enable-dot-prefix t)
-    (setq ido-enable-tramp-completion nil)
+    (setq ido-enable-tramp-completion t)
     (setq ido-max-directory-size 100000)
     (setq ido-rotate-file-list-default t)
     (setq ido-enter-matching-directory 'first)
