@@ -29,6 +29,11 @@
 
 (provide 'main-init)
 
+(when (or (string-equal system-type "windows-nt")
+          (string-equal system-type "cygwin"))
+  (setq password-cache-expiry nil)
+  (setq url-proxy-services '(("http" . "proxy.bloomberg.com:81"))))
+
 ;;;
 ;;; If a package is not available then ``use-package'' ignores it.
 ;;; You can also not use a package by adding :disabled t to use-package
@@ -53,6 +58,9 @@
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
     (package-initialize)))
 
+(use-package toolkit-tramp
+  :config
+  (setq password-cache-expiry nil))
 ;;;
 ;;;----------------------------------------------------------------------
 ;;; This file is organized so that:
@@ -170,7 +178,7 @@
     (setq ido-default-file-method 'selected-window)
     (setq ido-enable-flex-matching t)
     (setq ido-enable-dot-prefix t)
-    (setq ido-enable-tramp-completion nil)
+    (setq ido-enable-tramp-completion t)
     (setq ido-max-directory-size 100000)
     (setq ido-rotate-file-list-default t)
     (setq ido-enter-matching-directory 'first)
@@ -380,12 +388,28 @@
   :config
   (load-theme 'wilson t nil))
 
+(use-package dracula-theme
+  :config
+  (load-theme 'dracula t nil))
+
 ;;;
 ;;;----------------------------------------------------------------------
 ;;; Standard packages that defer loading until they are called (e.g. minimal
 ;;; cost on startup)
 ;;;----------------------------------------------------------------------
 ;;;
+
+(use-package ansi-color
+  :config
+  (progn
+    (defun pw/ansi-color-cleanup()
+      (interactive)
+      (let ((inhibit-read-only t))
+        (ansi-color-apply-on-region (point-min) (point-max))))
+    (setq ansi-color-names-vector ; better contrast colors
+          ["black" "red4" "green4" "yellow4"
+           "#8be9fd" "magenta4" "cyan4" "white"])
+    (setq ansi-color-map (ansi-color-make-color-map))))
 
 (use-package compile
   ;;
@@ -769,7 +793,17 @@ If prefix arg, use it as the revision number"
 (setq scroll-conservatively 15)
 (setq scroll-margin 2)
 (setq scroll-preserve-screen-position 'keep)
-
+;;
+;; I set horizontal scrolling because I'd have trouble with
+;; long lines in shell output.  This seemed to get
+;; them to display faster by actually slowing things down
+;;
+;; `hscroll-margin' is how close cursor gets before
+;; doing horizontal scrolling
+;; `hscroll-step' is how far to scroll when marg is reached.
+;;
+(setq hscroll-margin 1)
+(setq hscroll-step 5)
 ;;
 ;; Incremental search settings
 (setq lazy-highlight-max-at-a-time 10)
