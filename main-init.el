@@ -125,6 +125,7 @@
     (setq desktop-lazy-verbose nil)
     (setq desktop-lazy-idle-delay 20)
     (setq desktop-auto-save-timeout 7200)
+    (setq desktop-files-not-to-save "^$")  # make tramp files get saved, too
     (desktop-save-mode 1)
     (add-to-list 'desktop-modes-not-to-save 'Info-mode)
     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
@@ -642,6 +643,7 @@ If prefix arg, use it as the revision number"
             (magit-wip-after-save-mode)
             (magit-wip-after-apply-mode)
             (magit-wip-before-change-mode)
+            (setq magit-view-git-manual-method 'man)
             (setq vc-handled-backends nil)))
 
 (use-package num3-mode
