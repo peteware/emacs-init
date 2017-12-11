@@ -428,8 +428,9 @@
         (defun pw/colorize-compilation-buffer ()
           (let ((inhibit-read-only t))
             (ansi-color-apply-on-region compilation-filter-start (point-max))))
-        (if (and (boundp 'compilation-fiter-hook) (fboundp 'ansi-color-apply-on-region))
-            (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))))))
+        (defun pw/add-ansi-color ()
+            (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))
+        (add-hook 'compilation-mode-hook 'pw/add-ansi-color)))))
 
 (use-package ediff
   ;;
