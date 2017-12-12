@@ -58,6 +58,13 @@
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
     (package-initialize)))
 
+(global-set-key [wheel-left] 'ignore)
+(global-set-key [wheel-right] 'ignore)
+(global-set-key [double-wheel-left] 'ignore)
+(global-set-key [double-wheel-right] 'ignore)
+(global-set-key [triple-wheel-left] 'ignore)
+(global-set-key [triple-wheel-right] 'ignore)
+
 (use-package toolkit-tramp
   :config
   (setq password-cache-expiry nil))
