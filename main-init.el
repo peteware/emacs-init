@@ -650,6 +650,7 @@ If prefix arg, use it as the revision number"
             (magit-wip-after-save-mode)
             (magit-wip-after-apply-mode)
             (magit-wip-before-change-mode)
+            (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
             (setq magit-view-git-manual-method 'man)
             (setq vc-handled-backends nil)))
 
