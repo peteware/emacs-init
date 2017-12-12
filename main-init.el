@@ -29,6 +29,11 @@
 
 (provide 'main-init)
 
+(when (or (string-equal system-type "windows-nt")
+          (string-equal system-type "cygwin"))
+  (setq password-cache-expiry nil)
+  (setq url-proxy-services '(("http" . "proxy.bloomberg.com:81"))))
+
 ;;;
 ;;; If a package is not available then ``use-package'' ignores it.
 ;;; You can also not use a package by adding :disabled t to use-package
@@ -59,6 +64,10 @@
 (global-set-key [double-wheel-right] 'ignore)
 (global-set-key [triple-wheel-left] 'ignore)
 (global-set-key [triple-wheel-right] 'ignore)
+
+(use-package toolkit-tramp
+  :config
+  (setq password-cache-expiry nil))
 ;;;
 ;;;----------------------------------------------------------------------
 ;;; This file is organized so that:
@@ -82,6 +91,7 @@
   ;; DISABLED.  I found the emacs display would stop refreshing
   ;;            after a number of files were loaded.
   :disabled t
+  :diminish auto-revert-mode
   :config
   (setq auto-revert-check-vc-info t)
   (global-auto-revert-mode))
@@ -132,7 +142,7 @@
   ;; This makes saving shell scripts automatically make
   ;; them executable.  It's considered a shell script if
   ;; it starts with #!
-  :defer 60
+  ;:defer 60
   :config
   (add-hook 'after-save-hook
             'executable-make-buffer-file-executable-if-script-p))
@@ -175,7 +185,7 @@
     (setq ido-default-file-method 'selected-window)
     (setq ido-enable-flex-matching t)
     (setq ido-enable-dot-prefix t)
-    (setq ido-enable-tramp-completion nil)
+    (setq ido-enable-tramp-completion t)
     (setq ido-max-directory-size 100000)
     (setq ido-rotate-file-list-default t)
     (setq ido-enter-matching-directory 'first)
@@ -220,7 +230,6 @@
 (use-package mwheel
   ;;
   ;; Make sure the mouse wheel scrolls
-  :defer 60
   :config
   (progn
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
@@ -237,6 +246,7 @@
 (use-package recentf
   ;;
   ;; Save list of recently visited files
+  :defer 15
   :config
   (progn
     (setq recentf-max-saved-items 100)
@@ -246,6 +256,7 @@
 (use-package savehist
   ;;
   ;; Save emacs's internal command history.
+  :defer 15
   :config
   (progn
     (setq savehist-additional-variables
@@ -261,7 +272,8 @@
   ;; This records the location of every file you visit and
   ;; restores when you vist a file, goes to that location.  I also save
   ;; the file every couple hours because I don't always quit emacs 
- :config
+  :defer 30
+  :config
   (progn
     (setq-default save-place t)
     (setq save-place-limit nil)
@@ -318,7 +330,6 @@
 (use-package bb-style
   ;;
   ;; Bloomberg C++ coding style
-  :defer 10
   :config
   (progn
     ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
@@ -358,6 +369,7 @@
   ;;
   ;; Causes ido-mode to display completions vertically
   ;; and ``Ctl n'' and ``Ctl p'' move down and up in list
+  :defer 30
   :ensure t
   :config
   (ido-vertical-mode 1))
@@ -383,12 +395,28 @@
   :config
   (load-theme 'wilson t nil))
 
+(use-package dracula-theme
+  :config
+  (load-theme 'dracula t nil))
+
 ;;;
 ;;;----------------------------------------------------------------------
 ;;; Standard packages that defer loading until they are called (e.g. minimal
 ;;; cost on startup)
 ;;;----------------------------------------------------------------------
 ;;;
+
+(use-package ansi-color
+  :config
+  (progn
+    (defun pw/ansi-color-cleanup()
+      (interactive)
+      (let ((inhibit-read-only t))
+        (ansi-color-apply-on-region (point-min) (point-max))))
+    (setq ansi-color-names-vector ; better contrast colors
+          ["black" "red4" "green4" "yellow4"
+           "#8be9fd" "magenta4" "cyan4" "white"])
+    (setq ansi-color-map (ansi-color-make-color-map))))
 
 (use-package compile
   ;;
@@ -406,8 +434,9 @@
         (defun pw/colorize-compilation-buffer ()
           (let ((inhibit-read-only t))
             (ansi-color-apply-on-region compilation-filter-start (point-max))))
-        (if (and (boundp 'compilation-fiter-hook) (fboundp 'ansi-color-apply-on-region))
-            (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))))))
+        (defun pw/add-ansi-color ()
+            (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))
+        (add-hook 'compilation-mode-hook 'pw/add-ansi-color)))))
 
 (use-package ediff
   ;;
@@ -612,9 +641,14 @@ If prefix arg, use it as the revision number"
   :ensure t
   :bind (("C-c m" . magit-status)
          ("C-c C-m" . magit-dispatch-popup))
+  :diminish magit-wip-after-save-mode
+  :diminish magit-wip-after-save-local-mode
+  :diminish magit-wip-after-apply-mode
+  :diminish magit-wip-before-change-mode
   :config (progn
             (magit-wip-after-save-mode)
             (magit-wip-after-apply-mode)
+            (magit-wip-before-change-mode)
             (setq vc-handled-backends nil)))
 
 (use-package num3-mode
@@ -644,6 +678,7 @@ If prefix arg, use it as the revision number"
   ;;
   ;; DISABLED (too many colors)
   :disabled t
+  :diminish color-identifiers-mode
   :init
   (add-hook 'prog-mode-hook
             'color-identifiers-mode)
@@ -765,7 +800,17 @@ If prefix arg, use it as the revision number"
 (setq scroll-conservatively 15)
 (setq scroll-margin 2)
 (setq scroll-preserve-screen-position 'keep)
-
+;;
+;; I set horizontal scrolling because I'd have trouble with
+;; long lines in shell output.  This seemed to get
+;; them to display faster by actually slowing things down
+;;
+;; `hscroll-margin' is how close cursor gets before
+;; doing horizontal scrolling
+;; `hscroll-step' is how far to scroll when marg is reached.
+;;
+(setq hscroll-margin 1)
+(setq hscroll-step 5)
 ;;
 ;; Incremental search settings
 (setq lazy-highlight-max-at-a-time 10)
