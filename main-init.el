@@ -125,7 +125,7 @@
     (setq desktop-lazy-verbose nil)
     (setq desktop-lazy-idle-delay 20)
     (setq desktop-auto-save-timeout 7200)
-    (setq desktop-files-not-to-save "^$")  # make tramp files get saved, too
+    (setq desktop-files-not-to-save "^$")  ;
     (desktop-save-mode 1)
     (add-to-list 'desktop-modes-not-to-save 'Info-mode)
     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
