@@ -132,7 +132,8 @@
     (setq desktop-lazy-verbose nil)
     (setq desktop-lazy-idle-delay 20)
     (setq desktop-auto-save-timeout 7200)
-    (setq desktop-files-not-to-save "^$")  ;
+    (setq desktop-files-not-to-save "^$")
+    (setq desktop-load-locked-desktop t)
     (desktop-save-mode 1)
     (add-to-list 'desktop-modes-not-to-save 'Info-mode)
     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
