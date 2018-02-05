@@ -329,6 +329,14 @@
 ;;;----------------------------------------------------------------------
 ;;;
 
+(use-package atomic-chrome
+  ;;
+  ;; You must first install Atomic Chrome extension from Chrome Web
+  ;; Store and this allows editting text areas in Chrome via
+  ;; a two-way connection.
+  :config
+  (atomic-chrome-start-server))
+
 (use-package bb-style
   ;;
   ;; Bloomberg C++ coding style
@@ -393,6 +401,7 @@
   ;;
   ;; I like the wilson theme from the sublime-themes
   ;; package.
+  :disabled t
   :ensure t
   :config
   (load-theme 'wilson t nil))
@@ -651,6 +660,11 @@ If prefix arg, use it as the revision number"
             (magit-wip-after-save-mode)
             (magit-wip-after-apply-mode)
             (magit-wip-before-change-mode)
+            (setq magit-commit-show-diff nil)
+            (setq auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffers-p)
+            (remove-hook 'server-switch-hook 'magit-commit-diff)
+            (setq magit-refresh-verbose t)
+            (setq magit-save-repository-buffers nil)
             (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
             (setq magit-view-git-manual-method 'man)
             (setq vc-handled-backends nil)))
@@ -842,7 +856,7 @@ If prefix arg, use it as the revision number"
 ;;
 ;; I found visiting a file to be really slow and realized
 ;; it was from figuring out the version control
-(setq vc-handled-backends '(Git SVN))
+(setq vc-handled-backends nil)
 
 ;;
 ;; I don't like actual tabs being inserted
