@@ -35,13 +35,16 @@
   (setq url-proxy-services '(("http" . "proxy.bloomberg.com:81"))))
 
 ;;;
+;;; You may need to ``M-x package-install use-package'' before
+;;; any of this works
+;;;
 ;;; If a package is not available then ``use-package'' ignores it.
 ;;; You can also not use a package by adding :disabled t to use-package
 
 (eval-when-compile
-  (require 'use-package))               ;Download this!
-(require 'use-package)
-(require 'bind-key)                      ;Download this!
+  (require 'use-package))
+(require 'diminish)                ;; if you use :diminish
+(require 'bind-key)                ;; if you use any :bind variant
 (setq use-package-verbose t)
 
 ;;
@@ -177,9 +180,37 @@
   :disabled t
   (icomplete-mode 1))
 
+(use-package magithub
+  :after magit
+  :config
+  (magithub-feature-autoinject t))
+
+(use-package ivy
+  :bind (("C-c C-r" . 'ivy-resume))
+  :config (progn
+            (setq ivy-use-virtual-buffers t)
+            (setq ivy-count-format "(%d/%d) ")
+            (ivy-mode)))
+
+(use-package counsel
+  :after ivy
+  :bind (("C-c g" .  'counsel-git)
+         ("C-c j" .  'counsel-git-grep)
+         ("C-c k" .  'counsel-ag)
+         ("C-x l" .  'counsel-locate)
+         ("C-S-o" .  'counsel-rhythmbox)
+         )
+  :config (progn (counsel-mode)))
+
+(use-package swiper
+  :bind (("C-s" . 'swiper)))
+         
 (use-package ido
   ;;
   ;; Use a fancy auto-complete for buffers and files
+  ;;
+  ;; DISABLED - using ivy
+  :disabled t
   :defer 5
   :config
   (progn
@@ -379,6 +410,7 @@
   ;;
   ;; Causes ido-mode to display completions vertically
   ;; and ``Ctl n'' and ``Ctl p'' move down and up in list
+  :after ido
   :defer 30
   :ensure t
   :config
@@ -417,9 +449,28 @@
 ;;;----------------------------------------------------------------------
 ;;;
 
-(use-package ansi-color
+(use-package compile
+  ;;
+  ;; Setup compilation buffers
+  :bind ("C-c c" . compile)
   :config
   (progn
+    (setq compilation-scroll-output 'first-error)))
+
+(use-package pw-misc
+  :after compile
+  :config
+  (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
+
+(use-package ansi-color
+  :after compile
+  :config
+  (progn
+    (defun pw/colorize-compilation-buffer ()
+      (let ((inhibit-read-only t))
+        (ansi-color-apply-on-region compilation-filter-start (point-max))))
+    (defun pw/add-ansi-color ()
+      (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))
     (defun pw/ansi-color-cleanup()
       (interactive)
       (let ((inhibit-read-only t))
@@ -427,27 +478,8 @@
     (setq ansi-color-names-vector ; better contrast colors
           ["black" "red4" "green4" "yellow4"
            "#8be9fd" "magenta4" "cyan4" "white"])
-    (setq ansi-color-map (ansi-color-make-color-map))))
-
-(use-package compile
-  ;;
-  ;; Setup compilation buffers
-  :bind ("C-c c" . compile)
-  :config
-  (progn
-    (setq compilation-scroll-output 'first-error)
-    (use-package pw-misc
-      :config
-      (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
-    (use-package ansi-color
-      :config
-      (progn
-        (defun pw/colorize-compilation-buffer ()
-          (let ((inhibit-read-only t))
-            (ansi-color-apply-on-region compilation-filter-start (point-max))))
-        (defun pw/add-ansi-color ()
-            (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))
-        (add-hook 'compilation-mode-hook 'pw/add-ansi-color)))))
+    (setq ansi-color-map (ansi-color-make-color-map))
+    (add-hook 'compilation-mode-hook 'pw/add-ansi-color)))
 
 (use-package ediff
   ;;
@@ -618,6 +650,7 @@ If prefix arg, use it as the revision number"
   ;; Setup preferences for shell, compile and other comint based commands
   ;;
   ;; Pete specific
+  :after comint
   :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt)
   :init
   (progn
