@@ -43,15 +43,30 @@
 
 (eval-when-compile
   (require 'use-package))
-(require 'diminish)                ;; if you use :diminish
-(require 'bind-key)                ;; if you use any :bind variant
-(setq use-package-verbose t)
 
-;;
-;; Using bind-key lets you run describe-personal-keybindings
-;; which is a nice way of keep track of what you've changed.
-(bind-key "C-c G" 'goto-line)
-(bind-key "C-c o" 'other-frame)
+(setq use-package-compute-statistics t)
+
+(use-package bind-key
+  ;;
+  ;; Using bind-key lets you run describe-personal-keybindings
+  ;; which is a nice way of keep track of what you've changed.
+  :bind (
+         ("C-c G" . 'goto-line)
+         ("C-c o" . 'other-frame)
+         ("<wheel-left>" . 'ignore)
+         ("<wheel-right>" . 'ignore)
+         ("<double-wheel-left>" . 'ignore)
+         ("<double-wheel-right>" . 'ignore)
+         ("<triple-wheel-left>" . 'ignore)
+         ("<triple-wheel-right>" . 'ignore)
+         ))
+
+;; (global-set-key [wheel-left] 'ignore)
+;; (global-set-key [wheel-right] 'ignore)
+;; (global-set-key [double-wheel-left] 'ignore)
+;; (global-set-key [double-wheel-right] 'ignore)
+;; (global-set-key [triple-wheel-left] 'ignore)
+;; (global-set-key [triple-wheel-right] 'ignore)
 
 (use-package package
   ;;
@@ -60,13 +75,6 @@
   (progn
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
     (package-initialize)))
-
-(global-set-key [wheel-left] 'ignore)
-(global-set-key [wheel-right] 'ignore)
-(global-set-key [double-wheel-left] 'ignore)
-(global-set-key [double-wheel-right] 'ignore)
-(global-set-key [triple-wheel-left] 'ignore)
-(global-set-key [triple-wheel-right] 'ignore)
 
 (use-package toolkit-tramp
   :config
@@ -94,7 +102,7 @@
   ;; DISABLED.  I found the emacs display would stop refreshing
   ;;            after a number of files were loaded.
   :disabled t
-  :diminish auto-revert-mode
+  :delight auto-revert-mode
   :config
   (setq auto-revert-check-vc-info t)
   (global-auto-revert-mode))
@@ -172,39 +180,6 @@
     (setq global-hl-line-sticky-flag t)
     (global-hl-line-mode 1)))
 
-(use-package icomplete
-  ;;
-  ;; The new emacs way of doing various completions
-  ;;
-  ;; DISABLED (use ido instead)
-  :disabled t
-  (icomplete-mode 1))
-
-(use-package magithub
-  :after magit
-  :config
-  (magithub-feature-autoinject t))
-
-(use-package ivy
-  :bind (("C-c C-r" . 'ivy-resume))
-  :config (progn
-            (setq ivy-use-virtual-buffers t)
-            (setq ivy-count-format "(%d/%d) ")
-            (ivy-mode)))
-
-(use-package counsel
-  :after ivy
-  :bind (("C-c g" .  'counsel-git)
-         ("C-c j" .  'counsel-git-grep)
-         ("C-c k" .  'counsel-ag)
-         ("C-x l" .  'counsel-locate)
-         ("C-S-o" .  'counsel-rhythmbox)
-         )
-  :config (progn (counsel-mode)))
-
-(use-package swiper
-  :bind (("C-s" . 'swiper)))
-         
 (use-package ido
   ;;
   ;; Use a fancy auto-complete for buffers and files
@@ -380,9 +355,16 @@
     (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
   ))
 
+(use-package delight
+  ;;
+  ;; This package makes it easy to hide minor
+  ;; modes in the modeline.  Uses for :diminish
+  )
+
 (use-package diminish
   ;;
   ;; Do not display these minor modes in mode-line
+  :disabled t
   :config
   (diminish 'abbrev-mode))
 
@@ -391,7 +373,7 @@
   ;; Causes narrow region to dim the
   ;; rest of the buffer giving a much
   ;; more natual look.
-  :diminish fancy-narrow-mode
+  :delight fancy-narrow-mode
   :config
   (fancy-narrow-mode 1))
 
@@ -406,6 +388,37 @@
             (setq git-gutter-fr+-side 'right-fringe)
             (global-git-gutter+-mode)))
 
+(use-package magithub
+  :after magit
+  :config
+  (magithub-feature-autoinject t))
+
+(use-package ivy
+  :ensure t
+  :delight ivy-mode
+  :bind (("C-c C-r" . 'ivy-resume))
+  :config (progn
+            (setq ivy-use-virtual-buffers t)
+            (setq ivy-count-format "(%d/%d) ")
+            (ivy-mode)))
+
+(use-package counsel
+  :after ivy
+  :ensure t
+  :delight counsel-mode
+  :bind (("C-c g" .  'counsel-git)
+         ("C-c j" .  'counsel-git-grep)
+         ("C-c k" .  'counsel-ag)
+         ("C-x l" .  'counsel-locate)
+         ("C-S-o" .  'counsel-rhythmbox)
+         )
+  :config (progn (counsel-mode)))
+
+(use-package swiper
+  :after ivy
+  :ensure t
+  :bind (("C-s" . 'swiper)))
+         
 (use-package ido-vertical-mode
   ;;
   ;; Causes ido-mode to display completions vertically
@@ -566,7 +579,7 @@ If prefix arg, use it as the revision number"
   ;; org-mode provides an outline, todo, diary, calendar like interface.
   :mode ("\\.org\\'" . org-mode)
   :commands orgstruct-mode
-  :diminish orgstruct-mode
+  :delight orgstruct-mode
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
          ("C-c b" . org-iswitchb)
@@ -685,10 +698,11 @@ If prefix arg, use it as the revision number"
   :ensure t
   :bind (("C-c m" . magit-status)
          ("C-c C-m" . magit-dispatch-popup))
-  :diminish magit-wip-after-save-mode
-  :diminish magit-wip-after-save-local-mode
-  :diminish magit-wip-after-apply-mode
-  :diminish magit-wip-before-change-mode
+  :delight magit-wip-after-save-mode
+  :delight magit-wip-after-save-local-mode
+  :delight magit-wip-after-apply-mode
+  :delight magit-wip-before-change-mode
+  :delight auto-revert-mode
   :config (progn
             (magit-wip-after-save-mode)
             (magit-wip-after-apply-mode)
@@ -710,7 +724,7 @@ If prefix arg, use it as the revision number"
   :disabled t
   :ensure t
   :commands num3-mode
-  :diminish num3-mode
+  :delight num3-mode
   :init (add-hook 'prog-mode-hook 'num3-mode)
   :config (make-face-bold 'num3-face-even))
 
@@ -729,11 +743,11 @@ If prefix arg, use it as the revision number"
   ;;
   ;; DISABLED (too many colors)
   :disabled t
-  :diminish color-identifiers-mode
+  :delight color-identifiers-mode
   :init
   (add-hook 'prog-mode-hook
             'color-identifiers-mode)
-  :diminish color-identifiers-mode)
+  :delight color-identifiers-mode)
 
 (use-package rainbow-identifiers
   ;;
