@@ -269,6 +269,9 @@
     (setq mouse-wheel-progressive-speed nil)
     (mwheel-install)))
 
+(use-package outline
+  :config
+  (add-hook 'prog-mode-hook 'outline-minor-mode))
 (use-package paren
   ;;
   ;; Highlight matching paren
@@ -702,6 +705,14 @@ If prefix arg, use it as the revision number"
             (setq magit-view-git-manual-method 'man)
             (setq vc-handled-backends nil)))
 
+(use-package multiple-cursors
+  ;;
+  ;; You can place multiple cursors in a buffer
+  ;; and have whatever you do affect each item
+  :bind (("C-. e" . mc/edit-lines)
+         ("C-. >" . mc/mark-next-like-this)
+         ("C-. <" . mc/mark=previous-like-this)))
+
 (use-package num3-mode
   ;;
   ;; Make long strings of digits alternate groups of 3 with bold.
@@ -782,6 +793,9 @@ If prefix arg, use it as the revision number"
     (bind-keys* :prefix-map clt-c-4-keymap
                 :prefix "C-c 4"
                 ("s" . shell-switch-other-window))))
+
+(use-package wgrep
+  :ensure t)
 
 (use-package zoom-frm
   ;;
