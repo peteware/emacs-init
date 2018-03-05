@@ -482,17 +482,11 @@
     (defun pw/colorize-compilation-buffer ()
       (let ((inhibit-read-only t))
         (ansi-color-apply-on-region compilation-filter-start (point-max))))
-    (defun pw/add-ansi-color ()
-      (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer))
-    (defun pw/ansi-color-cleanup()
-      (interactive)
-      (let ((inhibit-read-only t))
-        (ansi-color-apply-on-region (point-min) (point-max))))
+    (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer)
     (setq ansi-color-names-vector ; better contrast colors
           ["black" "red4" "green4" "yellow4"
            "#8be9fd" "magenta4" "cyan4" "white"])
-    (setq ansi-color-map (ansi-color-make-color-map))
-    (add-hook 'compilation-mode-hook 'pw/add-ansi-color)))
+    (setq ansi-color-map (ansi-color-make-color-map))))
 
 (use-package ediff
   ;;
@@ -529,7 +523,7 @@ If prefix arg, use it as the revision number"
   ;; filenames and ignores directories like CVS.  "cchh" is all C++
   ;; files and headers.
   ;;
-  :bind (("C-c g" . grep))
+  ;:bind (("C-c g" . grep))
   :config
   (progn
     (setq grep-files-aliases
