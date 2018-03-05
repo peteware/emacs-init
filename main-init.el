@@ -456,6 +456,8 @@
 
 (use-package dracula-theme
   :config
+  :disabled t
+  :ensure t
   (load-theme 'dracula t nil))
 
 ;;;
@@ -602,6 +604,13 @@ If prefix arg, use it as the revision number"
   :config
   (progn
     (powerline-center-theme)))
+
+(use-package overcast-theme
+  ;;
+  ;;
+  :ensure t
+  :config
+  (load-theme 'overcast t))
 
 (use-package whitespace
   ;; Make "bad" whitespace be visible.  This causes tabs, and whitespace
