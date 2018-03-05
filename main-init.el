@@ -794,6 +794,18 @@ If prefix arg, use it as the revision number"
                 :prefix "C-c 4"
                 ("s" . shell-switch-other-window))))
 
+(use-package treemacs
+  :ensure t
+  :init
+  (progn
+    (defun pw/treemacs-ignore (file path)
+      (string-match-p "\.pyc$\\|\.sundev1\.\\|\.o$" file))
+    (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
+    (setq treemacs-show-hidden-files nil)
+    (setq treemacs-collapse-dirs 2)
+    (bind-key "C-x p" 'treemacs-select-window)
+    (bind-key "C-x t" 'treemacs-toggle)))
+
 (use-package wgrep
   :ensure t)
 
