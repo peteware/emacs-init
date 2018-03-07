@@ -76,6 +76,13 @@
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
     (package-initialize)))
 
+(use-package delight
+  ;;
+  ;; This package makes it easy to hide minor
+  ;; modes in the modeline.  Uses for :diminish
+  :ensure t
+  )
+
 (use-package toolkit-tramp
   :config
   (setq password-cache-expiry nil))
@@ -357,12 +364,6 @@
     (setq c-tab-always-indent nil)
     (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
   ))
-
-(use-package delight
-  ;;
-  ;; This package makes it easy to hide minor
-  ;; modes in the modeline.  Uses for :diminish
-  )
 
 (use-package diminish
   ;;
