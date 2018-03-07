@@ -822,7 +822,7 @@ If prefix arg, use it as the revision number"
     (setq treemacs-show-hidden-files nil)
     (setq treemacs-collapse-dirs 2)
     (bind-key "C-x p" 'treemacs-select-window)
-    (bind-key "C-x t" 'treemacs-toggle)))
+    (bind-key "C-x t" 'treemacs)))
 
 (use-package wgrep
   :ensure t)
