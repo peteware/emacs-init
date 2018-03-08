@@ -61,13 +61,6 @@
          ("<triple-wheel-right>" . 'ignore)
          ))
 
-;; (global-set-key [wheel-left] 'ignore)
-;; (global-set-key [wheel-right] 'ignore)
-;; (global-set-key [double-wheel-left] 'ignore)
-;; (global-set-key [double-wheel-right] 'ignore)
-;; (global-set-key [triple-wheel-left] 'ignore)
-;; (global-set-key [triple-wheel-right] 'ignore)
-
 (use-package package
   ;;
   ;; Use the emacs packaging system to automatically install some packages
@@ -392,7 +385,13 @@
             (global-git-gutter+-mode)))
 
 (use-package magithub
+  ;;
+  ;; Interact with github via magit
+  ;;
+  ;; DISABLED (slow loading)
+  ;;
   :after magit
+  :disabled t
   :config
   (magithub-feature-autoinject t))
 
@@ -445,21 +444,6 @@
     (set-buffer "*scratch*")
     (scratch-ext-restore-last-scratch)))
 
-(use-package sublime-themes
-  ;;
-  ;; I like the wilson theme from the sublime-themes
-  ;; package.
-  :disabled t
-  :ensure t
-  :config
-  (load-theme 'wilson t nil))
-
-(use-package dracula-theme
-  :config
-  :disabled t
-  :ensure t
-  (load-theme 'dracula t nil))
-
 ;;;
 ;;;----------------------------------------------------------------------
 ;;; Standard packages that defer loading until they are called (e.g. minimal
@@ -474,11 +458,6 @@
   :config
   (progn
     (setq compilation-scroll-output 'first-error)))
-
-(use-package pw-misc
-  :after compile
-  :config
-  (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
 
 (use-package ansi-color
   :after compile
@@ -500,13 +479,15 @@
   :commands ediff-load-version-control
   :config
   (progn
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+    (setq ediff-split-window-function 'split-window-horizontally)
     (setq ediff-diff-options "-w")
     (setq-default ediff-auto-refine 'on))
   :init
   (progn
     (defun pw/ediff-current (arg)
       "Run ediff-vc-internal on the current file against it's latest revision.
-If prefix arg, use it as the revision number"
+       If prefix arg, use it as the revision number"
       (interactive "P")
       (ediff-load-version-control t)
       (let ((rev (if arg (format "%d" arg) "")))
@@ -587,31 +568,6 @@ If prefix arg, use it as the revision number"
   :config
   (use-package org-prefs))
 
-(use-package smart-mode-line
-  ;;
-  ;; Smart mode line displays a more graphical modeline.
-  ;;
-  ;; DISABLED (Use powerline mode instead)
-  :disabled t
-  :config
-  (progn
-    (setq sml/theme 'dark)
-    (sml/setup)))
-
-(use-package powerline
-  ;;
-  ;; Make the modeline have lots of pretty graphics.
-  :config
-  (progn
-    (powerline-center-theme)))
-
-(use-package overcast-theme
-  ;;
-  ;;
-  :ensure t
-  :config
-  (load-theme 'overcast t))
-
 (use-package whitespace
   ;; Make "bad" whitespace be visible.  This causes tabs, and whitespace
   ;; at beginning and end of the buffer as well as at the end of the
@@ -630,6 +586,11 @@ If prefix arg, use it as the revision number"
 ;;; cost on startup)
 ;;;----------------------------------------------------------------------
 ;;;
+
+(use-package pw-misc
+  :after compile
+  :config
+  (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
 
 
 (use-package anyins
@@ -833,6 +794,47 @@ If prefix arg, use it as the revision number"
   ;; instead of the buffer
   :bind* (("C-c [" . zoom-frm-out)
           ("C-c ]" . zoom-frm-in)))
+
+(use-package smart-mode-line
+  ;;
+  ;; Smart mode line displays a more graphical modeline.
+  ;;
+  ;; DISABLED (Use powerline mode instead)
+  :disabled t
+  :config
+  (progn
+    (setq sml/theme 'dark)
+    (sml/setup)))
+
+(use-package powerline
+  ;;
+  ;; Make the modeline have lots of pretty graphics.
+  :config
+  (progn
+    (powerline-center-theme)))
+
+(use-package sublime-themes
+  ;;
+  ;; I like the wilson theme from the sublime-themes
+  ;; package.
+  :disabled t
+  :ensure t
+  :config
+  (load-theme 'wilson t nil))
+
+(use-package dracula-theme
+  :disabled t
+  :ensure t
+  :config
+  (load-theme 'dracula t nil))
+
+(use-package overcast-theme
+  ;;
+  ;;
+  ;:disabled t
+  :ensure t
+  :config
+  (load-theme 'overcast t))
 
 ;;;
 ;;;----------------------------------------------------------------------
