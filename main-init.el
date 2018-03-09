@@ -67,9 +67,10 @@
   :config
   (progn
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-    (package-initialize)))
+    (package-initialize t)))
 
 (use-package toolkit-tramp
+  :defer 60
   :config
   (setq password-cache-expiry nil))
 ;;;
@@ -342,6 +343,7 @@
 (use-package bb-style
   ;;
   ;; Bloomberg C++ coding style
+  :defer 30
   :config
   (progn
     ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
@@ -477,6 +479,7 @@
   ;; A nice graphical diff Make sure that ediff ignores all whitespace
   ;; differences and highlights the individual differences
   :commands ediff-load-version-control
+  :bind (("C-c =" . pw/ediff-current))
   :config
   (progn
     (setq ediff-window-setup-function 'ediff-setup-windows-plain)
@@ -493,8 +496,7 @@
       (let ((rev (if arg (format "%d" arg) "")))
         (funcall
          (intern (format "ediff-%S-internal" ediff-version-control-package))
-         rev "" nil)))
-    (bind-key "C-c =" 'pw/ediff-current)))
+         rev "" nil)))))
 
 (use-package follow
   ;;
@@ -774,15 +776,15 @@
 
 (use-package treemacs
   :ensure t
-  :init
+  :bind (("C-x p" . treemacs-select-window)
+         ("C-x t" . treemacs))
+  :config
   (progn
     (defun pw/treemacs-ignore (file path)
       (string-match-p "\.pyc$\\|\.sundev1\.\\|\.o$" file))
     (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
     (setq treemacs-show-hidden-files nil)
-    (setq treemacs-collapse-dirs 2)
-    (bind-key "C-x p" 'treemacs-select-window)
-    (bind-key "C-x t" 'treemacs)))
+    (setq treemacs-collapse-dirs 2)))
 
 (use-package wgrep
   :ensure t)

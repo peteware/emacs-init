@@ -7,8 +7,6 @@
 
 (setq my-base-path "~/usr/emacs")
 (add-to-list 'load-path my-base-path)
-;(add-to-list 'load-path (concat my-base-path "/org-8.2.4/lisp"))
-;(add-to-list 'load-path (concat my-base-path "/org-8.2.4/contrib/lisp"))
 (if (boundp 'custom-theme-load-path)
     (add-to-list 'custom-theme-load-path (concat my-base-path "/themes")))
 
