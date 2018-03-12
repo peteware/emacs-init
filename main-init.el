@@ -403,6 +403,7 @@
   :delight ivy-mode
   :bind (("C-c C-r" . 'ivy-resume))
   :config (progn
+            (setq ivy-wrap t)
             (setq ivy-use-virtual-buffers t)
             (setq ivy-count-format "(%d/%d) ")
             (ivy-mode)))
