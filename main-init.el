@@ -73,8 +73,7 @@
   ;;
   ;; This package makes it easy to hide minor
   ;; modes in the modeline.  Uses for :diminish
-  :ensure t
-  )
+  :ensure t)
 
 (use-package toolkit-tramp
   :defer 60
@@ -350,7 +349,6 @@
 (use-package bb-style
   ;;
   ;; Bloomberg C++ coding style
-  :defer 30
   :config
   (progn
     ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
@@ -669,11 +667,11 @@
   :ensure t
   :bind (("C-c m" . magit-status)
          ("C-c C-m" . magit-dispatch-popup))
-  :delight magit-wip-after-save-mode
-  :delight magit-wip-after-save-local-mode
-  :delight magit-wip-after-apply-mode
-  :delight magit-wip-before-change-mode
-  :delight auto-revert-mode
+  :delight '(magit-wip-after-save-mode
+             magit-wip-after-save-local-mode
+             magit-wip-after-apply-mode
+             magit-wip-before-change-mode
+             auto-revert-mode)
   :config (progn
             (magit-wip-after-save-mode)
             (magit-wip-after-apply-mode)
