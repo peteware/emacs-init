@@ -676,6 +676,8 @@
             (magit-wip-after-save-mode)
             (magit-wip-after-apply-mode)
             (magit-wip-before-change-mode)
+            (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
+            (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
             (setq magit-commit-show-diff nil)
             (setq auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffers-p)
             (remove-hook 'server-switch-hook 'magit-commit-diff)
