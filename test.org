@@ -81,8 +81,11 @@ Emacs.font: Bitstream Vera Sans Mono-16
          ("<triple-wheel-left>" . 'ignore)
          ("<triple-wheel-right>" . 'ignore)
          ))
+#+END_SRC
 
 *** package
+
+#+BEGIN_SRC emacs-lisp
 (use-package package
   ;;
   ;; Use the emacs packaging system to automatically install some packages
@@ -90,15 +93,21 @@ Emacs.font: Bitstream Vera Sans Mono-16
   (progn
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
     (package-initialize t)))
+#+END_SRC
 
 *** delight
+
+#+BEGIN_SRC emacs-lisp
 (use-package delight
   ;;
   ;; This package makes it easy to hide minor
   ;; modes in the modeline.  Uses for :diminish
   :ensure t)
+#+END_SRC
 
 *** toolkit-tramp
+
+#+BEGIN_SRC emacs-lisp
 (use-package toolkit-tramp
   :defer 60
   :config
