@@ -1,13 +1,6 @@
-#+PROPERTY: header-args  :tangle yes :comments org
+#+PROPERTY: header-args  :tangle yes :comments both
 * Emacs init
 ** Configuring X11
-   
-   I have this in my ~/.emacs and ~/.xemacs/init.el:
-   
-   #+BEGIN_EXAMPLE
-   (add-to-list 'load-path "~/usr/emacs")
-   (require 'main-init)
-   #+END_EXAMPLE
    
    In my ~/.Xdefaults I have these lines
    #+BEGIN_EXAMPLE
@@ -33,9 +26,19 @@ Emacs.toolBar: 0
 Emacs.font: Bitstream Vera Sans Mono-16
    #+END_EXAMPLE
 
-   #+BEGIN_SRC emacs-lisp
-   (provide 'main-init)
-   #+END_SRC
+** Initial setup
+*** Make emacs load this file
+    I have this in my ~/.emacs and ~/.xemacs/init.el:
+   
+    #+BEGIN_EXAMPLE
+    (add-to-list 'load-path "~/usr/emacs")
+    (require 'main-init)
+    #+END_EXAMPLE
+*** Initial contents of main-init.el   
+    
+    #+BEGIN_SRC emacs-lisp
+    (provide 'main-init)
+    #+END_SRC
 
 ** Setup proxies for package installation
 
@@ -47,20 +50,20 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
    #+END_SRC
 
-You may need to ``M-x package-install use-package'' before
-any of this works
+   You may need to ``M-x package-install use-package'' before
+   any of this works
+   
+   If a package is not available then ``use-package'' ignores it.
+   You can also not use a package by adding :disabled t to use-package
 
-If a package is not available then ``use-package'' ignores it.
-You can also not use a package by adding :disabled t to use-package
+    #+BEGIN_SRC emacs-lisp
+    (eval-when-compile
+      (require 'use-package))
 
-#+BEGIN_SRC emacs-lisp
-(eval-when-compile
-  (require 'use-package))
+    (setq use-package-compute-statistics t)
+    #+END_SRC
 
-(setq use-package-compute-statistics t)
-#+END_SRC
-
-** use-package
+*** bind-key
 #+BEGIN_SRC emacs-lisp
 
 (use-package bind-key
@@ -78,6 +81,7 @@ You can also not use a package by adding :disabled t to use-package
          ("<triple-wheel-right>" . 'ignore)
          ))
 
+*** package
 (use-package package
   ;;
   ;; Use the emacs packaging system to automatically install some packages
@@ -86,12 +90,14 @@ You can also not use a package by adding :disabled t to use-package
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
     (package-initialize t)))
 
+*** delight
 (use-package delight
   ;;
   ;; This package makes it easy to hide minor
   ;; modes in the modeline.  Uses for :diminish
   :ensure t)
 
+*** toolkit-tramp
 (use-package toolkit-tramp
   :defer 60
   :config
@@ -102,27 +108,33 @@ You can also not use a package by adding :disabled t to use-package
 
    This section is for standard packages that are loaded immediately
 
+*** autorevert (disabled)
+    Cause the buffer to be automatically update when the
+    file changes.
+   
+    DISABLED.  I found the emacs display would stop refreshing
+               after a number of files were loaded.
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package autorevert
+      :disabled t
+      :delight auto-revert-mode
+      :config
+      (setq auto-revert-check-vc-info t)
+      (global-auto-revert-mode))
+    #+END_SRC
+*** bookmark
+
 #+BEGIN_SRC emacs-lisp
-
-(use-package autorevert
-  ;; Cause the buffer to be automatically update when the
-  ;; file changes.
-  ;;
-  ;; DISABLED.  I found the emacs display would stop refreshing
-  ;;            after a number of files were loaded.
-  :disabled t
-  :delight auto-revert-mode
-  :config
-  (setq auto-revert-check-vc-info t)
-  (global-auto-revert-mode))
-
 (use-package bookmark
   ;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
   ;; This makes them save automatically
   :defer 60
   :config
   (setq bookmark-save-flag 1))
-
+#+END_SRC
+*** cua-base (disabled)
+#+BEGIN_SRC emacs-lisp
 (use-package cua-base
   ;; If you like windows style cut and paste then try this.  ^C & ^X only
   ;; work when region is active, ^V and ^Z do paste and undo
@@ -131,12 +143,18 @@ You can also not use a package by adding :disabled t to use-package
   :disabled t
   :config
   (cua-mode 1))
+#+END_SRC
 
+*** delsel
+#+BEGIN_SRC emacs-lisp
 (use-package delsel
   ;; I can't handle the active region getting deleted
   :config
   (delete-selection-mode -1))
+#+END_SRC
 
+*** desktop
+#+BEGIN_SRC emacs-lisp
 (use-package desktop
   ;;
   ;; This causes the set of files being visited to be restored
@@ -159,6 +177,10 @@ You can also not use a package by adding :disabled t to use-package
     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
     ))
 
+#+END_SRC
+
+*** executable
+#+BEGIN_SRC emacs-lisp
 (use-package executable
   ;;
   ;; This makes saving shell scripts automatically make
@@ -169,12 +191,19 @@ You can also not use a package by adding :disabled t to use-package
   (add-hook 'after-save-hook
             'executable-make-buffer-file-executable-if-script-p))
 
+#+END_SRC
+
+*** face-remap
+#+BEGIN_SRC emacs-lisp
 (use-package face-remap
   ;;
   ;; Change the font size in the current buffer (not the window)
   :bind* (("C-c -" . text-scale-decrease)
           ("C-c +" . text-scale-increase)))
+#+END_SRC
 
+*** hl-line (disabled)
+#+BEGIN_SRC emacs-lisp
 (use-package hl-line
   ;;
   ;; `global-hl-line-mode' highlights the current line.  You should make sure
@@ -188,7 +217,10 @@ You can also not use a package by adding :disabled t to use-package
     (setq hl-line-sticky-flag t)
     (setq global-hl-line-sticky-flag t)
     (global-hl-line-mode 1)))
+#+END_SRC
 
+*** ido (disabled)
+#+BEGIN_SRC emacs-lisp
 (use-package ido
   ;;
   ;; Use a fancy auto-complete for buffers and files
@@ -215,6 +247,10 @@ You can also not use a package by adding :disabled t to use-package
     (setq ido-work-directory-list-ignore-regexps
           (list "/bb/bin" "/bb/data" "/bb/data/tmp" "/bbsrc/apputil"))
     (ido-mode 1)))
+#+END_SRC
+
+*** iswitchb (disabled)
+#+BEGIN_SRC emacs-lisp
 
 (use-package iswitchb
   ;;
@@ -231,19 +267,30 @@ You can also not use a package by adding :disabled t to use-package
           iswitchb-use-virtual-buffers t)
     (recentf-mode 1)
     (iswitchb-mode 1)))
+#+END_SRC
 
+*** jit-lock
+#+BEGIN_SRC emacs-lisp
 (use-package jit-lock
   ;;
   ;; Setup lazy font locking
   :config
   (jit-lock-mode t))
+#+END_SRC
 
+*** jka-cmpr-hook
+
+#+BEGIN_SRC emacs-lisp
 (use-package jka-cmpr-hook
   ;;
   ;; Make visiting a *.gz automatically uncompress file
   :config
   (auto-compression-mode 1))
+#+END_SRC
 
+*** mwhell
+
+#+BEGIN_SRC emacs-lisp
 (use-package mwheel
   ;;
   ;; Make sure the mouse wheel scrolls
@@ -252,7 +299,11 @@ You can also not use a package by adding :disabled t to use-package
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
     (setq mouse-wheel-progressive-speed nil)
     (mwheel-install)))
+#+END_SRC
 
+*** outline
+
+#+BEGIN_SRC emacs-lisp
 (use-package outline
   :config
   (add-hook 'prog-mode-hook 'outline-minor-mode))
@@ -262,7 +313,10 @@ You can also not use a package by adding :disabled t to use-package
   :defer 60
   :config
   (show-paren-mode 1))
+#+END_SRC
 
+*** recentf
+#+BEGIN_SRC emacs-lisp
 (use-package recentf
   ;;
   ;; Save list of recently visited files
@@ -272,20 +326,29 @@ You can also not use a package by adding :disabled t to use-package
     (setq recentf-max-saved-items 100)
     (setq recentf-auto-cleanup 3600)    ;cleanup after idle 1hr
     (recentf-mode 1)))
+#+END_SRC
 
-(use-package savehist
-  ;;
-  ;; Save emacs's internal command history.
-  :defer 15
-  :config
-  (progn
-    (setq savehist-additional-variables
-          '(compile-command
-            grep-find-history
-            grep-history
-            grep-regexp-history
-            grep-files-history))
-    (savehist-mode 1)))
+*** savehist
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package savehist
+      ;;
+      ;; Save emacs's internal command history.
+      :defer 15
+      :config
+      (progn
+        (setq savehist-additional-variables
+              '(compile-command
+                grep-find-history
+                grep-history
+                grep-regexp-history
+                grep-files-history))
+        (savehist-mode 1)))
+    #+END_SRC
+
+*** saveplace
+
+#+BEGIN_SRC emacs-lisp
 
 (use-package saveplace
   ;;
@@ -298,6 +361,11 @@ You can also not use a package by adding :disabled t to use-package
     (setq-default save-place t)
     (setq save-place-limit nil)
     (run-at-time 3600  3600 'save-place-alist-to-file)))
+#+END_SRC
+
+*** scroll-bar
+
+#+BEGIN_SRC emacs-lisp
 
 (use-package scroll-bar
   ;;
@@ -314,6 +382,10 @@ You can also not use a package by adding :disabled t to use-package
         (setenv "EDITOR" "emacsclient"))
     (message "server-start")
     (server-start)))
+#+END_SRC
+
+*** tool-bar (disabled)
+#+BEGIN_SRC emacs-lisp
 
 (use-package tool-bar
   ;;
@@ -322,7 +394,11 @@ You can also not use a package by adding :disabled t to use-package
   ;; which keeps it from displaying on startup
   :config
   (tool-bar-mode -1))
+#+END_SRC
 
+*** menu-bar (disabled)
+
+#+BEGIN_SRC emacs-lisp
 (use-package menu-bar
   ;;
   ;; Turn the menubar off.
@@ -331,7 +407,10 @@ You can also not use a package by adding :disabled t to use-package
   :disabled t
   :config
   (menu-bar-mode -1))
+#+END_SRC
 
+*** uniquify
+#+BEGIN_SRC emacs-lisp
 (use-package uniquify
   ;;
   ;; Make it so buffers with the same name are are made unique by added
@@ -343,124 +422,168 @@ You can also not use a package by adding :disabled t to use-package
 
 #+END_SRC
 
-** Non-standard packages that are loaded immediately
+** Non-standard packages loaded immediately
 
+   These are non-standard packages that are
+   loaded immediately so have some affect on startup
+
+*** atomic-chrome
+    #+BEGIN_SRC emacs-lisp
+    (use-package atomic-chrome
+      ;;
+      ;; You must first install Atomic Chrome extension from Chrome Web
+      ;; Store and this allows editting text areas in Chrome via
+      ;; a two-way connection.
+      :config
+      (atomic-chrome-start-server))
+    #+END_SRC
+
+*** bb-style
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package bb-style
+      ;;
+      ;; Bloomberg C++ coding style
+      :config
+      (progn
+        ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
+        ;; c-mode
+        (setq c-default-style "bb")
+        (setq c-tab-always-indent nil)
+        (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
+      ))
+    #+END_SRC
+
+*** diminish
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package diminish (disabled)
+      ;;
+      ;; Do not display these minor modes in mode-line
+      :disabled t
+      :config
+      (diminish 'abbrev-mode))
+    #+END_SRC
+
+*** fancy-narrow
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package fancy-narrow
+      ;;
+      ;; Causes narrow region to dim the
+      ;; rest of the buffer giving a much
+      ;; more natual look.
+      :delight fancy-narrow-mode
+      :config
+      (fancy-narrow-mode 1))
+    #+END_SRC
+
+*** git-getter-fringe+ (disabled)
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package git-gutter-fringe+
+      ;;
+      ;; Display lines that have changed in the left margin.
+      ;; This works with linum-mode but not in a tty
+      ;;
+      ;; DISABLED (slow loading)
+      :disabled t
+      :config (progn
+                (setq git-gutter-fr+-side 'right-fringe)
+                (global-git-gutter+-mode)))
+    #+END_SRC
+
+*** magithub
+    #+BEGIN_SRC emacs-lisp
+      (use-package magithub
+        ;;
+        ;; Interact with github via magit
+        ;;
+        ;; DISABLED (slow loading)
+        ;;
+        :after magit
+        :disabled t
+        :config
+        (magithub-feature-autoinject t))
+    #+END_SRC
+
+*** ivy
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package ivy
+      :ensure t
+      :delight ivy-mode
+      :bind (("C-c C-r" . 'ivy-resume))
+      :config (progn
+                (setq ivy-wrap t)
+                (setq ivy-use-virtual-buffers t)
+                (setq ivy-count-format "(%d/%d) ")
+                (ivy-mode)))
+    #+END_SRC
+
+*** counsel
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package counsel
+      :after ivy
+      :ensure t
+      :delight counsel-mode
+      :bind (("C-c g" .  'counsel-git)
+             ("C-c j" .  'counsel-git-grep)
+             ("C-c k" .  'counsel-ag)
+             ("C-x l" .  'counsel-locate)
+             ("C-S-o" .  'counsel-rhythmbox)
+             )
+      :config (progn (counsel-mode)))
+    #+END_SRC
+
+*** swiper
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package swiper
+      :after ivy
+      :ensure t
+      :bind (("C-s" . 'swiper)))
+    #+END_SRC
+
+*** ido-vertical
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package ido-vertical-mode
+      ;;
+      ;; Causes ido-mode to display completions vertically
+      ;; and ``Ctl n'' and ``Ctl p'' move down and up in list
+      :after ido
+      :defer 30
+      :ensure t
+      :config
+      (ido-vertical-mode 1))
+    #+END_SRC
+
+*** scratch-ext
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package scratch-ext
+      ;;
+      ;; Make *scratch* buffers get saved
+      :ensure t
+      :config
+      (save-excursion
+        (setq scratch-ext-log-directory "~/.emacs.d/scratch")
+        (if (not (file-exists-p scratch-ext-log-directory))
+            (mkdir scratch-ext-log-directory t))
+        (scratch-ext-create-scratch)
+        (set-buffer "*scratch*")
+        (scratch-ext-restore-last-scratch)))
+    #+END_SRC
+
+** Standard packages that defer loading
+
+   These packages are not loaded until they are used (e.g. minimal
+   cost on startup)
+
+*** compile
 #+BEGIN_SRC emacs-lisp
-(use-package atomic-chrome
-  ;;
-  ;; You must first install Atomic Chrome extension from Chrome Web
-  ;; Store and this allows editting text areas in Chrome via
-  ;; a two-way connection.
-  :config
-  (atomic-chrome-start-server))
-
-(use-package bb-style
-  ;;
-  ;; Bloomberg C++ coding style
-  :config
-  (progn
-    ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
-    ;; c-mode
-    (setq c-default-style "bb")
-    (setq c-tab-always-indent nil)
-    (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
-  ))
-
-(use-package diminish
-  ;;
-  ;; Do not display these minor modes in mode-line
-  :disabled t
-  :config
-  (diminish 'abbrev-mode))
-
-(use-package fancy-narrow
-  ;;
-  ;; Causes narrow region to dim the
-  ;; rest of the buffer giving a much
-  ;; more natual look.
-  :delight fancy-narrow-mode
-  :config
-  (fancy-narrow-mode 1))
-
-(use-package git-gutter-fringe+
-  ;;
-  ;; Display lines that have changed in the left margin.
-  ;; This works with linum-mode but not in a tty
-  ;;
-  ;; DISABLED (slow loading)
-  :disabled t
-  :config (progn
-            (setq git-gutter-fr+-side 'right-fringe)
-            (global-git-gutter+-mode)))
-
-(use-package magithub
-  ;;
-  ;; Interact with github via magit
-  ;;
-  ;; DISABLED (slow loading)
-  ;;
-  :after magit
-  :disabled t
-  :config
-  (magithub-feature-autoinject t))
-
-(use-package ivy
-  :ensure t
-  :delight ivy-mode
-  :bind (("C-c C-r" . 'ivy-resume))
-  :config (progn
-            (setq ivy-wrap t)
-            (setq ivy-use-virtual-buffers t)
-            (setq ivy-count-format "(%d/%d) ")
-            (ivy-mode)))
-
-(use-package counsel
-  :after ivy
-  :ensure t
-  :delight counsel-mode
-  :bind (("C-c g" .  'counsel-git)
-         ("C-c j" .  'counsel-git-grep)
-         ("C-c k" .  'counsel-ag)
-         ("C-x l" .  'counsel-locate)
-         ("C-S-o" .  'counsel-rhythmbox)
-         )
-  :config (progn (counsel-mode)))
-
-(use-package swiper
-  :after ivy
-  :ensure t
-  :bind (("C-s" . 'swiper)))
-         
-(use-package ido-vertical-mode
-  ;;
-  ;; Causes ido-mode to display completions vertically
-  ;; and ``Ctl n'' and ``Ctl p'' move down and up in list
-  :after ido
-  :defer 30
-  :ensure t
-  :config
-  (ido-vertical-mode 1))
-
-(use-package scratch-ext
-  ;;
-  ;; Make *scratch* buffers get saved
-  :ensure t
-  :config
-  (save-excursion
-    (setq scratch-ext-log-directory "~/.emacs.d/scratch")
-    (if (not (file-exists-p scratch-ext-log-directory))
-        (mkdir scratch-ext-log-directory t))
-    (scratch-ext-create-scratch)
-    (set-buffer "*scratch*")
-    (scratch-ext-restore-last-scratch)))
-
-;;;
-;;;----------------------------------------------------------------------
-;;; Standard packages that defer loading until they are called (e.g. minimal
-;;; cost on startup)
-;;;----------------------------------------------------------------------
-;;;
-
 (use-package compile
   ;;
   ;; Setup compilation buffers
@@ -468,7 +591,10 @@ You can also not use a package by adding :disabled t to use-package
   :config
   (progn
     (setq compilation-scroll-output 'first-error)))
+#+END_SRC
 
+*** ansi-color
+#+BEGIN_SRC emacs-lisp
 (use-package ansi-color
   :after compile
   :config
@@ -481,7 +607,10 @@ You can also not use a package by adding :disabled t to use-package
           ["black" "red4" "green4" "yellow4"
            "#8be9fd" "magenta4" "cyan4" "white"])
     (setq ansi-color-map (ansi-color-make-color-map))))
+#+END_SRC
 
+*** ediff
+#+BEGIN_SRC emacs-lisp
 (use-package ediff
   ;;
   ;; A nice graphical diff Make sure that ediff ignores all whitespace
@@ -505,7 +634,10 @@ You can also not use a package by adding :disabled t to use-package
         (funcall
          (intern (format "ediff-%S-internal" ediff-version-control-package))
          rev "" nil)))))
+#+END_SRC
 
+*** follow
+#+BEGIN_SRC emacs-lisp
 (use-package follow
   ;;
   ;; This makes a single file wrap around between two windows.
@@ -513,7 +645,10 @@ You can also not use a package by adding :disabled t to use-package
   ;; and the other window scrolls.  I bound F7 to do get
   ;; rid of the other windows and split.
   :bind ("<f7>" . follow-delete-other-windows-and-split))
+#+END_SRC
 
+*** grep
+#+BEGIN_SRC emacs-lisp
 (use-package grep
   ;; `rgrep' recursively greps for a pattern.  It uses a key to specify
   ;; filenames and ignores directories like CVS.  "cchh" is all C++
@@ -537,7 +672,10 @@ You can also not use a package by adding :disabled t to use-package
             ("texi" . "*.texi")
             ("asm" . "*.[sS]")
             ("code" . "*.c *.C *.h *.cpp *.cc *.f *.py")))))
+#+END_SRC
 
+*** hideshow
+#+BEGIN_SRC emacs-lisp
 (use-package hideshow
   ;;
   ;; Setup commands and menus to hide/show blocks of code
@@ -546,7 +684,10 @@ You can also not use a package by adding :disabled t to use-package
   (progn
     (add-hook 'c++-mode-hook 'hs-minor-mode)
     (add-hook 'c-mode-hook 'hs-minor-mode)))
+#+END_SRC
 
+*** linum
+#+BEGIN_SRC emacs-lisp
 (use-package linum
   ;;
   ;; Make it so line numbers show up in left margin Used in C/C++
@@ -554,7 +695,10 @@ You can also not use a package by adding :disabled t to use-package
   :commands linum-mode
   :init (add-hook 'prog-mode-hook 'linum-mode)
   :config (setq linum-format 'dynamic))
+#+END_SRC
 
+*** nlinum
+#+BEGIN_SRC emacs-lisp
 (use-package nlinum
   ;;
   ;; Make it so line numbers show up in left margin
@@ -563,7 +707,10 @@ You can also not use a package by adding :disabled t to use-package
   :disabled t
   :commands nlinum-mode
   :init (add-hook 'prog-mode-hook 'nlinum-mode))
+#+END_SRC
 
+*** org
+#+BEGIN_SRC emacs-lisp
 (use-package org
   ;;
   ;; org-mode provides an outline, todo, diary, calendar like interface.
@@ -577,7 +724,10 @@ You can also not use a package by adding :disabled t to use-package
   :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
   :config
   (use-package org-prefs))
+#+END_SRC
 
+*** whitespace
+#+BEGIN_SRC emacs-lisp
 (use-package whitespace
   ;; Make "bad" whitespace be visible.  This causes tabs, and whitespace
   ;; at beginning and end of the buffer as well as at the end of the
@@ -589,20 +739,24 @@ You can also not use a package by adding :disabled t to use-package
   (progn
     (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
     (setq whitespace-line-column nil)))
+#+END_SRC
 
-;;;
-;;;----------------------------------------------------------------------
-;;; Non-standard packages that defer loading until they are called (e.g. minimal
-;;; cost on startup)
-;;;----------------------------------------------------------------------
-;;;
+** Non-standard packages that defer loading 
 
+   These packages are not loaded unutil used (e.g. minimal cost on
+   startup)
+
+*** pw-misc
+#+BEGIN_SRC emacs-lisp
 (use-package pw-misc
   :after compile
   :config
   (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
+#+END_SRC
 
 
+*** anyins
+#+BEGIN_SRC emacs-lisp
 (use-package anyins
   ;;
   ;; Freaky way to insert text
@@ -616,7 +770,10 @@ You can also not use a package by adding :disabled t to use-package
   ;; Download package if not installed!
   :ensure t
   :bind ("C-c i" . anyins-mode))
+#+END_SRC
 
+*** avy
+#+BEGIN_SRC emacs-lisp
 (use-package avy
   ;;
   ;; Fast way to jump to a specific character.  Prompts for
@@ -626,7 +783,10 @@ You can also not use a package by adding :disabled t to use-package
   :ensure t
   :bind (("M-s" . avy-goto-word-1))
   :config (setq avi-all-windows nil))
+#+END_SRC
 
+*** beacon
+#+BEGIN_SRC emacs-lisp
 (use-package beacon
   ;; Highlight the line the point is on when the screen jumps around.
   :config
@@ -634,7 +794,10 @@ You can also not use a package by adding :disabled t to use-package
     (beacon-mode 1)
     (setq beacon-push-mark 35)
     (setq beacon-color "#666600")))
+#+END_SRC
 
+*** comint-prefs
+#+BEGIN_SRC emacs-lisp
 (use-package comint-prefs
   ;;
   ;; Setup preferences for shell, compile and other comint based commands
@@ -647,12 +810,18 @@ You can also not use a package by adding :disabled t to use-package
     (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
     (add-hook 'comint-mode-hook 'comint-for-pete)
     (add-hook 'dbx-mode-hook 'dbx-for-pete))  )
+#+END_SRC
 
+*** csc-mode
+#+BEGIN_SRC emacs-lisp
 (use-package csc-mode
   ;;
   ;; Bloomberg database schema
   :mode ("\\.csc2$" . csc-mode))
+#+END_SRC
 
+*** fill-column-indicator
+#+BEGIN_SRC emacs-lisp
 (use-package fill-column-indicator
   ;;
   ;; Make a vertical bar show at fill-column
@@ -661,12 +830,18 @@ You can also not use a package by adding :disabled t to use-package
   :disabled t
   :commands (fci-mode)
   :init (add-hook 'prog-mode-hook 'fci-mode))
+#+END_SRC
   
+*** lrl-mode
+#+BEGIN_SRC emacs-lisp
 (use-package lrl-mode
   ;;
   ;; Bloomberg database params
   :mode ("\\.lrl\\'" . lrl-mode))
+#+END_SRC
 
+*** magit
+#+BEGIN_SRC emacs-lisp
 (use-package magit
   ;;
   ;; Provide a way of interacting with a Git repository.
@@ -694,7 +869,10 @@ You can also not use a package by adding :disabled t to use-package
             (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
             (setq magit-view-git-manual-method 'man)
             (setq vc-handled-backends nil)))
+#+END_SRC
 
+*** multiple-cursors
+#+BEGIN_SRC emacs-lisp
 (use-package multiple-cursors
   ;;
   ;; You can place multiple cursors in a buffer
@@ -702,7 +880,10 @@ You can also not use a package by adding :disabled t to use-package
   :bind (("C-. e" . mc/edit-lines)
          ("C-. >" . mc/mark-next-like-this)
          ("C-. <" . mc/mark=previous-like-this)))
+#+END_SRC
 
+*** num3-mode
+#+BEGIN_SRC emacs-lisp
 (use-package num3-mode
   ;;
   ;; Make long strings of digits alternate groups of 3 with bold.
@@ -714,7 +895,10 @@ You can also not use a package by adding :disabled t to use-package
   :delight num3-mode
   :init (add-hook 'prog-mode-hook 'num3-mode)
   :config (make-face-bold 'num3-face-even))
+#+END_SRC
 
+*** ag
+#+BEGIN_SRC emacs-lisp
 (use-package ag
   ;;
   ;; A fast search across lots of files.  Relies
@@ -723,7 +907,10 @@ You can also not use a package by adding :disabled t to use-package
   :ensure t
   :bind (("C-c f" . ag))
   :config (setq ag-reuse-buffers t))
+#+END_SRC
   
+*** color-identifiers-mode
+#+BEGIN_SRC emacs-lisp
 (use-package color-identifiers-mode
   ;;
   ;; Make each variable in a different color
@@ -735,7 +922,10 @@ You can also not use a package by adding :disabled t to use-package
   (add-hook 'prog-mode-hook
             'color-identifiers-mode)
   :delight color-identifiers-mode)
+#+END_SRC
 
+*** rainbow-identifiers
+#+BEGIN_SRC emacs-lisp
 (use-package rainbow-identifiers
   ;;
   ;; Make each variable a different color
@@ -746,7 +936,10 @@ You can also not use a package by adding :disabled t to use-package
   (progn
     (add-hook 'prog-mode-hook
               'rainbow-identifiers-mode)))
+#+END_SRC
 
+*** pw-misc
+#+BEGIN_SRC emacs-lisp
 (use-package pw-misc
   ;;
   ;; Some commands I find useful
@@ -755,7 +948,10 @@ You can also not use a package by adding :disabled t to use-package
   :bind (("C-c p" . pw/prev-frame)
          ("C-c \\" . pw/reindent)
          ("C-c e" . pw/eval-region-or-defun)))
+#+END_SRC
 
+*** pw-trunc-lines
+#+BEGIN_SRC emacs-lisp
 (use-package pw-trunc-lines
   ;;
   ;; Toggle truncation of long lines
@@ -769,7 +965,10 @@ You can also not use a package by adding :disabled t to use-package
     (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
     (add-hook 'compilation-mode-hook 'pw/trunc-lines)
     (add-hook 'shell-mode-hook 'pw/trunc-lines)))
+#+END_SRC
 
+*** shell-switch
+#+BEGIN_SRC emacs-lisp
 (use-package shell-switch
   ;;
   ;; Pete's hack to make switching to a shell buffer
@@ -783,7 +982,10 @@ You can also not use a package by adding :disabled t to use-package
     (bind-keys* :prefix-map clt-c-4-keymap
                 :prefix "C-c 4"
                 ("s" . shell-switch-other-window))))
+#+END_SRC
 
+*** treemacs
+#+BEGIN_SRC emacs-lisp
 (use-package treemacs
   :ensure t
   :bind (("C-x p" . treemacs-select-window)
@@ -795,10 +997,16 @@ You can also not use a package by adding :disabled t to use-package
     (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
     (setq treemacs-show-hidden-files nil)
     (setq treemacs-collapse-dirs 2)))
+#+END_SRC
 
+*** wgrep
+#+BEGIN_SRC emacs-lisp
 (use-package wgrep
   :ensure t)
+#+END_SRC
 
+*** zoom-frm
+#+BEGIN_SRC emacs-lisp
 (use-package zoom-frm
   ;;
   ;; Much like face-remap that adds test-scale-increase and
@@ -806,7 +1014,10 @@ You can also not use a package by adding :disabled t to use-package
   ;; instead of the buffer
   :bind* (("C-c [" . zoom-frm-out)
           ("C-c ]" . zoom-frm-in)))
+#+END_SRC
 
+*** smart-mode-line
+#+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
   ;;
   ;; Smart mode line displays a more graphical modeline.
@@ -817,14 +1028,20 @@ You can also not use a package by adding :disabled t to use-package
   (progn
     (setq sml/theme 'dark)
     (sml/setup)))
+#+END_SRC
 
+*** powerline
+#+BEGIN_SRC emacs-lisp
 (use-package powerline
   ;;
   ;; Make the modeline have lots of pretty graphics.
   :config
   (progn
     (powerline-center-theme)))
+#+END_SRC
 
+*** sublime-themes
+#+BEGIN_SRC emacs-lisp
 (use-package sublime-themes
   ;;
   ;; I like the wilson theme from the sublime-themes
@@ -833,13 +1050,19 @@ You can also not use a package by adding :disabled t to use-package
   :ensure t
   :config
   (load-theme 'wilson t nil))
+#+END_SRC
 
+*** dracula-theme
+#+BEGIN_SRC emacs-lisp
 (use-package dracula-theme
   :disabled t
   :ensure t
   :config
   (load-theme 'dracula t nil))
+#+END_SRC
 
+*** overcast-theme
+#+BEGIN_SRC emacs-lisp
 (use-package overcast-theme
   ;;
   ;;
@@ -847,13 +1070,11 @@ You can also not use a package by adding :disabled t to use-package
   :ensure t
   :config
   (load-theme 'overcast t))
+#+END_SRC
 
-;;;
-;;;----------------------------------------------------------------------
-;;; Various preferences
-;;;----------------------------------------------------------------------
-;;;
+** Various preferences
 
+#+BEGIN_SRC emacs-lisp
 ;;
 ;; Allow narrow to region (`C-X n n`)
 (put 'narrow-to-region 'disabled nil)

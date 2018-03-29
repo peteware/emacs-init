@@ -1,31 +1,31 @@
-;;;
-;;; I have this in my ~/.emacs and ~/.xemacs/init.el:
-;;;
-;;; (add-to-list 'load-path "~/usr/emacs")
-;;; (require 'main-init)
-;;;
-;;; In my ~/.Xdefaults I have these lines
-;;; Emacs*background: grey15
-;;; Emacs*foreground: grey90
-;;; Emacs*pointerColor: green
-;;; Emacs*cursorColor: grey90
-;;; Emacs.geometry: 135x65+50+0
-;;; Emacs.verticalScrollBars: off
-;;; Emacs.toolBar: 0
-;;; ! Try this to list all potential server side fonts:
-;;; !     $ xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-m*'
-;;; !     $ xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-c*'
-;;; ! The "m" means monospace; "c" for character cell.
-;;; !
-;;; ! You want this to be "loose" enough to handle bold and oblique.
-;;; ! The "140" is point size time 10 (e.g. 14 points); "100" is
-;;; !Emacs.font: -adobe-courier-*-*-normal--*-170-100-*-m-*-iso8859-1
-;;;
-;;; ! Or if in linux with real fonts
-;;; ! fc-list :spacing=mono
-;;; ! fc-list :space=cell
-;;; Emacs.font: Bitstream Vera Sans Mono-16
-;;;
+;;
+;; I have this in my ~/.emacs and ~/.xemacs/init.el:
+;;
+;; (add-to-list 'load-path "~/usr/emacs")
+;; (require 'main-init)
+;;
+;; In my ~/.Xdefaults I have these lines
+;; Emacs*background: grey15
+;; Emacs*foreground: grey90
+;; Emacs*pointerColor: green
+;; Emacs*cursorColor: grey90
+;; Emacs.geometry: 135x65+50+0
+;; Emacs.verticalScrollBars: off
+;; Emacs.toolBar: 0
+;; ! Try this to list all potential server side fonts:
+;; !     $ xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-m*'
+;; !     $ xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-c*'
+;; ! The "m" means monospace; "c" for character cell.
+;; !
+;; ! You want this to be "loose" enough to handle bold and oblique.
+;; ! The "140" is point size time 10 (e.g. 14 points); "100" is
+;; !Emacs.font: -adobe-courier-*-*-normal--*-170-100-*-m-*-iso8859-1
+;;
+;; ! Or if in linux with real fonts
+;; ! fc-list :spacing=mono
+;; ! fc-list :space=cell
+;; Emacs.font: Bitstream Vera Sans Mono-16
+;;
 
 (provide 'main-init)
 
@@ -34,12 +34,12 @@
   (setq password-cache-expiry nil)
   (setq url-proxy-services '(("http" . "proxy.bloomberg.com:81"))))
 
-;;;
-;;; You may need to ``M-x package-install use-package'' before
-;;; any of this works
-;;;
-;;; If a package is not available then ``use-package'' ignores it.
-;;; You can also not use a package by adding :disabled t to use-package
+;;
+;; You may need to ``M-x package-install use-package'' before
+;; any of this works
+;;
+;; If a package is not available then ``use-package'' ignores it.
+;; You can also not use a package by adding :disabled t to use-package
 
 (eval-when-compile
   (require 'use-package))
@@ -79,21 +79,21 @@
   :defer 60
   :config
   (setq password-cache-expiry nil))
-;;;
-;;;----------------------------------------------------------------------
-;;; This file is organized so that:
-;;;  1. Section for standard packages that are loaded immediately
-;;;  2. Section for non-standard packages that are loaded immediately
-;;;  3. Section for standard packages that are loaded on demand
-;;;  4. Section for non-standard packages that are loaded on demand
-;;;----------------------------------------------------------------------
-;;;
+;;
+;;----------------------------------------------------------------------
+;; This file is organized so that:
+;;  1. Section for standard packages that are loaded immediately
+;;  2. Section for non-standard packages that are loaded immediately
+;;  3. Section for standard packages that are loaded on demand
+;;  4. Section for non-standard packages that are loaded on demand
+;;----------------------------------------------------------------------
+;;
 
-;;;
-;;;----------------------------------------------------------------------
-;;; This section is for standard packages that are loaded immediately
-;;;----------------------------------------------------------------------
-;;;
+;;
+;;----------------------------------------------------------------------
+;; This section is for standard packages that are loaded immediately
+;;----------------------------------------------------------------------
+;;
 
 (use-package autorevert
   ;; Cause the buffer to be automatically update when the
@@ -332,11 +332,11 @@
     (setq uniquify-buffer-name-style 'post-forward)
     (setq uniquify-after-kill-buffer-p t)))
 
-;;;
-;;;----------------------------------------------------------------------
-;;; This section are non-standard packages that are loaded immediately
-;;;----------------------------------------------------------------------
-;;;
+;;
+;;----------------------------------------------------------------------
+;; This section are non-standard packages that are loaded immediately
+;;----------------------------------------------------------------------
+;;
 
 (use-package atomic-chrome
   ;;
@@ -446,12 +446,12 @@
     (set-buffer "*scratch*")
     (scratch-ext-restore-last-scratch)))
 
-;;;
-;;;----------------------------------------------------------------------
-;;; Standard packages that defer loading until they are called (e.g. minimal
-;;; cost on startup)
-;;;----------------------------------------------------------------------
-;;;
+;;
+;;----------------------------------------------------------------------
+;; Standard packages that defer loading until they are called (e.g. minimal
+;; cost on startup)
+;;----------------------------------------------------------------------
+;;
 
 (use-package compile
   ;;
@@ -582,12 +582,12 @@
     (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
     (setq whitespace-line-column nil)))
 
-;;;
-;;;----------------------------------------------------------------------
-;;; Non-standard packages that defer loading until they are called (e.g. minimal
-;;; cost on startup)
-;;;----------------------------------------------------------------------
-;;;
+;;
+;;----------------------------------------------------------------------
+;; Non-standard packages that defer loading until they are called (e.g. minimal
+;; cost on startup)
+;;----------------------------------------------------------------------
+;;
 
 (use-package pw-misc
   :after compile
@@ -840,11 +840,11 @@
   :config
   (load-theme 'overcast t))
 
-;;;
-;;;----------------------------------------------------------------------
-;;; Various preferences
-;;;----------------------------------------------------------------------
-;;;
+;;
+;;----------------------------------------------------------------------
+;; Various preferences
+;;----------------------------------------------------------------------
+;;
 
 ;;
 ;; Allow narrow to region (`C-X n n`)
