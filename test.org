@@ -1,7 +1,8 @@
 #+STARTUP: content
 #+PROPERTY: header-args  :tangle yes :comments both
 * Emacs init
-** Configuring X11
+** Setting things up
+*** Configuring X11
    
    In my ~/.Xdefaults I have these lines
    #+BEGIN_EXAMPLE
@@ -27,7 +28,7 @@ Emacs.toolBar: 0
 Emacs.font: Bitstream Vera Sans Mono-16
    #+END_EXAMPLE
 
-** Initial setup
+*** Initial setup
 *** Make emacs load this file
     I have this in my ~/.emacs and ~/.xemacs/init.el:
    
@@ -41,7 +42,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     (provide 'main-init)
     #+END_SRC
 
-** Setup proxies for package installation
+*** Setup proxies for package installation
 
    #+BEGIN_SRC emacs-lisp
    (when (or (string-equal system-type "windows-nt")
@@ -586,9 +587,10 @@ Emacs.font: Bitstream Vera Sans Mono-16
     1. Enter anyins-mode
     2. Move around; mark spots you want to insert text with RET
     3. To insert text
+
        a. ``y'' inserts each line from kill ring at each marked spot, or
        b.  ``!'' runs a shell command line 'seq -s ". \n" 1 3' generates
-    numbers "1. "  "2. " "3. " and inserts it at each markets tpot
+           numbers "1. "  "2. " "3. " and inserts it at each markets tpot
     #+BEGIN_SRC emacs-lisp
     (use-package anyins
       ;;
@@ -795,6 +797,162 @@ Emacs.font: Bitstream Vera Sans Mono-16
       (load-theme 'overcast t))
     #+END_SRC
 
+** Various preferences
+
+#+BEGIN_SRC emacs-lisp
+;;
+;; Allow narrow to region (`C-X n n`)
+(put 'narrow-to-region 'disabled nil)
+
+;;
+;; Force Mac OS X to use Consolas at 16pt
+(if (eq (window-system) 'ns)
+    (custom-set-faces '(default ((t (:height 160 :family "Consolas"))))))
+
+
+;;
+;; Do not display message in the scratch buffer or the startup message
+;; or the message in the echo area
+(setq initial-scratch-message "")
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-echo-area-message "pware")
+
+;;
+;; Turn on displaying the date and time in the mode line.
+;; Enable displaying the line and column numbers in the mode line
+;; But don't do that if the buffer is >250k
+;; Do not blink the cursor
+(setq display-time-day-and-date t)
+(setq line-number-display-limit 250000)
+(display-time-mode)
+(line-number-mode 1)
+(column-number-mode 1)
+(size-indication-mode 1)
+(blink-cursor-mode -1)
+
+;;
+;; If at beginning of line, the Ctl-K kills including the newline
+;; (I'm hardwired to type Ctl-K twice)
+;(setq kill-whole-line t)
+
+;;
+;; Latest Emacs can wrap lines at word boundaries and will move the cursor
+;; so it stays in the same column on screen.  I'm too used to the old style.
+(setq-default word-wrap nil)
+(setq line-move-visual nil)
+(setq visual-line-mode nil)
+
+;;
+;; Make it so moving up or down does it one line at a time.
+;; `scroll-step' 0 works better with Emacs which now supports
+;; `scroll-conservatively'.
+;; `scroll-margin' says to keep this many lines
+;; above or below so you get some context.
+;; `scroll-preserve-screen-position' says when scrolling pages, keep
+;; point at same physical spot on screen.
+(setq scroll-step 0)
+(setq scroll-conservatively 15)
+(setq scroll-margin 2)
+(setq scroll-preserve-screen-position 'keep)
+;;
+;; I set horizontal scrolling because I'd have trouble with
+;; long lines in shell output.  This seemed to get
+;; them to display faster by actually slowing things down
+;;
+;; `hscroll-margin' is how close cursor gets before
+;; doing horizontal scrolling
+;; `hscroll-step' is how far to scroll when marg is reached.
+;;
+(setq hscroll-margin 1)
+(setq hscroll-step 5)
+;;
+;; Incremental search settings
+(setq lazy-highlight-max-at-a-time 10)
+(setq lazy-highlight-initial-delay .5)
+(setq lazy-highlight-interval .1)
+
+;;
+;; Cause the gutter to display little arrows and
+;; boxes if there is more to a file
+(setq-default indicate-buffer-boundaries 'left)
+(setq-default indicate-empty-lines t)
+
+;;
+;; Even though I did something with the mouse do not
+;; popup a dialog box but prompt from the mode line
+(setq use-dialog-box nil)
+
+;;
+;; This _sounds_ like something that should be nil but
+;; the reality is that when user input stops redisplay
+;; a bunch of screen optimizations are lost.  The
+;; default is prior to emacs-24 is nil
+(setq redisplay-dont-pause t)
+
+;;
+;; I found visiting a file to be really slow and realized
+;; it was from figuring out the version control
+(setq vc-handled-backends nil)
+
+;;
+;; I don't like actual tabs being inserted
+(setq-default indent-tabs-mode nil)
+
+;;
+;; Weird X11 stuff with the cut-and-paste.  I think these settings
+;; provide the best compromise.
+;;
+;; The world uses what is called a clipboard for copy-and-paste.  X11
+;; had a more flexible arrangement with a primary cut buffer that some
+;; X11 older clients still use.  Older clients typically means xterm
+;; and mrxvt.
+;;
+;; In Exceed, you need to set the config so that the "X Selection" tab
+;; has the "X Selection Associated with Edit Operations:" be
+;; "CLIPBOARD".
+;;
+;; The following puts killed text into the clipboard which makes it
+;; avaiable for all Windows clients given the above Exceed setting.
+(setq x-select-enable-clipboard t)
+;;
+;; The following puts killed text into the X11 primary cut buffer.
+;; Text copied in an xterm can either be pasted into emacs with a
+;; middle-mouse or the usual yank operations like ``C-y''.  You cannot
+;; paste such text into other Window's applications without going through
+;; emacs.  Usualy middle mouse button in an xterm pastes the text
+;; from emacs.
+(setq x-select-enable-primary t)
+
+;;
+;; Alternatively, in Exceed, set the "X Selection Associated with
+;; Edit Operations:" to be "PRIMARY" and use these settings.  This lets
+;; older xterm/mrxvt co-exist with Windows applications.
+;;
+;; To copy to an xterm use left-mouse to select the text in emacs and
+;; then usual paste with middle-mouse to paste to the xterm.
+;;
+;; (setq x-select-enable-clipboard nil)
+;; (setq x-select-enable-primary t)
+
+;;
+;; Do not beep if I kill text in a read-only buffer
+(setq kill-read-only-ok t)
+
+;;
+;; Usually, my home directory is faster for saving files
+;; then anywhere else.
+(setq backup-directory-alist '(("." . "~/.backups")))
+
+;; Make it so selecting the region highlights it and causes many
+;; commands to work only on the region
+(setq transient-mark-mode t)
+
+;;
+;; Ignore some other file extensions
+(setq completion-ignored-extensions (append completion-ignored-extensions '(".d" ".dd" ".tsk")))
+
+
+#+END_SRC
 ** Disabled packages
    I've disabled these packages for various reasons.  I'm
    not sure why I leave them around.
@@ -1056,159 +1214,3 @@ Emacs.font: Bitstream Vera Sans Mono-16
       (load-theme 'dracula t nil))
     #+END_SRC
 
-** Various preferences
-
-#+BEGIN_SRC emacs-lisp
-;;
-;; Allow narrow to region (`C-X n n`)
-(put 'narrow-to-region 'disabled nil)
-
-;;
-;; Force Mac OS X to use Consolas at 16pt
-(if (eq (window-system) 'ns)
-    (custom-set-faces '(default ((t (:height 160 :family "Consolas"))))))
-
-
-;;
-;; Do not display message in the scratch buffer or the startup message
-;; or the message in the echo area
-(setq initial-scratch-message "")
-(setq inhibit-startup-screen t)
-(setq inhibit-startup-echo-area-message "pware")
-
-;;
-;; Turn on displaying the date and time in the mode line.
-;; Enable displaying the line and column numbers in the mode line
-;; But don't do that if the buffer is >250k
-;; Do not blink the cursor
-(setq display-time-day-and-date t)
-(setq line-number-display-limit 250000)
-(display-time-mode)
-(line-number-mode 1)
-(column-number-mode 1)
-(size-indication-mode 1)
-(blink-cursor-mode -1)
-
-;;
-;; If at beginning of line, the Ctl-K kills including the newline
-;; (I'm hardwired to type Ctl-K twice)
-;(setq kill-whole-line t)
-
-;;
-;; Latest Emacs can wrap lines at word boundaries and will move the cursor
-;; so it stays in the same column on screen.  I'm too used to the old style.
-(setq-default word-wrap nil)
-(setq line-move-visual nil)
-(setq visual-line-mode nil)
-
-;;
-;; Make it so moving up or down does it one line at a time.
-;; `scroll-step' 0 works better with Emacs which now supports
-;; `scroll-conservatively'.
-;; `scroll-margin' says to keep this many lines
-;; above or below so you get some context.
-;; `scroll-preserve-screen-position' says when scrolling pages, keep
-;; point at same physical spot on screen.
-(setq scroll-step 0)
-(setq scroll-conservatively 15)
-(setq scroll-margin 2)
-(setq scroll-preserve-screen-position 'keep)
-;;
-;; I set horizontal scrolling because I'd have trouble with
-;; long lines in shell output.  This seemed to get
-;; them to display faster by actually slowing things down
-;;
-;; `hscroll-margin' is how close cursor gets before
-;; doing horizontal scrolling
-;; `hscroll-step' is how far to scroll when marg is reached.
-;;
-(setq hscroll-margin 1)
-(setq hscroll-step 5)
-;;
-;; Incremental search settings
-(setq lazy-highlight-max-at-a-time 10)
-(setq lazy-highlight-initial-delay .5)
-(setq lazy-highlight-interval .1)
-
-;;
-;; Cause the gutter to display little arrows and
-;; boxes if there is more to a file
-(setq-default indicate-buffer-boundaries 'left)
-(setq-default indicate-empty-lines t)
-
-;;
-;; Even though I did something with the mouse do not
-;; popup a dialog box but prompt from the mode line
-(setq use-dialog-box nil)
-
-;;
-;; This _sounds_ like something that should be nil but
-;; the reality is that when user input stops redisplay
-;; a bunch of screen optimizations are lost.  The
-;; default is prior to emacs-24 is nil
-(setq redisplay-dont-pause t)
-
-;;
-;; I found visiting a file to be really slow and realized
-;; it was from figuring out the version control
-(setq vc-handled-backends nil)
-
-;;
-;; I don't like actual tabs being inserted
-(setq-default indent-tabs-mode nil)
-
-;;
-;; Weird X11 stuff with the cut-and-paste.  I think these settings
-;; provide the best compromise.
-;;
-;; The world uses what is called a clipboard for copy-and-paste.  X11
-;; had a more flexible arrangement with a primary cut buffer that some
-;; X11 older clients still use.  Older clients typically means xterm
-;; and mrxvt.
-;;
-;; In Exceed, you need to set the config so that the "X Selection" tab
-;; has the "X Selection Associated with Edit Operations:" be
-;; "CLIPBOARD".
-;;
-;; The following puts killed text into the clipboard which makes it
-;; avaiable for all Windows clients given the above Exceed setting.
-(setq x-select-enable-clipboard t)
-;;
-;; The following puts killed text into the X11 primary cut buffer.
-;; Text copied in an xterm can either be pasted into emacs with a
-;; middle-mouse or the usual yank operations like ``C-y''.  You cannot
-;; paste such text into other Window's applications without going through
-;; emacs.  Usualy middle mouse button in an xterm pastes the text
-;; from emacs.
-(setq x-select-enable-primary t)
-
-;;
-;; Alternatively, in Exceed, set the "X Selection Associated with
-;; Edit Operations:" to be "PRIMARY" and use these settings.  This lets
-;; older xterm/mrxvt co-exist with Windows applications.
-;;
-;; To copy to an xterm use left-mouse to select the text in emacs and
-;; then usual paste with middle-mouse to paste to the xterm.
-;;
-;; (setq x-select-enable-clipboard nil)
-;; (setq x-select-enable-primary t)
-
-;;
-;; Do not beep if I kill text in a read-only buffer
-(setq kill-read-only-ok t)
-
-;;
-;; Usually, my home directory is faster for saving files
-;; then anywhere else.
-(setq backup-directory-alist '(("." . "~/.backups")))
-
-;; Make it so selecting the region highlights it and causes many
-;; commands to work only on the region
-(setq transient-mark-mode t)
-
-;;
-;; Ignore some other file extensions
-(setq completion-ignored-extensions (append completion-ignored-extensions '(".d" ".dd" ".tsk")))
-
-
-#+END_SRC
