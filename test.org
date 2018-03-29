@@ -276,66 +276,67 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** jit-lock
-#+BEGIN_SRC emacs-lisp
-(use-package jit-lock
-  ;;
-  ;; Setup lazy font locking
-  :config
-  (jit-lock-mode t))
-#+END_SRC
+    Setup lazy font locking
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package jit-lock
+      :config
+      (jit-lock-mode t))
+    #+END_SRC
 
 *** jka-cmpr-hook
+    Make visiting a *.gz automatically uncompress file
 
-#+BEGIN_SRC emacs-lisp
-(use-package jka-cmpr-hook
-  ;;
-  ;; Make visiting a *.gz automatically uncompress file
-  :config
-  (auto-compression-mode 1))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package jka-cmpr-hook
+      :config
+      (auto-compression-mode 1))
+    #+END_SRC
 
-*** mwhell
+*** mwheel
+    Make sure the mouse wheel scrolls
 
-#+BEGIN_SRC emacs-lisp
-(use-package mwheel
-  ;;
-  ;; Make sure the mouse wheel scrolls
-  :config
-  (progn
-    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
-    (setq mouse-wheel-progressive-speed nil)
-    (mwheel-install)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package mwheel
+      :config
+      (progn
+        (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
+        (setq mouse-wheel-progressive-speed nil)
+        (mwheel-install)))
+    #+END_SRC
 
 *** outline
 
-#+BEGIN_SRC emacs-lisp
-(use-package outline
-  :config
-  (add-hook 'prog-mode-hook 'outline-minor-mode))
-(use-package paren
-  ;;
-  ;; Highlight matching paren
-  :defer 60
-  :config
-  (show-paren-mode 1))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package outline
+      :config
+      (add-hook 'prog-mode-hook 'outline-minor-mode))
+    #+END_SRC
+
+*** paren
+    Highlight matching paren
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package paren
+      :defer 60
+      :config
+      (show-paren-mode 1))
+    #+END_SRC
 
 *** recentf
-#+BEGIN_SRC emacs-lisp
-(use-package recentf
-  ;;
-  ;; Save list of recently visited files
-  :defer 15
-  :config
-  (progn
-    (setq recentf-max-saved-items 100)
-    (setq recentf-auto-cleanup 3600)    ;cleanup after idle 1hr
-    (recentf-mode 1)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package recentf
+      ;;
+      ;; Save list of recently visited files
+      :defer 15
+      :config
+      (progn
+        (setq recentf-max-saved-items 100)
+        (setq recentf-auto-cleanup 3600)    ;cleanup after idle 1hr
+        (recentf-mode 1)))
+    #+END_SRC
 
 *** savehist
-
     #+BEGIN_SRC emacs-lisp
     (use-package savehist
       ;;
@@ -353,42 +354,42 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** saveplace
+    This records the location of every file you visit and
+    restores when you vist a file, goes to that location.  I also save
+    the file every couple hours because I don't always quit emacs 
 
-#+BEGIN_SRC emacs-lisp
-
-(use-package saveplace
-  ;;
-  ;; This records the location of every file you visit and
-  ;; restores when you vist a file, goes to that location.  I also save
-  ;; the file every couple hours because I don't always quit emacs 
-  :defer 30
-  :config
-  (progn
-    (setq-default save-place t)
-    (setq save-place-limit nil)
-    (run-at-time 3600  3600 'save-place-alist-to-file)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package saveplace
+      :defer 30
+      :config
+      (progn
+        (setq-default save-place t)
+        (setq save-place-limit nil)
+        (run-at-time 3600  3600 'save-place-alist-to-file)))
+    #+END_SRC
 
 *** scroll-bar
+    
+    Turn off the scroll bars
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
+    (use-package scroll-bar
+      :config
+      (scroll-bar-mode -1))
+    #+END_SRC
 
-(use-package scroll-bar
-  ;;
-  ;; Turn off the scroll bars
-  :config
-  (scroll-bar-mode -1))
+*** server
+    Make it so $EDITOR can popup in this emacs
 
-(use-package server
-  ;;
-  ;; Make it so $EDITOR can popup in this emacs
-  :config
-  (progn
-    (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
-        (setenv "EDITOR" "emacsclient"))
-    (message "server-start")
-    (server-start)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package server
+      :config
+      (progn
+        (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
+            (setenv "EDITOR" "emacsclient"))
+        (message "server-start")
+        (server-start)))
+    #+END_SRC
 
 *** tool-bar (disabled)
 #+BEGIN_SRC emacs-lisp
