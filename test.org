@@ -1,3 +1,4 @@
+#+STARTUP: content
 #+PROPERTY: header-args  :tangle yes :comments both
 * Emacs init
 ** Configuring X11
@@ -454,10 +455,10 @@ Emacs.font: Bitstream Vera Sans Mono-16
       ))
     #+END_SRC
 
-*** diminish
+*** diminish (disabled)
 
     #+BEGIN_SRC emacs-lisp
-    (use-package diminish (disabled)
+    (use-package diminish
       ;;
       ;; Do not display these minor modes in mode-line
       :disabled t
@@ -493,7 +494,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
                 (global-git-gutter+-mode)))
     #+END_SRC
 
-*** magithub
+*** magithub (disabled)
     #+BEGIN_SRC emacs-lisp
       (use-package magithub
         ;;
@@ -697,7 +698,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
   :config (setq linum-format 'dynamic))
 #+END_SRC
 
-*** nlinum
+*** nlinum (disabled)
 #+BEGIN_SRC emacs-lisp
 (use-package nlinum
   ;;
@@ -820,7 +821,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
   :mode ("\\.csc2$" . csc-mode))
 #+END_SRC
 
-*** fill-column-indicator
+*** fill-column-indicator (disabled)
 #+BEGIN_SRC emacs-lisp
 (use-package fill-column-indicator
   ;;
@@ -882,7 +883,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
          ("C-. <" . mc/mark=previous-like-this)))
 #+END_SRC
 
-*** num3-mode
+*** num3-mode (disabled)
 #+BEGIN_SRC emacs-lisp
 (use-package num3-mode
   ;;
@@ -909,7 +910,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
   :config (setq ag-reuse-buffers t))
 #+END_SRC
   
-*** color-identifiers-mode
+*** color-identifiers-mode (disabled)
 #+BEGIN_SRC emacs-lisp
 (use-package color-identifiers-mode
   ;;
@@ -924,7 +925,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
   :delight color-identifiers-mode)
 #+END_SRC
 
-*** rainbow-identifiers
+*** rainbow-identifiers (disabled)
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-identifiers
   ;;
@@ -1018,7 +1019,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
 *** smart-mode-line
 #+BEGIN_SRC emacs-lisp
-(use-package smart-mode-line
+(use-package smart-mode-line (disabled)
   ;;
   ;; Smart mode line displays a more graphical modeline.
   ;;
@@ -1042,7 +1043,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
 *** sublime-themes
 #+BEGIN_SRC emacs-lisp
-(use-package sublime-themes
+(use-package sublime-themes (disabled)
   ;;
   ;; I like the wilson theme from the sublime-themes
   ;; package.
@@ -1054,14 +1055,14 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
 *** dracula-theme
 #+BEGIN_SRC emacs-lisp
-(use-package dracula-theme
+(use-package dracula-theme (disabled)
   :disabled t
   :ensure t
   :config
   (load-theme 'dracula t nil))
 #+END_SRC
 
-*** overcast-theme
+*** overcast-theme (disabled)
 #+BEGIN_SRC emacs-lisp
 (use-package overcast-theme
   ;;
