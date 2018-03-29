@@ -392,42 +392,41 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** tool-bar (disabled)
-#+BEGIN_SRC emacs-lisp
+    Turn the toolbar off.  I also turn it off in my .Xdefaults with:
+    
+    Emacs.toolBar:            0
 
-(use-package tool-bar
-  ;;
-  ;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
-  ;; Emacs.toolBar:            0
-  ;; which keeps it from displaying on startup
-  :config
-  (tool-bar-mode -1))
-#+END_SRC
+    which keeps it from displaying on startup
+    #+BEGIN_SRC emacs-lisp
+
+    (use-package tool-bar
+      :config
+      (tool-bar-mode -1))
+    #+END_SRC
 
 *** menu-bar (disabled)
+    Turn the menubar off.
+    
+    DISABLED (Turns out I like the menu-bar!)
 
-#+BEGIN_SRC emacs-lisp
-(use-package menu-bar
-  ;;
-  ;; Turn the menubar off.
-  ;;
-  ;; DISABLED (Turns out I like the menu-bar!)
-  :disabled t
-  :config
-  (menu-bar-mode -1))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package menu-bar
+      :disabled t
+      :config
+      (menu-bar-mode -1))
+    #+END_SRC
 
 *** uniquify
-#+BEGIN_SRC emacs-lisp
-(use-package uniquify
-  ;;
-  ;; Make it so buffers with the same name are are made unique by added
-  ;; directory path and killing a buffer renames all of them.
-  :config
-  (progn
-    (setq uniquify-buffer-name-style 'post-forward)
-    (setq uniquify-after-kill-buffer-p t)))
+    Make it so buffers with the same name are are made unique by added
+    directory path and killing a buffer renames all of them.
+    #+BEGIN_SRC emacs-lisp
+    (use-package uniquify
+      :config
+      (progn
+        (setq uniquify-buffer-name-style 'post-forward)
+        (setq uniquify-after-kill-buffer-p t)))
 
-#+END_SRC
+    #+END_SRC
 
 ** Non-standard packages loaded immediately
 
@@ -435,22 +434,19 @@ Emacs.font: Bitstream Vera Sans Mono-16
    loaded immediately so have some affect on startup
 
 *** atomic-chrome
+    You must first install Atomic Chrome extension from Chrome Web
+    Store and this allows editting text areas in Chrome via
+    a two-way connection.
     #+BEGIN_SRC emacs-lisp
     (use-package atomic-chrome
-      ;;
-      ;; You must first install Atomic Chrome extension from Chrome Web
-      ;; Store and this allows editting text areas in Chrome via
-      ;; a two-way connection.
       :config
       (atomic-chrome-start-server))
     #+END_SRC
 
 *** bb-style
-
+    Bloomberg C++ coding style
     #+BEGIN_SRC emacs-lisp
     (use-package bb-style
-      ;;
-      ;; Bloomberg C++ coding style
       :config
       (progn
         ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
@@ -462,38 +458,35 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** diminish (disabled)
+    Do not display these minor modes in mode-line
 
     #+BEGIN_SRC emacs-lisp
     (use-package diminish
-      ;;
-      ;; Do not display these minor modes in mode-line
       :disabled t
       :config
       (diminish 'abbrev-mode))
     #+END_SRC
 
 *** fancy-narrow
+    Causes narrow region to dim the
+    rest of the buffer giving a much
+    more natual look.
 
     #+BEGIN_SRC emacs-lisp
     (use-package fancy-narrow
-      ;;
-      ;; Causes narrow region to dim the
-      ;; rest of the buffer giving a much
-      ;; more natual look.
       :delight fancy-narrow-mode
       :config
       (fancy-narrow-mode 1))
     #+END_SRC
 
 *** git-getter-fringe+ (disabled)
+    Display lines that have changed in the left margin.
+    This works with linum-mode but not in a tty
+    
+    DISABLED (slow loading)
 
     #+BEGIN_SRC emacs-lisp
     (use-package git-gutter-fringe+
-      ;;
-      ;; Display lines that have changed in the left margin.
-      ;; This works with linum-mode but not in a tty
-      ;;
-      ;; DISABLED (slow loading)
       :disabled t
       :config (progn
                 (setq git-gutter-fr+-side 'right-fringe)
@@ -501,17 +494,15 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** magithub (disabled)
+    Interact with github via magit
+    
+    DISABLED (slow loading)
     #+BEGIN_SRC emacs-lisp
-      (use-package magithub
-        ;;
-        ;; Interact with github via magit
-        ;;
-        ;; DISABLED (slow loading)
-        ;;
-        :after magit
-        :disabled t
-        :config
-        (magithub-feature-autoinject t))
+    (use-package magithub
+      :after magit
+      :disabled t
+      :config
+      (magithub-feature-autoinject t))
     #+END_SRC
 
 *** ivy
@@ -554,12 +545,11 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** ido-vertical
+    Causes ido-mode to display completions vertically
+    and ``Ctl n'' and ``Ctl p'' move down and up in list
 
     #+BEGIN_SRC emacs-lisp
     (use-package ido-vertical-mode
-      ;;
-      ;; Causes ido-mode to display completions vertically
-      ;; and ``Ctl n'' and ``Ctl p'' move down and up in list
       :after ido
       :defer 30
       :ensure t
@@ -568,11 +558,10 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** scratch-ext
+    Make *scratch* buffers get saved
 
     #+BEGIN_SRC emacs-lisp
     (use-package scratch-ext
-      ;;
-      ;; Make *scratch* buffers get saved
       :ensure t
       :config
       (save-excursion
@@ -590,163 +579,162 @@ Emacs.font: Bitstream Vera Sans Mono-16
    cost on startup)
 
 *** compile
-#+BEGIN_SRC emacs-lisp
-(use-package compile
-  ;;
-  ;; Setup compilation buffers
-  :bind ("C-c c" . compile)
-  :config
-  (progn
-    (setq compilation-scroll-output 'first-error)))
-#+END_SRC
+    Setup compilation buffers
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package compile
+      :bind ("C-c c" . compile)
+      :config
+      (progn
+        (setq compilation-scroll-output 'first-error)))
+    #+END_SRC
 
 *** ansi-color
-#+BEGIN_SRC emacs-lisp
-(use-package ansi-color
-  :after compile
-  :config
-  (progn
-    (defun pw/colorize-compilation-buffer ()
-      (let ((inhibit-read-only t))
-        (ansi-color-apply-on-region compilation-filter-start (point-max))))
-    (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer)
-    (setq ansi-color-names-vector ; better contrast colors
-          ["black" "red4" "green4" "yellow4"
-           "#8be9fd" "magenta4" "cyan4" "white"])
-    (setq ansi-color-map (ansi-color-make-color-map))))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package ansi-color
+      :after compile
+      :config
+      (progn
+        (defun pw/colorize-compilation-buffer ()
+          (let ((inhibit-read-only t))
+            (ansi-color-apply-on-region compilation-filter-start (point-max))))
+        (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer)
+        (setq ansi-color-names-vector ; better contrast colors
+              ["black" "red4" "green4" "yellow4"
+               "#8be9fd" "magenta4" "cyan4" "white"])
+        (setq ansi-color-map (ansi-color-make-color-map))))
+    #+END_SRC
 
 *** ediff
-#+BEGIN_SRC emacs-lisp
-(use-package ediff
-  ;;
-  ;; A nice graphical diff Make sure that ediff ignores all whitespace
-  ;; differences and highlights the individual differences
-  :commands ediff-load-version-control
-  :bind (("C-c =" . pw/ediff-current))
-  :config
-  (progn
-    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-    (setq ediff-split-window-function 'split-window-horizontally)
-    (setq ediff-diff-options "-w")
-    (setq-default ediff-auto-refine 'on))
-  :init
-  (progn
-    (defun pw/ediff-current (arg)
-      "Run ediff-vc-internal on the current file against it's latest revision.
-       If prefix arg, use it as the revision number"
-      (interactive "P")
-      (ediff-load-version-control t)
-      (let ((rev (if arg (format "%d" arg) "")))
-        (funcall
-         (intern (format "ediff-%S-internal" ediff-version-control-package))
-         rev "" nil)))))
-#+END_SRC
+    A nice graphical diff Make sure that ediff ignores all whitespace
+    differences and highlights the individual differences
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package ediff
+      :commands ediff-load-version-control
+      :bind (("C-c =" . pw/ediff-current))
+      :config
+      (progn
+        (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+        (setq ediff-split-window-function 'split-window-horizontally)
+        (setq ediff-diff-options "-w")
+        (setq-default ediff-auto-refine 'on))
+      :init
+      (progn
+        (defun pw/ediff-current (arg)
+          "Run ediff-vc-internal on the current file against it's latest revision.
+           If prefix arg, use it as the revision number"
+          (interactive "P")
+          (ediff-load-version-control t)
+          (let ((rev (if arg (format "%d" arg) "")))
+            (funcall
+             (intern (format "ediff-%S-internal" ediff-version-control-package))
+             rev "" nil)))))
+    #+END_SRC
 
 *** follow
-#+BEGIN_SRC emacs-lisp
-(use-package follow
-  ;;
-  ;; This makes a single file wrap around between two windows.
-  ;; Try ^X-3 and then move to the top or bottom of the window
-  ;; and the other window scrolls.  I bound F7 to do get
-  ;; rid of the other windows and split.
-  :bind ("<f7>" . follow-delete-other-windows-and-split))
-#+END_SRC
+    This makes a single file wrap around between two windows.
+    Try ^X-3 and then move to the top or bottom of the window
+    and the other window scrolls.  I bound F7 to do get
+    rid of the other windows and split.
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package follow
+      :bind ("<f7>" . follow-delete-other-windows-and-split))
+    #+END_SRC
 
 *** grep
-#+BEGIN_SRC emacs-lisp
-(use-package grep
-  ;; `rgrep' recursively greps for a pattern.  It uses a key to specify
-  ;; filenames and ignores directories like CVS.  "cchh" is all C++
-  ;; files and headers.
-  ;;
-  ;:bind (("C-c g" . grep))
-  :config
-  (progn
-    (setq grep-files-aliases
-          '(("all" . "* .*")
-            ("el" . "*.el")
-            ("ch" . "*.[ch]")
-            ("c" . "*.c")
-            ("cc" . "*.cc *.cxx *.cpp *.C *.CC *.c++")
-            ("cchh" . "*.cc *.[ch]xx *.[ch]pp *.[CHh] *.CC *.HH *.[ch]++")
-            ("hh" . "*.hxx *.hpp *.[Hh] *.HH *.h++")
-            ("h" . "*.h")
-            ("l" . "[Cc]hange[Ll]og*")
-            ("m" . "[Mm]akefile* *.mk")
-            ("tex" . "*.tex")
-            ("texi" . "*.texi")
-            ("asm" . "*.[sS]")
-            ("code" . "*.c *.C *.h *.cpp *.cc *.f *.py")))))
-#+END_SRC
+    `rgrep' recursively greps for a pattern.  It uses a key to specify
+    filenames and ignores directories like CVS.  "cchh" is all C++
+    files and headers.
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package grep
+      ;:bind (("C-c g" . grep))
+      :config
+      (progn
+        (setq grep-files-aliases
+              '(("all" . "* .*")
+                ("el" . "*.el")
+                ("ch" . "*.[ch]")
+                ("c" . "*.c")
+                ("cc" . "*.cc *.cxx *.cpp *.C *.CC *.c++")
+                ("cchh" . "*.cc *.[ch]xx *.[ch]pp *.[CHh] *.CC *.HH *.[ch]++")
+                ("hh" . "*.hxx *.hpp *.[Hh] *.HH *.h++")
+                ("h" . "*.h")
+                ("l" . "[Cc]hange[Ll]og*")
+                ("m" . "[Mm]akefile* *.mk")
+                ("tex" . "*.tex")
+                ("texi" . "*.texi")
+                ("asm" . "*.[sS]")
+                ("code" . "*.c *.C *.h *.cpp *.cc *.f *.py")))))
+    #+END_SRC
 
 *** hideshow
-#+BEGIN_SRC emacs-lisp
-(use-package hideshow
-  ;;
-  ;; Setup commands and menus to hide/show blocks of code
-  :commands hs-minor-mode
-  :init
-  (progn
-    (add-hook 'c++-mode-hook 'hs-minor-mode)
-    (add-hook 'c-mode-hook 'hs-minor-mode)))
-#+END_SRC
+    Setup commands and menus to hide/show blocks of code
+    #+BEGIN_SRC emacs-lisp
+    (use-package hideshow
+      :commands hs-minor-mode
+      :init
+      (progn
+        (add-hook 'c++-mode-hook 'hs-minor-mode)
+        (add-hook 'c-mode-hook 'hs-minor-mode)))
+    #+END_SRC
 
 *** linum
-#+BEGIN_SRC emacs-lisp
-(use-package linum
-  ;;
-  ;; Make it so line numbers show up in left margin Used in C/C++
-  ;; mode.  (Tried nlinum but had refres problems)
-  :commands linum-mode
-  :init (add-hook 'prog-mode-hook 'linum-mode)
-  :config (setq linum-format 'dynamic))
-#+END_SRC
+    Make it so line numbers show up in left margin Used in C/C++
+    mode.  (Tried nlinum but had refres problems)
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package linum
+      :commands linum-mode
+      :init (add-hook 'prog-mode-hook 'linum-mode)
+      :config (setq linum-format 'dynamic))
+    #+END_SRC
 
 *** nlinum (disabled)
-#+BEGIN_SRC emacs-lisp
-(use-package nlinum
-  ;;
-  ;; Make it so line numbers show up in left margin
-  ;;
-  ;; DISABLED (refresh problems on Mac OS X)
-  :disabled t
-  :commands nlinum-mode
-  :init (add-hook 'prog-mode-hook 'nlinum-mode))
-#+END_SRC
+    Make it so line numbers show up in left margin
+    
+    DISABLED (refresh problems on Mac OS X)
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package nlinum
+      :disabled t
+      :commands nlinum-mode
+      :init (add-hook 'prog-mode-hook 'nlinum-mode))
+    #+END_SRC
 
 *** org
-#+BEGIN_SRC emacs-lisp
-(use-package org
-  ;;
-  ;; org-mode provides an outline, todo, diary, calendar like interface.
-  :mode ("\\.org\\'" . org-mode)
-  :commands orgstruct-mode
-  :delight orgstruct-mode
-  :bind (("C-c l" . org-store-link)
-         ("C-c a" . org-agenda)
-         ("C-c b" . org-iswitchb)
-         ("C-c r" . org-capture))
-  :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
-  :config
-  (use-package org-prefs))
-#+END_SRC
+    org-mode provides an outline, todo, diary, calendar like interface.
+    #+BEGIN_SRC emacs-lisp
+    (use-package org
+      :mode ("\\.org\\'" . org-mode)
+      :commands orgstruct-mode
+      :delight orgstruct-mode
+      :bind (("C-c l" . org-store-link)
+             ("C-c a" . org-agenda)
+             ("C-c b" . org-iswitchb)
+             ("C-c r" . org-capture))
+      :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
+      :config
+      (use-package org-prefs))
+    #+END_SRC
 
 *** whitespace
-#+BEGIN_SRC emacs-lisp
-(use-package whitespace
-  ;; Make "bad" whitespace be visible.  This causes tabs, and whitespace
-  ;; at beginning and end of the buffer as well as at the end of the
-  ;; line to highlight
-  ;;
-  ;; Use ``M-x whitespace-cleanup'' to fix all problems
-  :bind ("C-c SPC" . whitespace-mode)
-  :config
-  (progn
-    (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
-    (setq whitespace-line-column nil)))
-#+END_SRC
+    Make "bad" whitespace be visible.  This causes tabs, and whitespace
+    at beginning and end of the buffer as well as at the end of the
+    line to highlight
+    
+    Use ``M-x whitespace-cleanup'' to fix all problems
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package whitespace
+      :bind ("C-c SPC" . whitespace-mode)
+      :config
+      (progn
+        (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
+        (setq whitespace-line-column nil)))
+    #+END_SRC
 
 ** Non-standard packages that defer loading 
 
@@ -754,330 +742,316 @@ Emacs.font: Bitstream Vera Sans Mono-16
    startup)
 
 *** pw-misc
-#+BEGIN_SRC emacs-lisp
-(use-package pw-misc
-  :after compile
-  :config
-  (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
-#+END_SRC
-
+    #+BEGIN_SRC emacs-lisp
+    (use-package pw-misc
+      :after compile
+      :config
+      (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
+    #+END_SRC
 
 *** anyins
-#+BEGIN_SRC emacs-lisp
-(use-package anyins
-  ;;
-  ;; Freaky way to insert text
-  ;; 1. Enter anyins-mode
-  ;; 2. Move around; mark spots you want to insert text with RET
-  ;; 3. To insert text
-  ;;    a. ``y'' inserts each line from kill ring at each marked spot, or
-  ;;    b.  ``!'' runs a shell command line 'seq -s ". \n" 1 3' generates
-  ;; numbers "1. "  "2. " "3. " and inserts it at each markets tpot
-  ;;
-  ;; Download package if not installed!
-  :ensure t
-  :bind ("C-c i" . anyins-mode))
-#+END_SRC
+    Freaky way to insert text
+    1. Enter anyins-mode
+    2. Move around; mark spots you want to insert text with RET
+    3. To insert text
+       a. ``y'' inserts each line from kill ring at each marked spot, or
+       b.  ``!'' runs a shell command line 'seq -s ". \n" 1 3' generates
+    numbers "1. "  "2. " "3. " and inserts it at each markets tpot
+    #+BEGIN_SRC emacs-lisp
+    (use-package anyins
+      ;;
+      ;; Download package if not installed!
+      :ensure t
+      :bind ("C-c i" . anyins-mode))
+    #+END_SRC
 
 *** avy
-#+BEGIN_SRC emacs-lisp
-(use-package avy
-  ;;
-  ;; Fast way to jump to a specific character.  Prompts for
-  ;; a character and then displays all of them but replaced
-  ;; with leters a,b,c,...  You then type in which one to jump
-  ;; to.
-  :ensure t
-  :bind (("M-s" . avy-goto-word-1))
-  :config (setq avi-all-windows nil))
-#+END_SRC
+    Fast way to jump to a specific character.  Prompts for
+    a character and then displays all of them but replaced
+    with leters a,b,c,...  You then type in which one to jump
+    to.
+    #+BEGIN_SRC emacs-lisp
+    (use-package avy
+      :ensure t
+      :bind (("M-s" . avy-goto-word-1))
+      :config (setq avi-all-windows nil))
+    #+END_SRC
 
 *** beacon
-#+BEGIN_SRC emacs-lisp
-(use-package beacon
-  ;; Highlight the line the point is on when the screen jumps around.
-  :config
-  (progn
-    (beacon-mode 1)
-    (setq beacon-push-mark 35)
-    (setq beacon-color "#666600")))
-#+END_SRC
+    Highlight the line the point is on when the screen jumps around.
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package beacon
+      :config
+      (progn
+        (beacon-mode 1)
+        (setq beacon-push-mark 35)
+        (setq beacon-color "#666600")))
+    #+END_SRC
 
 *** comint-prefs
-#+BEGIN_SRC emacs-lisp
-(use-package comint-prefs
-  ;;
-  ;; Setup preferences for shell, compile and other comint based commands
-  ;;
-  ;; Pete specific
-  :after comint
-  :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt)
-  :init
-  (progn
-    (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
-    (add-hook 'comint-mode-hook 'comint-for-pete)
-    (add-hook 'dbx-mode-hook 'dbx-for-pete))  )
-#+END_SRC
+    
+    Setup preferences for shell, compile and other comint based commands
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package comint-prefs
+      :after comint
+      :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt)
+      :init
+      (progn
+        (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
+        (add-hook 'comint-mode-hook 'comint-for-pete)
+        (add-hook 'dbx-mode-hook 'dbx-for-pete))  )
+    #+END_SRC
 
 *** csc-mode
-#+BEGIN_SRC emacs-lisp
-(use-package csc-mode
-  ;;
-  ;; Bloomberg database schema
-  :mode ("\\.csc2$" . csc-mode))
-#+END_SRC
+    Bloomberg database schema
+    #+BEGIN_SRC emacs-lisp
+    (use-package csc-mode
+      :mode ("\\.csc2$" . csc-mode))
+    #+END_SRC
 
 *** fill-column-indicator (disabled)
-#+BEGIN_SRC emacs-lisp
-(use-package fill-column-indicator
-  ;;
-  ;; Make a vertical bar show at fill-column
-  ;;
-  ;; DISABLED (didn't like it anymore)
-  :disabled t
-  :commands (fci-mode)
-  :init (add-hook 'prog-mode-hook 'fci-mode))
-#+END_SRC
+    
+    Make a vertical bar show at fill-column
+    
+    DISABLED (didn't like it anymore)
+    #+BEGIN_SRC emacs-lisp
+    (use-package fill-column-indicator
+      :disabled t
+      :commands (fci-mode)
+      :init (add-hook 'prog-mode-hook 'fci-mode))
+    #+END_SRC
   
 *** lrl-mode
-#+BEGIN_SRC emacs-lisp
-(use-package lrl-mode
-  ;;
-  ;; Bloomberg database params
-  :mode ("\\.lrl\\'" . lrl-mode))
-#+END_SRC
+    Bloomberg database params
+    #+BEGIN_SRC emacs-lisp
+    (use-package lrl-mode
+      :mode ("\\.lrl\\'" . lrl-mode))
+    #+END_SRC
 
 *** magit
-#+BEGIN_SRC emacs-lisp
-(use-package magit
-  ;;
-  ;; Provide a way of interacting with a Git repository.
-  ;;
-  ;; Download package if not installed!
-  :ensure t
-  :bind (("C-c m" . magit-status)
-         ("C-c C-m" . magit-dispatch-popup))
-  :delight '(magit-wip-after-save-mode
-             magit-wip-after-save-local-mode
-             magit-wip-after-apply-mode
-             magit-wip-before-change-mode
-             auto-revert-mode)
-  :config (progn
-            (magit-wip-after-save-mode)
-            (magit-wip-after-apply-mode)
-            (magit-wip-before-change-mode)
-            (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
-            (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
-            (setq magit-commit-show-diff nil)
-            (setq auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffers-p)
-            (remove-hook 'server-switch-hook 'magit-commit-diff)
-            (setq magit-refresh-verbose t)
-            (setq magit-save-repository-buffers nil)
-            (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
-            (setq magit-view-git-manual-method 'man)
-            (setq vc-handled-backends nil)))
-#+END_SRC
+    
+    Provide a way of interacting with a Git repository.
+    
+    Download package if not installed!
+    #+BEGIN_SRC emacs-lisp
+    (use-package magit
+      :ensure t
+      :bind (("C-c m" . magit-status)
+             ("C-c C-m" . magit-dispatch-popup))
+      :delight '(magit-wip-after-save-mode
+                 magit-wip-after-save-local-mode
+                 magit-wip-after-apply-mode
+                 magit-wip-before-change-mode
+                 auto-revert-mode)
+      :config (progn
+                (magit-wip-after-save-mode)
+                (magit-wip-after-apply-mode)
+                (magit-wip-before-change-mode)
+                (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
+                (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
+                (setq magit-commit-show-diff nil)
+                (setq auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffers-p)
+                (remove-hook 'server-switch-hook 'magit-commit-diff)
+                (setq magit-refresh-verbose t)
+                (setq magit-save-repository-buffers nil)
+                (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
+                (setq magit-view-git-manual-method 'man)
+                (setq vc-handled-backends nil)))
+    #+END_SRC
 
 *** multiple-cursors
-#+BEGIN_SRC emacs-lisp
-(use-package multiple-cursors
-  ;;
-  ;; You can place multiple cursors in a buffer
-  ;; and have whatever you do affect each item
-  :bind (("C-. e" . mc/edit-lines)
-         ("C-. >" . mc/mark-next-like-this)
-         ("C-. <" . mc/mark=previous-like-this)))
-#+END_SRC
+    
+    You can place multiple cursors in a buffer
+    and have whatever you do affect each item
+    #+BEGIN_SRC emacs-lisp
+    (use-package multiple-cursors
+      :bind (("C-. e" . mc/edit-lines)
+             ("C-. >" . mc/mark-next-like-this)
+             ("C-. <" . mc/mark=previous-like-this)))
+    #+END_SRC
 
 *** num3-mode (disabled)
-#+BEGIN_SRC emacs-lisp
-(use-package num3-mode
-  ;;
-  ;; Make long strings of digits alternate groups of 3 with bold.
-  ;;
-  ;; DISABLED (I got tired of this highlight)
-  :disabled t
-  :ensure t
-  :commands num3-mode
-  :delight num3-mode
-  :init (add-hook 'prog-mode-hook 'num3-mode)
-  :config (make-face-bold 'num3-face-even))
-#+END_SRC
+    
+    Make long strings of digits alternate groups of 3 with bold.
+    
+    DISABLED (I got tired of this highlight)
+    #+BEGIN_SRC emacs-lisp
+    (use-package num3-mode
+      :disabled t
+      :ensure t
+      :commands num3-mode
+      :delight num3-mode
+      :init (add-hook 'prog-mode-hook 'num3-mode)
+      :config (make-face-bold 'num3-face-even))
+    #+END_SRC
 
 *** ag
-#+BEGIN_SRC emacs-lisp
-(use-package ag
-  ;;
-  ;; A fast search across lots of files.  Relies
-  ;; on package silver searcher for the executable
-  ;; to be installed.
-  :ensure t
-  :bind (("C-c f" . ag))
-  :config (setq ag-reuse-buffers t))
-#+END_SRC
+    A fast search across lots of files.  Relies
+    on package silver searcher for the executable
+    to be installed.
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package ag
+      :ensure t
+      :bind (("C-c f" . ag))
+      :config (setq ag-reuse-buffers t))
+    #+END_SRC
   
 *** color-identifiers-mode (disabled)
-#+BEGIN_SRC emacs-lisp
-(use-package color-identifiers-mode
-  ;;
-  ;; Make each variable in a different color
-  ;;
-  ;; DISABLED (too many colors)
-  :disabled t
-  :delight color-identifiers-mode
-  :init
-  (add-hook 'prog-mode-hook
-            'color-identifiers-mode)
-  :delight color-identifiers-mode)
-#+END_SRC
+    
+    Make each variable in a different color
+    
+    DISABLED (too many colors)
+    #+BEGIN_SRC emacs-lisp
+    (use-package color-identifiers-mode
+      :disabled t
+      :delight color-identifiers-mode
+      :init
+      (add-hook 'prog-mode-hook
+                'color-identifiers-mode)
+      :delight color-identifiers-mode)
+    #+END_SRC
 
 *** rainbow-identifiers (disabled)
-#+BEGIN_SRC emacs-lisp
-(use-package rainbow-identifiers
-  ;;
-  ;; Make each variable a different color
-  ;;
-  ;; DISABLED (using color-identifies-mode instead)
-  :disabled t
-  :config
-  (progn
-    (add-hook 'prog-mode-hook
-              'rainbow-identifiers-mode)))
-#+END_SRC
+    
+    Make each variable a different color
+    
+    DISABLED (using color-identifies-mode instead)
+    #+BEGIN_SRC emacs-lisp
+    (use-package rainbow-identifiers
+      :disabled t
+      :config
+      (progn
+        (add-hook 'prog-mode-hook
+                  'rainbow-identifiers-mode)))
+    #+END_SRC
 
 *** pw-misc
-#+BEGIN_SRC emacs-lisp
-(use-package pw-misc
-  ;;
-  ;; Some commands I find useful
-  ;;
-  ;; Pete specific
-  :bind (("C-c p" . pw/prev-frame)
-         ("C-c \\" . pw/reindent)
-         ("C-c e" . pw/eval-region-or-defun)))
-#+END_SRC
+    
+    Some commands I find useful
+    
+    #+BEGIN_SRC emacs-lisp
+    (use-package pw-misc
+      :bind (("C-c p" . pw/prev-frame)
+             ("C-c \\" . pw/reindent)
+             ("C-c e" . pw/eval-region-or-defun)))
+    #+END_SRC
 
 *** pw-trunc-lines
-#+BEGIN_SRC emacs-lisp
-(use-package pw-trunc-lines
-  ;;
-  ;; Toggle truncation of long lines
-  ;;
-  ;; Pete specific
-  :commands pw/trunc-lines
-  :bind ("C-c $" . pw/trunc-lines)
-  :init
-  (progn
-    (add-hook 'prog-mode-hook 'pw/trunc-lines)
-    (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
-    (add-hook 'compilation-mode-hook 'pw/trunc-lines)
-    (add-hook 'shell-mode-hook 'pw/trunc-lines)))
-#+END_SRC
+    
+    Toggle truncation of long lines
+    #+BEGIN_SRC emacs-lisp
+    (use-package pw-trunc-lines
+      :commands pw/trunc-lines
+      :bind ("C-c $" . pw/trunc-lines)
+      :init
+      (progn
+        (add-hook 'prog-mode-hook 'pw/trunc-lines)
+        (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
+        (add-hook 'compilation-mode-hook 'pw/trunc-lines)
+        (add-hook 'shell-mode-hook 'pw/trunc-lines)))
+    #+END_SRC
 
 *** shell-switch
-#+BEGIN_SRC emacs-lisp
-(use-package shell-switch
-  ;;
-  ;; Pete's hack to make switching to a shell buffer
-  ;; faster
-  ;;
-  ;; Pete specific
-  :commands (shell-switch shell-switch-other-window)
-  :init
-  (progn
-    (bind-key* "C-c s" 'shell-switch)
-    (bind-keys* :prefix-map clt-c-4-keymap
-                :prefix "C-c 4"
-                ("s" . shell-switch-other-window))))
-#+END_SRC
+    
+    Pete's hack to make switching to a shell buffer
+    faster
+    #+BEGIN_SRC emacs-lisp
+    (use-package shell-switch
+      :commands (shell-switch shell-switch-other-window)
+      :init
+      (progn
+        (bind-key* "C-c s" 'shell-switch)
+        (bind-keys* :prefix-map clt-c-4-keymap
+                    :prefix "C-c 4"
+                    ("s" . shell-switch-other-window))))
+    #+END_SRC
 
 *** treemacs
-#+BEGIN_SRC emacs-lisp
-(use-package treemacs
-  :ensure t
-  :bind (("C-x p" . treemacs-select-window)
-         ("C-x t" . treemacs))
-  :config
-  (progn
-    (defun pw/treemacs-ignore (file path)
-      (string-match-p "\.pyc$\\|\.sundev1\.\\|\.o$" file))
-    (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
-    (setq treemacs-show-hidden-files nil)
-    (setq treemacs-collapse-dirs 2)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package treemacs
+      :ensure t
+      :bind (("C-x p" . treemacs-select-window)
+             ("C-x t" . treemacs))
+      :config
+      (progn
+        (defun pw/treemacs-ignore (file path)
+          (string-match-p "\.pyc$\\|\.sundev1\.\\|\.o$" file))
+        (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
+        (setq treemacs-show-hidden-files nil)
+        (setq treemacs-collapse-dirs 2)))
+    #+END_SRC
 
 *** wgrep
-#+BEGIN_SRC emacs-lisp
-(use-package wgrep
-  :ensure t)
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package wgrep
+      :ensure t)
+    #+END_SRC
 
 *** zoom-frm
-#+BEGIN_SRC emacs-lisp
-(use-package zoom-frm
-  ;;
-  ;; Much like face-remap that adds test-scale-increase and
-  ;; text-scale-decrease I use this to change the entire window
-  ;; instead of the buffer
-  :bind* (("C-c [" . zoom-frm-out)
-          ("C-c ]" . zoom-frm-in)))
-#+END_SRC
+    
+    Much like face-remap that adds test-scale-increase and
+    text-scale-decrease I use this to change the entire window
+    instead of the buffer
+    #+BEGIN_SRC emacs-lisp
+    (use-package zoom-frm
+      :bind* (("C-c [" . zoom-frm-out)
+              ("C-c ]" . zoom-frm-in)))
+    #+END_SRC
 
 *** smart-mode-line
-#+BEGIN_SRC emacs-lisp
-(use-package smart-mode-line (disabled)
-  ;;
-  ;; Smart mode line displays a more graphical modeline.
-  ;;
-  ;; DISABLED (Use powerline mode instead)
-  :disabled t
-  :config
-  (progn
-    (setq sml/theme 'dark)
-    (sml/setup)))
-#+END_SRC
+    
+    Smart mode line displays a more graphical modeline.
+    
+    DISABLED (Use powerline mode instead)
+    #+BEGIN_SRC emacs-lisp
+    (use-package smart-mode-line (disabled)
+      :disabled t
+      :config
+      (progn
+        (setq sml/theme 'dark)
+        (sml/setup)))
+    #+END_SRC
 
 *** powerline
-#+BEGIN_SRC emacs-lisp
-(use-package powerline
-  ;;
-  ;; Make the modeline have lots of pretty graphics.
-  :config
-  (progn
-    (powerline-center-theme)))
-#+END_SRC
+    
+    Make the modeline have lots of pretty graphics.
+    #+BEGIN_SRC emacs-lisp
+    (use-package powerline
+      :config
+      (progn
+        (powerline-center-theme)))
+    #+END_SRC
 
 *** sublime-themes
-#+BEGIN_SRC emacs-lisp
-(use-package sublime-themes (disabled)
-  ;;
-  ;; I like the wilson theme from the sublime-themes
-  ;; package.
-  :disabled t
-  :ensure t
-  :config
-  (load-theme 'wilson t nil))
-#+END_SRC
+    I like the wilson theme from the sublime-themes
+    package.
+    #+BEGIN_SRC emacs-lisp
+    (use-package sublime-themes (disabled)
+      :disabled t
+      :ensure t
+      :config
+      (load-theme 'wilson t nil))
+    #+END_SRC
 
 *** dracula-theme
-#+BEGIN_SRC emacs-lisp
-(use-package dracula-theme (disabled)
-  :disabled t
-  :ensure t
-  :config
-  (load-theme 'dracula t nil))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package dracula-theme (disabled)
+      :disabled t
+      :ensure t
+      :config
+      (load-theme 'dracula t nil))
+    #+END_SRC
 
-*** overcast-theme (disabled)
-#+BEGIN_SRC emacs-lisp
-(use-package overcast-theme
-  ;;
-  ;;
-  ;:disabled t
-  :ensure t
-  :config
-  (load-theme 'overcast t))
-#+END_SRC
+*** overcast-theme
+    #+BEGIN_SRC emacs-lisp
+    (use-package overcast-theme
+      :ensure t
+      :config
+      (load-theme 'overcast t))
+    #+END_SRC
 
 ** Various preferences
 
