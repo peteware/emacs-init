@@ -98,22 +98,11 @@ You can also not use a package by adding :disabled t to use-package
   (setq password-cache-expiry nil))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-;;;
-;;;----------------------------------------------------------------------
-;;; This file is organized so that:
-;;;  1. Section for standard packages that are loaded immediately
-;;;  2. Section for non-standard packages that are loaded immediately
-;;;  3. Section for standard packages that are loaded on demand
-;;;  4. Section for non-standard packages that are loaded on demand
-;;;----------------------------------------------------------------------
-;;;
+** Standard packages loaded immediately
 
-;;;
-;;;----------------------------------------------------------------------
-;;; This section is for standard packages that are loaded immediately
-;;;----------------------------------------------------------------------
-;;;
+   This section is for standard packages that are loaded immediately
+
+#+BEGIN_SRC emacs-lisp
 
 (use-package autorevert
   ;; Cause the buffer to be automatically update when the
@@ -352,12 +341,11 @@ You can also not use a package by adding :disabled t to use-package
     (setq uniquify-buffer-name-style 'post-forward)
     (setq uniquify-after-kill-buffer-p t)))
 
-;;;
-;;;----------------------------------------------------------------------
-;;; This section are non-standard packages that are loaded immediately
-;;;----------------------------------------------------------------------
-;;;
+#+END_SRC
 
+** Non-standard packages that are loaded immediately
+
+#+BEGIN_SRC emacs-lisp
 (use-package atomic-chrome
   ;;
   ;; You must first install Atomic Chrome extension from Chrome Web
