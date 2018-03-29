@@ -114,21 +114,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
    This section is for standard packages that are loaded immediately
 
-*** autorevert (disabled)
-    Cause the buffer to be automatically update when the
-    file changes.
-   
-    DISABLED.  I found the emacs display would stop refreshing
-               after a number of files were loaded.
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package autorevert
-      :disabled t
-      :delight auto-revert-mode
-      :config
-      (setq auto-revert-check-vc-info t)
-      (global-auto-revert-mode))
-    #+END_SRC
 *** bookmark
     You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
     This makes them save automatically
@@ -139,18 +124,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
       :config
       (setq bookmark-save-flag 1))
     #+END_SRC
-*** cua-base (disabled)
-    If you like windows style cut and paste then try this.  ^C & ^X only
-    work when region is active, ^V and ^Z do paste and undo
-     
-    DISABLED (I hate this)
-    #+BEGIN_SRC emacs-lisp
-    (use-package cua-base
-      :disabled t
-      :config
-      (cua-mode 1))
-    #+END_SRC
-
 *** delsel
     I can't handle the active region getting deleted
 
@@ -205,74 +178,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
     (use-package face-remap
       :bind* (("C-c -" . text-scale-decrease)
               ("C-c +" . text-scale-increase)))
-    #+END_SRC
-
-*** hl-line (disabled)
-    `global-hl-line-mode' highlights the current line.  You should make sure
-    that `hl-line-face' is an appropriate, subtle color.  The sticky
-    flag keeps it highlighted in all windows
-    
-    DISABLED (trying out beacon-mode which briefly highlights line)
-    #+BEGIN_SRC emacs-lisp
-    (use-package hl-line
-      :disabled t
-      :config
-      (progn
-        (setq hl-line-sticky-flag t)
-        (setq global-hl-line-sticky-flag t)
-        (global-hl-line-mode 1)))
-    #+END_SRC
-
-*** ido (disabled)
-    
-    Use a fancy auto-complete for buffers and files
-    
-    DISABLED - using ivy
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package ido
-      :disabled t
-      :defer 5
-      :config
-      (progn
-        (setq ido-default-buffer-method 'selected-window)
-        (setq ido-default-file-method 'selected-window)
-        (setq ido-enable-flex-matching t)
-        (setq ido-enable-dot-prefix t)
-        (setq ido-enable-tramp-completion t)
-        (setq ido-max-directory-size 100000)
-        (setq ido-rotate-file-list-default t)
-        (setq ido-enter-matching-directory 'first)
-        (setq ido-use-virtual-buffers t)
-        ;(setq ido-use-virtual-buffers 'auto)
-        ;(setq ido-separator "|")
-        (setq ido-ignore-files (append ido-ignore-files '("\\`00" "\\'*.tsk")))
-        (setq ido-ignore-buffers
-              (list "\\` " ".*Completions.*" "\\*Buffer List\\*" "\\*Messages\\*"))
-        (setq ido-work-directory-list-ignore-regexps
-              (list "/bb/bin" "/bb/data" "/bb/data/tmp" "/bbsrc/apputil"))
-        (ido-mode 1)))
-    #+END_SRC
-
-*** iswitchb (disabled)
-    
-    `iswitchb-mode' provides a nice completion for switching between
-    buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
-    adds recent files to the match
-    
-    DISABLED (use ido instead)
-
-    #+BEGIN_SRC emacs-lisp
-
-    (use-package iswitchb
-      :disabled t
-      :config
-      (progn
-        (setq iswitchb-default-method 'samewindow
-              iswitchb-max-to-show 5
-              iswitchb-use-virtual-buffers t)
-        (recentf-mode 1)
-        (iswitchb-mode 1)))
     #+END_SRC
 
 *** jit-lock
@@ -391,31 +296,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
         (server-start)))
     #+END_SRC
 
-*** tool-bar (disabled)
-    Turn the toolbar off.  I also turn it off in my .Xdefaults with:
-    
-    Emacs.toolBar:            0
-
-    which keeps it from displaying on startup
-    #+BEGIN_SRC emacs-lisp
-
-    (use-package tool-bar
-      :config
-      (tool-bar-mode -1))
-    #+END_SRC
-
-*** menu-bar (disabled)
-    Turn the menubar off.
-    
-    DISABLED (Turns out I like the menu-bar!)
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package menu-bar
-      :disabled t
-      :config
-      (menu-bar-mode -1))
-    #+END_SRC
-
 *** uniquify
     Make it so buffers with the same name are are made unique by added
     directory path and killing a buffer renames all of them.
@@ -457,16 +337,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
       ))
     #+END_SRC
 
-*** diminish (disabled)
-    Do not display these minor modes in mode-line
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package diminish
-      :disabled t
-      :config
-      (diminish 'abbrev-mode))
-    #+END_SRC
-
 *** fancy-narrow
     Causes narrow region to dim the
     rest of the buffer giving a much
@@ -477,32 +347,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
       :delight fancy-narrow-mode
       :config
       (fancy-narrow-mode 1))
-    #+END_SRC
-
-*** git-getter-fringe+ (disabled)
-    Display lines that have changed in the left margin.
-    This works with linum-mode but not in a tty
-    
-    DISABLED (slow loading)
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package git-gutter-fringe+
-      :disabled t
-      :config (progn
-                (setq git-gutter-fr+-side 'right-fringe)
-                (global-git-gutter+-mode)))
-    #+END_SRC
-
-*** magithub (disabled)
-    Interact with github via magit
-    
-    DISABLED (slow loading)
-    #+BEGIN_SRC emacs-lisp
-    (use-package magithub
-      :after magit
-      :disabled t
-      :config
-      (magithub-feature-autoinject t))
     #+END_SRC
 
 *** ivy
@@ -692,18 +536,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
       :config (setq linum-format 'dynamic))
     #+END_SRC
 
-*** nlinum (disabled)
-    Make it so line numbers show up in left margin
-    
-    DISABLED (refresh problems on Mac OS X)
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package nlinum
-      :disabled t
-      :commands nlinum-mode
-      :init (add-hook 'prog-mode-hook 'nlinum-mode))
-    #+END_SRC
-
 *** org
     org-mode provides an outline, todo, diary, calendar like interface.
     #+BEGIN_SRC emacs-lisp
@@ -738,7 +570,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
 ** Non-standard packages that defer loading 
 
-   These packages are not loaded unutil used (e.g. minimal cost on
+   These packages are not loaded until used (e.g. minimal cost on
    startup)
 
 *** pw-misc
@@ -811,18 +643,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
       :mode ("\\.csc2$" . csc-mode))
     #+END_SRC
 
-*** fill-column-indicator (disabled)
-    
-    Make a vertical bar show at fill-column
-    
-    DISABLED (didn't like it anymore)
-    #+BEGIN_SRC emacs-lisp
-    (use-package fill-column-indicator
-      :disabled t
-      :commands (fci-mode)
-      :init (add-hook 'prog-mode-hook 'fci-mode))
-    #+END_SRC
-  
 *** lrl-mode
     Bloomberg database params
     #+BEGIN_SRC emacs-lisp
@@ -872,21 +692,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
              ("C-. <" . mc/mark=previous-like-this)))
     #+END_SRC
 
-*** num3-mode (disabled)
-    
-    Make long strings of digits alternate groups of 3 with bold.
-    
-    DISABLED (I got tired of this highlight)
-    #+BEGIN_SRC emacs-lisp
-    (use-package num3-mode
-      :disabled t
-      :ensure t
-      :commands num3-mode
-      :delight num3-mode
-      :init (add-hook 'prog-mode-hook 'num3-mode)
-      :config (make-face-bold 'num3-face-even))
-    #+END_SRC
-
 *** ag
     A fast search across lots of files.  Relies
     on package silver searcher for the executable
@@ -899,35 +704,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
       :config (setq ag-reuse-buffers t))
     #+END_SRC
   
-*** color-identifiers-mode (disabled)
-    
-    Make each variable in a different color
-    
-    DISABLED (too many colors)
-    #+BEGIN_SRC emacs-lisp
-    (use-package color-identifiers-mode
-      :disabled t
-      :delight color-identifiers-mode
-      :init
-      (add-hook 'prog-mode-hook
-                'color-identifiers-mode)
-      :delight color-identifiers-mode)
-    #+END_SRC
-
-*** rainbow-identifiers (disabled)
-    
-    Make each variable a different color
-    
-    DISABLED (using color-identifies-mode instead)
-    #+BEGIN_SRC emacs-lisp
-    (use-package rainbow-identifiers
-      :disabled t
-      :config
-      (progn
-        (add-hook 'prog-mode-hook
-                  'rainbow-identifiers-mode)))
-    #+END_SRC
-
 *** pw-misc
     
     Some commands I find useful
@@ -1001,20 +777,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
               ("C-c ]" . zoom-frm-in)))
     #+END_SRC
 
-*** smart-mode-line
-    
-    Smart mode line displays a more graphical modeline.
-    
-    DISABLED (Use powerline mode instead)
-    #+BEGIN_SRC emacs-lisp
-    (use-package smart-mode-line (disabled)
-      :disabled t
-      :config
-      (progn
-        (setq sml/theme 'dark)
-        (sml/setup)))
-    #+END_SRC
-
 *** powerline
     
     Make the modeline have lots of pretty graphics.
@@ -1025,32 +787,273 @@ Emacs.font: Bitstream Vera Sans Mono-16
         (powerline-center-theme)))
     #+END_SRC
 
-*** sublime-themes
-    I like the wilson theme from the sublime-themes
-    package.
-    #+BEGIN_SRC emacs-lisp
-    (use-package sublime-themes (disabled)
-      :disabled t
-      :ensure t
-      :config
-      (load-theme 'wilson t nil))
-    #+END_SRC
-
-*** dracula-theme
-    #+BEGIN_SRC emacs-lisp
-    (use-package dracula-theme (disabled)
-      :disabled t
-      :ensure t
-      :config
-      (load-theme 'dracula t nil))
-    #+END_SRC
-
 *** overcast-theme
     #+BEGIN_SRC emacs-lisp
     (use-package overcast-theme
       :ensure t
       :config
       (load-theme 'overcast t))
+    #+END_SRC
+
+** Disabled packages
+   I've disabled these packages for various reasons.  I'm
+   not sure why I leave them around.
+*** autorevert (disabled)
+    Cause the buffer to be automatically update when the
+    file changes.
+   
+    DISABLED.  I found the emacs display would stop refreshing
+               after a number of files were loaded.
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package autorevert
+      :disabled t
+      :delight auto-revert-mode
+      :config
+      (setq auto-revert-check-vc-info t)
+      (global-auto-revert-mode))
+    #+END_SRC
+*** cua-base (disabled)
+    If you like windows style cut and paste then try this.  ^C & ^X only
+    work when region is active, ^V and ^Z do paste and undo
+     
+    DISABLED (I hate this)
+    #+BEGIN_SRC emacs-lisp
+    (use-package cua-base
+      :disabled t
+      :config
+      (cua-mode 1))
+    #+END_SRC
+
+*** hl-line (disabled)
+    `global-hl-line-mode' highlights the current line.  You should make sure
+    that `hl-line-face' is an appropriate, subtle color.  The sticky
+    flag keeps it highlighted in all windows
+    
+    DISABLED (trying out beacon-mode which briefly highlights line)
+    #+BEGIN_SRC emacs-lisp
+    (use-package hl-line
+      :disabled t
+      :config
+      (progn
+        (setq hl-line-sticky-flag t)
+        (setq global-hl-line-sticky-flag t)
+        (global-hl-line-mode 1)))
+    #+END_SRC
+
+*** ido (disabled)
+    
+    Use a fancy auto-complete for buffers and files
+    
+    DISABLED - using ivy
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package ido
+      :disabled t
+      :defer 5
+      :config
+      (progn
+        (setq ido-default-buffer-method 'selected-window)
+        (setq ido-default-file-method 'selected-window)
+        (setq ido-enable-flex-matching t)
+        (setq ido-enable-dot-prefix t)
+        (setq ido-enable-tramp-completion t)
+        (setq ido-max-directory-size 100000)
+        (setq ido-rotate-file-list-default t)
+        (setq ido-enter-matching-directory 'first)
+        (setq ido-use-virtual-buffers t)
+        ;(setq ido-use-virtual-buffers 'auto)
+        ;(setq ido-separator "|")
+        (setq ido-ignore-files (append ido-ignore-files '("\\`00" "\\'*.tsk")))
+        (setq ido-ignore-buffers
+              (list "\\` " ".*Completions.*" "\\*Buffer List\\*" "\\*Messages\\*"))
+        (setq ido-work-directory-list-ignore-regexps
+              (list "/bb/bin" "/bb/data" "/bb/data/tmp" "/bbsrc/apputil"))
+        (ido-mode 1)))
+    #+END_SRC
+
+*** iswitchb (disabled)
+    
+    `iswitchb-mode' provides a nice completion for switching between
+    buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
+    adds recent files to the match
+    
+    DISABLED (use ido instead)
+
+    #+BEGIN_SRC emacs-lisp
+
+    (use-package iswitchb
+      :disabled t
+      :config
+      (progn
+        (setq iswitchb-default-method 'samewindow
+              iswitchb-max-to-show 5
+              iswitchb-use-virtual-buffers t)
+        (recentf-mode 1)
+        (iswitchb-mode 1)))
+    #+END_SRC
+
+*** tool-bar (disabled)
+    Turn the toolbar off.  I also turn it off in my .Xdefaults with:
+    
+    Emacs.toolBar:            0
+
+    which keeps it from displaying on startup
+    #+BEGIN_SRC emacs-lisp
+
+    (use-package tool-bar
+      :config
+      (tool-bar-mode -1))
+    #+END_SRC
+
+*** menu-bar (disabled)
+    Turn the menubar off.
+    
+    DISABLED (Turns out I like the menu-bar!)
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package menu-bar
+      :disabled t
+      :config
+      (menu-bar-mode -1))
+    #+END_SRC
+
+*** diminish (disabled)
+    Do not display these minor modes in mode-line
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package diminish
+      :disabled t
+      :config
+      (diminish 'abbrev-mode))
+    #+END_SRC
+
+*** git-getter-fringe+ (disabled)
+    Display lines that have changed in the left margin.
+    This works with linum-mode but not in a tty
+    
+    DISABLED (slow loading)
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package git-gutter-fringe+
+      :disabled t
+      :config (progn
+                (setq git-gutter-fr+-side 'right-fringe)
+                (global-git-gutter+-mode)))
+    #+END_SRC
+
+*** magithub (disabled)
+    Interact with github via magit
+    
+    DISABLED (slow loading)
+    #+BEGIN_SRC emacs-lisp
+    (use-package magithub
+      :after magit
+      :disabled t
+      :config
+      (magithub-feature-autoinject t))
+    #+END_SRC
+
+*** nlinum (disabled)
+    Make it so line numbers show up in left margin
+    
+    DISABLED (refresh problems on Mac OS X)
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package nlinum
+      :disabled t
+      :commands nlinum-mode
+      :init (add-hook 'prog-mode-hook 'nlinum-mode))
+    #+END_SRC
+
+*** fill-column-indicator (disabled)
+    
+    Make a vertical bar show at fill-column
+    
+    DISABLED (didn't like it anymore)
+    #+BEGIN_SRC emacs-lisp
+    (use-package fill-column-indicator
+      :disabled t
+      :commands (fci-mode)
+      :init (add-hook 'prog-mode-hook 'fci-mode))
+    #+END_SRC
+  
+*** num3-mode (disabled)
+    
+    Make long strings of digits alternate groups of 3 with bold.
+    
+    DISABLED (I got tired of this highlight)
+    #+BEGIN_SRC emacs-lisp
+    (use-package num3-mode
+      :disabled t
+      :ensure t
+      :commands num3-mode
+      :delight num3-mode
+      :init (add-hook 'prog-mode-hook 'num3-mode)
+      :config (make-face-bold 'num3-face-even))
+    #+END_SRC
+
+*** color-identifiers-mode (disabled)
+    
+    Make each variable in a different color
+    
+    DISABLED (too many colors)
+    #+BEGIN_SRC emacs-lisp
+    (use-package color-identifiers-mode
+      :disabled t
+      :delight color-identifiers-mode
+      :init
+      (add-hook 'prog-mode-hook
+                'color-identifiers-mode)
+      :delight color-identifiers-mode)
+    #+END_SRC
+
+*** rainbow-identifiers (disabled)
+    
+    Make each variable a different color
+    
+    DISABLED (using color-identifies-mode instead)
+    #+BEGIN_SRC emacs-lisp
+    (use-package rainbow-identifiers
+      :disabled t
+      :config
+      (progn
+        (add-hook 'prog-mode-hook
+                  'rainbow-identifiers-mode)))
+    #+END_SRC
+
+*** smart-mode-line (disabled)
+    
+    Smart mode line displays a more graphical modeline.
+    
+    DISABLED (Use powerline mode instead)
+    #+BEGIN_SRC emacs-lisp
+    (use-package smart-mode-line
+      :disabled t
+      :config
+      (progn
+        (setq sml/theme 'dark)
+        (sml/setup)))
+    #+END_SRC
+
+*** sublime-themes (disabled)
+    I like the wilson theme from the sublime-themes
+    package.
+    #+BEGIN_SRC emacs-lisp
+    (use-package sublime-themes
+      :disabled t
+      :ensure t
+      :config
+      (load-theme 'wilson t nil))
+    #+END_SRC
+
+*** dracula-theme (disabled)
+    #+BEGIN_SRC emacs-lisp
+    (use-package dracula-theme
+      :disabled t
+      :ensure t
+      :config
+      (load-theme 'dracula t nil))
     #+END_SRC
 
 ** Various preferences
