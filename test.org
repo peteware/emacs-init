@@ -65,54 +65,50 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** bind-key
-#+BEGIN_SRC emacs-lisp
-
-(use-package bind-key
-  ;;
-  ;; Using bind-key lets you run describe-personal-keybindings
-  ;; which is a nice way of keep track of what you've changed.
-  :bind (
-         ("C-c G" . 'goto-line)
-         ("C-c o" . 'other-frame)
-         ("<wheel-left>" . 'ignore)
-         ("<wheel-right>" . 'ignore)
-         ("<double-wheel-left>" . 'ignore)
-         ("<double-wheel-right>" . 'ignore)
-         ("<triple-wheel-left>" . 'ignore)
-         ("<triple-wheel-right>" . 'ignore)
-         ))
-#+END_SRC
+    Using bind-key lets you run describe-personal-keybindings
+    which is a nice way of keep track of what you've changed.
+    #+BEGIN_SRC emacs-lisp
+    (use-package bind-key
+      :bind (
+             ("C-c G" . 'goto-line)
+             ("C-c o" . 'other-frame)
+             ("<wheel-left>" . 'ignore)
+             ("<wheel-right>" . 'ignore)
+             ("<double-wheel-left>" . 'ignore)
+             ("<double-wheel-right>" . 'ignore)
+             ("<triple-wheel-left>" . 'ignore)
+             ("<triple-wheel-right>" . 'ignore)
+             ))
+    #+END_SRC
 
 *** package
+    Use the emacs packaging system to automatically install some packages
 
-#+BEGIN_SRC emacs-lisp
-(use-package package
-  ;;
-  ;; Use the emacs packaging system to automatically install some packages
-  :config
-  (progn
-    (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-    (package-initialize t)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package package
+      :config
+      (progn
+        (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+        (package-initialize t)))
+    #+END_SRC
 
 *** delight
 
-#+BEGIN_SRC emacs-lisp
-(use-package delight
-  ;;
-  ;; This package makes it easy to hide minor
-  ;; modes in the modeline.  Uses for :diminish
-  :ensure t)
-#+END_SRC
+    This package makes it easy to hide minor
+    modes in the modeline.  Uses for :diminish
+    #+BEGIN_SRC emacs-lisp
+    (use-package delight
+      :ensure t)
+    #+END_SRC
 
 *** toolkit-tramp
 
-#+BEGIN_SRC emacs-lisp
-(use-package toolkit-tramp
-  :defer 60
-  :config
-  (setq password-cache-expiry nil))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package toolkit-tramp
+      :defer 60
+      :config
+      (setq password-cache-expiry nil))
+    #+END_SRC
 
 ** Standard packages loaded immediately
 
@@ -134,150 +130,150 @@ Emacs.font: Bitstream Vera Sans Mono-16
       (global-auto-revert-mode))
     #+END_SRC
 *** bookmark
+    You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
+    This makes them save automatically
 
-#+BEGIN_SRC emacs-lisp
-(use-package bookmark
-  ;; You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
-  ;; This makes them save automatically
-  :defer 60
-  :config
-  (setq bookmark-save-flag 1))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package bookmark
+      :defer 60
+      :config
+      (setq bookmark-save-flag 1))
+    #+END_SRC
 *** cua-base (disabled)
-#+BEGIN_SRC emacs-lisp
-(use-package cua-base
-  ;; If you like windows style cut and paste then try this.  ^C & ^X only
-  ;; work when region is active, ^V and ^Z do paste and undo
-  ;;
-  ;; DISABLED (I hate this)
-  :disabled t
-  :config
-  (cua-mode 1))
-#+END_SRC
+    If you like windows style cut and paste then try this.  ^C & ^X only
+    work when region is active, ^V and ^Z do paste and undo
+     
+    DISABLED (I hate this)
+    #+BEGIN_SRC emacs-lisp
+    (use-package cua-base
+      :disabled t
+      :config
+      (cua-mode 1))
+    #+END_SRC
 
 *** delsel
-#+BEGIN_SRC emacs-lisp
-(use-package delsel
-  ;; I can't handle the active region getting deleted
-  :config
-  (delete-selection-mode -1))
-#+END_SRC
+    I can't handle the active region getting deleted
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package delsel
+      :config
+      (delete-selection-mode -1))
+    #+END_SRC
 
 *** desktop
-#+BEGIN_SRC emacs-lisp
-(use-package desktop
-  ;;
-  ;; This causes the set of files being visited to be restored
-  ;; on startup.
-  ;:defer 10
-  :config
-  (progn
-    (setq desktop-save t)
-    (setq desktop-dirname "~/.emacs.d/")
-    (setq desktop-restore-frames nil)
-    (setq desktop-restore-eager 5)
-    (setq desktop-restore-in-current-display t)
-    (setq desktop-lazy-verbose nil)
-    (setq desktop-lazy-idle-delay 20)
-    (setq desktop-auto-save-timeout 7200)
-    (setq desktop-files-not-to-save "^$")
-    (setq desktop-load-locked-desktop t)
-    (desktop-save-mode 1)
-    (add-to-list 'desktop-modes-not-to-save 'Info-mode)
-    (add-to-list 'desktop-modes-not-to-save 'dired-mode)
-    ))
-
-#+END_SRC
+    This causes the set of files being visited to be restored
+    on startup.
+    #+BEGIN_SRC emacs-lisp
+    (use-package desktop
+      ;:defer 10
+      :config
+      (progn
+        (setq desktop-save t)
+        (setq desktop-dirname "~/.emacs.d/")
+        (setq desktop-restore-frames nil)
+        (setq desktop-restore-eager 5)
+        (setq desktop-restore-in-current-display t)
+        (setq desktop-lazy-verbose nil)
+        (setq desktop-lazy-idle-delay 20)
+        (setq desktop-auto-save-timeout 7200)
+        (setq desktop-files-not-to-save "^$")
+        (setq desktop-load-locked-desktop t)
+        (desktop-save-mode 1)
+        (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+        (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+        ))
+    #+END_SRC
 
 *** executable
-#+BEGIN_SRC emacs-lisp
-(use-package executable
-  ;;
-  ;; This makes saving shell scripts automatically make
-  ;; them executable.  It's considered a shell script if
-  ;; it starts with #!
-  ;:defer 60
-  :config
-  (add-hook 'after-save-hook
-            'executable-make-buffer-file-executable-if-script-p))
+    This makes saving shell scripts automatically make
+    them executable.  It's considered a shell script if
+    it starts with #!
 
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+    (use-package executable
+      ;:defer 60
+      :config
+      (add-hook 'after-save-hook
+                'executable-make-buffer-file-executable-if-script-p))
+
+    #+END_SRC
 
 *** face-remap
-#+BEGIN_SRC emacs-lisp
-(use-package face-remap
-  ;;
-  ;; Change the font size in the current buffer (not the window)
-  :bind* (("C-c -" . text-scale-decrease)
-          ("C-c +" . text-scale-increase)))
-#+END_SRC
+    Change the font size in the current buffer (not the window)
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package face-remap
+      :bind* (("C-c -" . text-scale-decrease)
+              ("C-c +" . text-scale-increase)))
+    #+END_SRC
 
 *** hl-line (disabled)
-#+BEGIN_SRC emacs-lisp
-(use-package hl-line
-  ;;
-  ;; `global-hl-line-mode' highlights the current line.  You should make sure
-  ;; that `hl-line-face' is an appropriate, subtle color.  The sticky
-  ;; flag keeps it highlighted in all windows
-  ;;
-  ;; DISABLED (trying out beacon-mode which briefly highlights line)
-  :disabled t
-  :config
-  (progn
-    (setq hl-line-sticky-flag t)
-    (setq global-hl-line-sticky-flag t)
-    (global-hl-line-mode 1)))
-#+END_SRC
+    `global-hl-line-mode' highlights the current line.  You should make sure
+    that `hl-line-face' is an appropriate, subtle color.  The sticky
+    flag keeps it highlighted in all windows
+    
+    DISABLED (trying out beacon-mode which briefly highlights line)
+    #+BEGIN_SRC emacs-lisp
+    (use-package hl-line
+      :disabled t
+      :config
+      (progn
+        (setq hl-line-sticky-flag t)
+        (setq global-hl-line-sticky-flag t)
+        (global-hl-line-mode 1)))
+    #+END_SRC
 
 *** ido (disabled)
-#+BEGIN_SRC emacs-lisp
-(use-package ido
-  ;;
-  ;; Use a fancy auto-complete for buffers and files
-  ;;
-  ;; DISABLED - using ivy
-  :disabled t
-  :defer 5
-  :config
-  (progn
-    (setq ido-default-buffer-method 'selected-window)
-    (setq ido-default-file-method 'selected-window)
-    (setq ido-enable-flex-matching t)
-    (setq ido-enable-dot-prefix t)
-    (setq ido-enable-tramp-completion t)
-    (setq ido-max-directory-size 100000)
-    (setq ido-rotate-file-list-default t)
-    (setq ido-enter-matching-directory 'first)
-    (setq ido-use-virtual-buffers t)
-    ;(setq ido-use-virtual-buffers 'auto)
-    ;(setq ido-separator "|")
-    (setq ido-ignore-files (append ido-ignore-files '("\\`00" "\\'*.tsk")))
-    (setq ido-ignore-buffers
-          (list "\\` " ".*Completions.*" "\\*Buffer List\\*" "\\*Messages\\*"))
-    (setq ido-work-directory-list-ignore-regexps
-          (list "/bb/bin" "/bb/data" "/bb/data/tmp" "/bbsrc/apputil"))
-    (ido-mode 1)))
-#+END_SRC
+    
+    Use a fancy auto-complete for buffers and files
+    
+    DISABLED - using ivy
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package ido
+      :disabled t
+      :defer 5
+      :config
+      (progn
+        (setq ido-default-buffer-method 'selected-window)
+        (setq ido-default-file-method 'selected-window)
+        (setq ido-enable-flex-matching t)
+        (setq ido-enable-dot-prefix t)
+        (setq ido-enable-tramp-completion t)
+        (setq ido-max-directory-size 100000)
+        (setq ido-rotate-file-list-default t)
+        (setq ido-enter-matching-directory 'first)
+        (setq ido-use-virtual-buffers t)
+        ;(setq ido-use-virtual-buffers 'auto)
+        ;(setq ido-separator "|")
+        (setq ido-ignore-files (append ido-ignore-files '("\\`00" "\\'*.tsk")))
+        (setq ido-ignore-buffers
+              (list "\\` " ".*Completions.*" "\\*Buffer List\\*" "\\*Messages\\*"))
+        (setq ido-work-directory-list-ignore-regexps
+              (list "/bb/bin" "/bb/data" "/bb/data/tmp" "/bbsrc/apputil"))
+        (ido-mode 1)))
+    #+END_SRC
 
 *** iswitchb (disabled)
-#+BEGIN_SRC emacs-lisp
+    
+    `iswitchb-mode' provides a nice completion for switching between
+    buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
+    adds recent files to the match
+    
+    DISABLED (use ido instead)
 
-(use-package iswitchb
-  ;;
-  ;; `iswitchb-mode' provides a nice completion for switching between
-  ;; buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
-  ;; adds recent files to the match
-  ;;
-  ;; DISABLED (use ido instead)
-  :disabled t
-  :config
-  (progn
-    (setq iswitchb-default-method 'samewindow
-          iswitchb-max-to-show 5
-          iswitchb-use-virtual-buffers t)
-    (recentf-mode 1)
-    (iswitchb-mode 1)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+
+    (use-package iswitchb
+      :disabled t
+      :config
+      (progn
+        (setq iswitchb-default-method 'samewindow
+              iswitchb-max-to-show 5
+              iswitchb-use-virtual-buffers t)
+        (recentf-mode 1)
+        (iswitchb-mode 1)))
+    #+END_SRC
 
 *** jit-lock
 #+BEGIN_SRC emacs-lisp
