@@ -943,13 +943,15 @@ Emacs.font: Bitstream Vera Sans Mono-16
     avaiable for all Windows clients given the above Exceed setting.
     #+BEGIN_SRC emacs-lisp
     (setq x-select-enable-clipboard t)
-    ;;
-    ;; The following puts killed text into the X11 primary cut buffer.
-    ;; Text copied in an xterm can either be pasted into emacs with a
-    ;; middle-mouse or the usual yank operations like ``C-y''.  You cannot
-    ;; paste such text into other Window's applications without going through
-    ;; emacs.  Usualy middle mouse button in an xterm pastes the text
-    ;; from emacs.
+    #+END_SRC
+
+    The following puts killed text into the X11 primary cut buffer.
+    Text copied in an xterm can either be pasted into emacs with a
+    middle-mouse or the usual yank operations like ``C-y''.  You cannot
+    paste such text into other Window's applications without going through
+    emacs.  Usualy middle mouse button in an xterm pastes the text
+    from emacs.
+    #+BEGIN_SRC emacs-lisp
     (setq x-select-enable-primary t)
     #+END_SRC
 
@@ -961,29 +963,31 @@ Emacs.font: Bitstream Vera Sans Mono-16
     To copy to an xterm use left-mouse to select the text in emacs and
     then usual paste with middle-mouse to paste to the xterm.
     
-    (setq x-select-enable-clipboard nil)
-    (setq x-select-enable-primary t)
-
     #+BEGIN_SRC emacs-lisp
+    ;(setq x-select-enable-clipboard nil)
+    ;(setq x-select-enable-primary t)
+    #+END_SRC
 
-    ;;
-    ;; Do not beep if I kill text in a read-only buffer
+    Do not beep if I kill text in a read-only buffer
+    #+BEGIN_SRC emacs-lisp
     (setq kill-read-only-ok t)
+    #+END_SRC
 
-    ;;
-    ;; Usually, my home directory is faster for saving files
-    ;; then anywhere else.
+    Usually, my home directory is faster for saving files
+    then anywhere else.
+    #+BEGIN_SRC emacs-lisp
     (setq backup-directory-alist '(("." . "~/.backups")))
+    #+END_SRC
 
-    ;; Make it so selecting the region highlights it and causes many
-    ;; commands to work only on the region
+    Make it so selecting the region highlights it and causes many
+    commands to work only on the region
+    #+BEGIN_SRC emacs-lisp
     (setq transient-mark-mode t)
+    #+END_SRC
 
-    ;;
-    ;; Ignore some other file extensions
+    Ignore some other file extensions
+    #+BEGIN_SRC emacs-lisp
     (setq completion-ignored-extensions (append completion-ignored-extensions '(".d" ".dd" ".tsk")))
-
-
     #+END_SRC
 ** Disabled packages
    I've disabled these packages for various reasons.  I'm
