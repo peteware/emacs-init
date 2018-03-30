@@ -1,8 +1,9 @@
 #+STARTUP: content
 #+PROPERTY: header-args  :tangle yes :comments both
-* Emacs init
-** Setting things up
-*** Configuring X11
+* Emacs setup
+  We need to configure some files for X11 and to
+  get emacs to read the main-init.el
+** ~/.Xdefaults: Configuring X11
    
    In my ~/.Xdefaults I have these lines
    #+BEGIN_EXAMPLE
@@ -28,15 +29,19 @@ Emacs.toolBar: 0
 Emacs.font: Bitstream Vera Sans Mono-16
    #+END_EXAMPLE
 
-*** Make emacs load this file
-    I have this in my ~/.emacs and ~/.xemacs/init.el:
+** ~/.emacs: where it starts 
+   I have this in my ~/.emacs and ~/.xemacs/init.el:
    
-    #+BEGIN_EXAMPLE
-    (add-to-list 'load-path "~/usr/emacs")
-    (require 'main-init)
-    #+END_EXAMPLE
-*** Initial contents of main-init.el
-    
+   #+BEGIN_EXAMPLE
+   (add-to-list 'load-path "~/usr/emacs")
+   (require 'main-init)
+   #+END_EXAMPLE
+** main-init.el: main configuration
+   I've moved almost all the customization into
+   ``main-init.el'' to avoid various emacs
+   commands from changing this file.
+*** Preamble
+    This is at the beginning of main-init.el:
     #+BEGIN_SRC emacs-lisp
     (provide 'main-init)
     #+END_SRC
@@ -394,19 +399,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
       :after ivy
       :ensure t
       :bind (("C-s" . 'swiper)))
-    #+END_SRC
-
-*** ido-vertical
-    Causes ido-mode to display completions vertically
-    and ``Ctl n'' and ``Ctl p'' move down and up in list
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package ido-vertical-mode
-      :after ido
-      :defer 30
-      :ensure t
-      :config
-      (ido-vertical-mode 1))
     #+END_SRC
 
 *** scratch-ext
@@ -1078,6 +1070,20 @@ Emacs.font: Bitstream Vera Sans Mono-16
         (setq ido-work-directory-list-ignore-regexps
               (list "/bb/bin" "/bb/data" "/bb/data/tmp" "/bbsrc/apputil"))
         (ido-mode 1)))
+    #+END_SRC
+
+*** ido-vertical (disabled)
+    Causes ido-mode to display completions vertically
+    and ``Ctl n'' and ``Ctl p'' move down and up in list
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package ido-vertical-mode
+      :after ido
+      :defer 30
+      :ensure t
+      :disabled t
+      :config
+      (ido-vertical-mode 1))
     #+END_SRC
 
 *** iswitchb (disabled)
