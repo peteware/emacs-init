@@ -28,7 +28,6 @@ Emacs.toolBar: 0
 Emacs.font: Bitstream Vera Sans Mono-16
    #+END_EXAMPLE
 
-*** Initial setup
 *** Make emacs load this file
     I have this in my ~/.emacs and ~/.xemacs/init.el:
    
@@ -36,22 +35,25 @@ Emacs.font: Bitstream Vera Sans Mono-16
     (add-to-list 'load-path "~/usr/emacs")
     (require 'main-init)
     #+END_EXAMPLE
-*** Initial contents of main-init.el   
+*** Initial contents of main-init.el
     
     #+BEGIN_SRC emacs-lisp
     (provide 'main-init)
     #+END_SRC
 
 *** Setup proxies for package installation
+    To get ``package-install'' to work you may need to setup some
+    proxies.  This is specific to a corp desktop pc keyed off
+    the assumption I only every run cygwin in that environment.
 
-   #+BEGIN_SRC emacs-lisp
-   (when (or (string-equal system-type "windows-nt")
-             (string-equal system-type "cygwin"))
-     (setq password-cache-expiry nil)
-     (setq url-proxy-services '(("http" . "proxy.bloomberg.com:81"))))
+    #+BEGIN_SRC emacs-lisp
+    (when (or (string-equal system-type "windows-nt")
+              (string-equal system-type "cygwin"))
+      (setq password-cache-expiry nil)
+      (setq url-proxy-services '(("http" . "proxy.bloomberg.com:81"))))
+    #+END_SRC
 
-   #+END_SRC
-
+*** Setup use-package
    You may need to ``M-x package-install use-package'' before
    any of this works
    
@@ -64,6 +66,21 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
     (setq use-package-compute-statistics t)
     #+END_SRC
+
+*** package
+    Use the emacs packaging system to automatically install some packages
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package package
+      :config
+      (progn
+        (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+        (package-initialize t)))
+    #+END_SRC
+
+** Standard packages loaded immediately
+
+   This section is for standard packages that are loaded immediately
 
 *** bind-key
     Using bind-key lets you run describe-personal-keybindings
@@ -81,39 +98,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
              ("<triple-wheel-right>" . 'ignore)
              ))
     #+END_SRC
-
-*** package
-    Use the emacs packaging system to automatically install some packages
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package package
-      :config
-      (progn
-        (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-        (package-initialize t)))
-    #+END_SRC
-
-*** delight
-
-    This package makes it easy to hide minor
-    modes in the modeline.  Uses for :diminish
-    #+BEGIN_SRC emacs-lisp
-    (use-package delight
-      :ensure t)
-    #+END_SRC
-
-*** toolkit-tramp
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package toolkit-tramp
-      :defer 60
-      :config
-      (setq password-cache-expiry nil))
-    #+END_SRC
-
-** Standard packages loaded immediately
-
-   This section is for standard packages that are loaded immediately
 
 *** bookmark
     You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
@@ -297,6 +281,15 @@ Emacs.font: Bitstream Vera Sans Mono-16
         (server-start)))
     #+END_SRC
 
+*** toolkit-tramp
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package toolkit-tramp
+      :defer 60
+      :config
+      (setq password-cache-expiry nil))
+    #+END_SRC
+
 *** uniquify
     Make it so buffers with the same name are are made unique by added
     directory path and killing a buffer renames all of them.
@@ -336,6 +329,15 @@ Emacs.font: Bitstream Vera Sans Mono-16
         (setq c-tab-always-indent nil)
         (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
       ))
+    #+END_SRC
+
+*** delight
+
+    This package makes it easy to hide minor
+    modes in the modeline.  Uses for :diminish
+    #+BEGIN_SRC emacs-lisp
+    (use-package delight
+      :ensure t)
     #+END_SRC
 
 *** fancy-narrow
