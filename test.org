@@ -353,7 +353,10 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** ivy
-
+    ``ivy'' changes completion so that matches are
+    found via regular expressions and matches are
+    navigable by moving up and down lines.  Replaces
+    ``ido'' and ``iswitchb''.
     #+BEGIN_SRC emacs-lisp
     (use-package ivy
       :ensure t
@@ -367,7 +370,8 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** counsel
-
+    ``counsel'' builds on completion for ivy but adds
+    searches across files.
     #+BEGIN_SRC emacs-lisp
     (use-package counsel
       :after ivy
@@ -383,7 +387,8 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** swiper
-
+    This changes incremental search to use ivy style completion
+    but displays all the matching lines in the completion buffer.
     #+BEGIN_SRC emacs-lisp
     (use-package swiper
       :after ivy
@@ -530,7 +535,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
 *** linum
     Make it so line numbers show up in left margin Used in C/C++
-    mode.  (Tried nlinum but had refres problems)
+    mode.  (Tried nlinum but had refresh problems)
 
     #+BEGIN_SRC emacs-lisp
     (use-package linum
@@ -548,11 +553,18 @@ Emacs.font: Bitstream Vera Sans Mono-16
       :delight orgstruct-mode
       :bind (("C-c l" . org-store-link)
              ("C-c a" . org-agenda)
-             ("C-c b" . org-iswitchb)
              ("C-c r" . org-capture))
       :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
       :config
       (use-package org-prefs))
+    #+END_SRC
+
+    Additionally, I have a number of customizations I like to use
+    for org-mode.
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package org-prefs
+      :after org)
     #+END_SRC
 
 *** whitespace
@@ -765,6 +777,8 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** wgrep
+    This lets you save the results from grep, edit those results and then
+    saving the changes applies them to each file.
     #+BEGIN_SRC emacs-lisp
     (use-package wgrep
       :ensure t)
