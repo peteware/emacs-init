@@ -82,7 +82,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
         (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
         (package-initialize t)))
     #+END_SRC
-
 ** Standard packages loaded immediately
 
    This section is for standard packages that are loaded immediately
