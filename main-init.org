@@ -104,7 +104,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** bookmark
-    You can save bookmarks with `C-x r m' and jump to them wih `C-x r b'
+    You can save bookmarks with =C-x r m= and jump to them wih =C-x r b=
     This makes them save automatically
 
     #+BEGIN_SRC emacs-lisp
@@ -487,7 +487,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** grep
-    `rgrep' recursively greps for a pattern.  It uses a key to specify
+    ~rgrep~ recursively greps for a pattern.  It uses a key to specify
     filenames and ignores directories like CVS.  "cchh" is all C++
     files and headers.
 
@@ -806,16 +806,16 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
 ** Various preferences
 
-#+BEGIN_SRC emacs-lisp
-;;
-;; Allow narrow to region (`C-X n n`)
-(put 'narrow-to-region 'disabled nil)
+   Allow narrow to region (e.g. =C-X n n=)
+   #+BEGIN_SRC emacs-lisp
+   (put 'narrow-to-region 'disabled nil)
+   #+END_SRC
 
-;;
-;; Force Mac OS X to use Consolas at 16pt
-(if (eq (window-system) 'ns)
-    (custom-set-faces '(default ((t (:height 160 :family "Consolas"))))))
-#+END_SRC
+   Force Mac OS X to use Consolas at 16pt
+   #+BEGIN_SRC emacs-lisp
+   (if (eq (window-system) 'ns)
+       (custom-set-faces '(default ((t (:height 160 :family "Consolas"))))))
+   #+END_SRC
 
 *** Clean startup
 
@@ -863,11 +863,11 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
     Make it so moving up or down does it one line at a time.
 
-    - `scroll-step' 0 works better with Emacs which now supports
-      `scroll-conservatively'.
-    - `scroll-margin' says to keep this many lines
+    - ~scroll-step~ 0 works better with Emacs which now supports
+      ~scroll-conservatively~.
+    - ~scroll-margin~ says to keep this many lines
        above or below so you get some context.
-    - `scroll-preserve-screen-position' says when scrolling pages, keep
+    - ~scroll-preserve-screen-position~ says when scrolling pages, keep
       point at same physical spot on screen.
     #+BEGIN_SRC emacs-lisp
     (setq scroll-step 0)
@@ -880,9 +880,9 @@ Emacs.font: Bitstream Vera Sans Mono-16
     long lines in shell output.  This seemed to get
     them to display faster by actually slowing things down
     
-    `hscroll-margin' is how close cursor gets before
-    doing horizontal scrolling
-    `hscroll-step' is how far to scroll when marg is reached.
+    - ~hscroll-margin~ is how close cursor gets before
+      doing horizontal scrolling
+    - ~hscroll-step~ is how far to scroll when marg is reached.
 
     #+BEGIN_SRC emacs-lisp
     (setq hscroll-margin 1)
@@ -1001,8 +1001,8 @@ Emacs.font: Bitstream Vera Sans Mono-16
     Cause the buffer to be automatically update when the
     file changes.
    
-    DISABLED.  I found the emacs display would stop refreshing
-               after a number of files were loaded.
+    - *DISABLED*.  I found the emacs display would stop refreshing
+                   after a number of files were loaded.
 
     #+BEGIN_SRC emacs-lisp
     (use-package autorevert
@@ -1016,7 +1016,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     If you like windows style cut and paste then try this.  ^C & ^X only
     work when region is active, ^V and ^Z do paste and undo
      
-    DISABLED (I hate this)
+    - *DISABLED* (I hate this)
     #+BEGIN_SRC emacs-lisp
     (use-package cua-base
       :disabled t
@@ -1029,7 +1029,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     that `hl-line-face' is an appropriate, subtle color.  The sticky
     flag keeps it highlighted in all windows
     
-    DISABLED (trying out beacon-mode which briefly highlights line)
+    - *DISABLED* (trying out beacon-mode which briefly highlights line)
     #+BEGIN_SRC emacs-lisp
     (use-package hl-line
       :disabled t
@@ -1044,7 +1044,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     
     Use a fancy auto-complete for buffers and files
     
-    DISABLED - using ivy
+    - *DISABLED* using ivy
 
     #+BEGIN_SRC emacs-lisp
     (use-package ido
@@ -1091,7 +1091,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
     adds recent files to the match
     
-    DISABLED (use ido instead)
+    - *DISABLED* (use ido instead)
 
     #+BEGIN_SRC emacs-lisp
 
@@ -1122,7 +1122,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
 *** menu-bar (disabled)
     Turn the menubar off.
     
-    DISABLED (Turns out I like the menu-bar!)
+    - *DISABLED* (Turns out I like the menu-bar!)
 
     #+BEGIN_SRC emacs-lisp
     (use-package menu-bar
@@ -1145,7 +1145,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     Display lines that have changed in the left margin.
     This works with linum-mode but not in a tty
     
-    DISABLED (slow loading)
+    - *DISABLED* (slow loading)
 
     #+BEGIN_SRC emacs-lisp
     (use-package git-gutter-fringe+
@@ -1158,7 +1158,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
 *** magithub (disabled)
     Interact with github via magit
     
-    DISABLED (slow loading)
+    - *DISABLED* (slow loading)
     #+BEGIN_SRC emacs-lisp
     (use-package magithub
       :after magit
@@ -1170,7 +1170,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
 *** nlinum (disabled)
     Make it so line numbers show up in left margin
     
-    DISABLED (refresh problems on Mac OS X)
+    - *DISABLED* (refresh problems on Mac OS X)
 
     #+BEGIN_SRC emacs-lisp
     (use-package nlinum
@@ -1183,7 +1183,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     
     Make a vertical bar show at fill-column
     
-    DISABLED (didn't like it anymore)
+    - *DISABLED* (didn't like it anymore)
     #+BEGIN_SRC emacs-lisp
     (use-package fill-column-indicator
       :disabled t
@@ -1195,7 +1195,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     
     Make long strings of digits alternate groups of 3 with bold.
     
-    DISABLED (I got tired of this highlight)
+    - *DISABLED* (I got tired of this highlight)
     #+BEGIN_SRC emacs-lisp
     (use-package num3-mode
       :disabled t
@@ -1210,7 +1210,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     
     Make each variable in a different color
     
-    DISABLED (too many colors)
+    - *DISABLED* (too many colors)
     #+BEGIN_SRC emacs-lisp
     (use-package color-identifiers-mode
       :disabled t
@@ -1225,7 +1225,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     
     Make each variable a different color
     
-    DISABLED (using color-identifies-mode instead)
+    - *DISABLED* (using color-identifies-mode instead)
     #+BEGIN_SRC emacs-lisp
     (use-package rainbow-identifiers
       :disabled t
