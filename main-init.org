@@ -38,7 +38,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
    #+END_EXAMPLE
 ** main-init.el: main configuration
    I've moved almost all the customization into
-   ``main-init.el'' to avoid various emacs
+   ~main-init.el~ to avoid various emacs
    commands from changing this file.
 *** Preamble
     This is at the beginning of main-init.el:
@@ -47,7 +47,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** Setup proxies for package installation
-    To get ``package-install'' to work you may need to setup some
+    To get ~package-install~ to work you may need to setup some
     proxies.  This is specific to a corp desktop pc keyed off
     the assumption I only every run cygwin in that environment.
 
@@ -59,10 +59,10 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** Setup use-package
-   You may need to ``M-x package-install use-package'' before
+   You may need to =M-x package-install use-package= before
    any of this works
    
-   If a package is not available then ``use-package'' ignores it.
+   If a package is not available then ~use-package~ ignores it.
    You can also not use a package by adding :disabled t to use-package
 
     #+BEGIN_SRC emacs-lisp
@@ -357,10 +357,10 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** ivy
-    ``ivy'' changes completion so that matches are
+    ~ivy~ changes completion so that matches are
     found via regular expressions and matches are
     navigable by moving up and down lines.  Replaces
-    ``ido'' and ``iswitchb''.
+    ~ido~ and ~iswitchb~.
     #+BEGIN_SRC emacs-lisp
     (use-package ivy
       :ensure t
@@ -374,7 +374,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+END_SRC
 
 *** counsel
-    ``counsel'' builds on completion for ivy but adds
+    ~counsel~ builds on completion for ivy but adds
     searches across files.
     #+BEGIN_SRC emacs-lisp
     (use-package counsel
@@ -563,7 +563,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     at beginning and end of the buffer as well as at the end of the
     line to highlight
     
-    Use ``M-x whitespace-cleanup'' to fix all problems
+    Use =M-x whitespace-cleanup= to fix all problems
 
     #+BEGIN_SRC emacs-lisp
     (use-package whitespace
@@ -593,8 +593,8 @@ Emacs.font: Bitstream Vera Sans Mono-16
     2. Move around; mark spots you want to insert text with RET
     3. To insert text
 
-       a. ``y'' inserts each line from kill ring at each marked spot, or
-       b.  ``!'' runs a shell command line 'seq -s ". \n" 1 3' generates
+       a. =y= inserts each line from kill ring at each marked spot, or
+       b.  =!= runs a shell command line 'seq -s ". \n" 1 3' generates
            numbers "1. "  "2. " "3. " and inserts it at each markets tpot
     #+BEGIN_SRC emacs-lisp
     (use-package anyins
@@ -952,7 +952,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
     The following puts killed text into the X11 primary cut buffer.
     Text copied in an xterm can either be pasted into emacs with a
-    middle-mouse or the usual yank operations like ``C-y''.  You cannot
+    middle-mouse or the usual yank operations like =C-y=.  You cannot
     paste such text into other Window's applications without going through
     emacs.  Usualy middle mouse button in an xterm pastes the text
     from emacs.
@@ -1073,7 +1073,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
 *** ido-vertical (disabled)
     Causes ido-mode to display completions vertically
-    and ``Ctl n'' and ``Ctl p'' move down and up in list
+    and =Ctl n= and =Ctl p= move down and up in list
 
     #+BEGIN_SRC emacs-lisp
     (use-package ido-vertical-mode
