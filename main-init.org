@@ -530,14 +530,16 @@
 *** org
     org-mode provides an outline, todo, diary, calendar like interface.
     #+BEGIN_SRC emacs-lisp
-    (use-package org
-      :mode ("\\.org\\'" . org-mode)
-      :commands orgstruct-mode
-      :delight orgstruct-mode
-      :bind (("C-c l" . org-store-link)
-             ("C-c a" . org-agenda)
-             ("C-c r" . org-capture))
-      :init (add-hook 'c-mode-common-hook 'orgstruct-mode))
+          (use-package org
+            :mode ("\\.org\\'" . org-mode)
+            :commands orgstruct-mode
+            :delight orgstruct-mode
+            :bind (("C-c l" . org-store-link)
+                   ("C-c a" . org-agenda)
+                   ("C-c r" . org-capture))
+            :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
+            :config (progn
+                      (setq org-list-allow-alphabetical t)))
     #+END_SRC
 
     Additionally, I have a number of customizations I like to use
@@ -580,8 +582,6 @@
            numbers "1. "  "2. " "3. " and inserts it at each markets tpot
     #+BEGIN_SRC emacs-lisp
     (use-package anyins
-      ;;
-      ;; Download package if not installed!
       :ensure t
       :bind ("C-c i" . anyins-mode))
     #+END_SRC

@@ -437,7 +437,9 @@
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
          ("C-c r" . org-capture))
-  :init (add-hook 'c-mode-common-hook 'orgstruct-mode))
+  :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
+  :config (progn
+            (setq org-list-allow-alphabetical t)))
 
 ;; Additionally, I have a number of customizations I like to use
 ;;     for org-mode.
@@ -470,8 +472,6 @@
 ;;            numbers "1. "  "2. " "3. " and inserts it at each markets tpot
 
 (use-package anyins
-  ;;
-  ;; Download package if not installed!
   :ensure t
   :bind ("C-c i" . anyins-mode))
 
