@@ -1,33 +1,17 @@
 #+STARTUP: content
-#+PROPERTY: header-args  :tangle yes :comments both
+#+PROPERTY: header-args  :tangle yes :comments org
 * Emacs setup
-  We need to configure some files for X11 and to
-  get emacs to read the main-init.el
-** ~/.Xdefaults: Configuring X11
-   
-   In my ~/.Xdefaults I have these lines
-   #+BEGIN_EXAMPLE
-Emacs*background: grey15
-Emacs*foreground: grey90
-Emacs*pointerColor: green
-Emacs*cursorColor: grey90
-Emacs.geometry: 135x65+50+0
-Emacs.verticalScrollBars: off
-Emacs.toolBar: 0
-! Try this to list all potential server side fonts:
-!     $ xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-m*'
-!     $ xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-c*'
-! The "m" means monospace; "c" for character cell.
-!
-! You want this to be "loose" enough to handle bold and oblique.
-! The "140" is point size time 10 (e.g. 14 points); "100" is
-!Emacs.font: -adobe-courier-*-*-normal--*-170-100-*-m-*-iso8859-1
+  My configurations are based on [[https://github.com/jwiegley/use-package][~use-package~]] which
+  combines the loading of a package along with its configuration.
+  I also rely on ~(package-install)~ to download extra packages.
+  
+  This file is written with [[https://orgmode.org/][org-mode]] and then [[https://orgmode.org/manual/Extracting-source-code.html#Extracting-source-code][=tangled=]] to 
+  produce the actual source.
 
-! Or if in linux with real fonts
-! fc-list :spacing=mono
-! fc-list :space=cell
-Emacs.font: Bitstream Vera Sans Mono-16
-   #+END_EXAMPLE
+** A few setup things  
+  
+   You need to do a few things to get emacs to load
+   this file, =main-init.el=:
 
 ** ~/.emacs: where it starts 
    I have this in my ~/.emacs and ~/.xemacs/init.el:
@@ -43,7 +27,10 @@ Emacs.font: Bitstream Vera Sans Mono-16
 *** Preamble
     This is at the beginning of main-init.el:
     #+BEGIN_SRC emacs-lisp
-    (provide 'main-init)
+      ;; This file is generated from main-init.org
+      ;; using (org-babel-tangle).  Do not
+      ;; make changes in this file; they'll be lost!
+      (provide 'main-init)
     #+END_SRC
 
 *** Setup proxies for package installation
@@ -65,13 +52,18 @@ Emacs.font: Bitstream Vera Sans Mono-16
    If a package is not available then ~use-package~ ignores it.
    You can also not use a package by adding :disabled t to use-package
 
-    #+BEGIN_SRC emacs-lisp
-    (eval-when-compile
-      (require 'use-package))
+   #+BEGIN_SRC emacs-lisp
+   (eval-when-compile
+     (require 'use-package))
+   #+END_SRC
 
-    (setq use-package-compute-statistics t)
-    #+END_SRC
+   I also like having ~use-package~ collect some info about
+   the loaded packages and how long they take to load.  You
+   can see the results with =M-x use-package-report=.
 
+   #+BEGIN_SRC emacs-lisp
+     (setq use-package-compute-statistics t)
+   #+END_SRC
 *** package
     Use the emacs packaging system to automatically install some packages
 
@@ -545,9 +537,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
       :bind (("C-c l" . org-store-link)
              ("C-c a" . org-agenda)
              ("C-c r" . org-capture))
-      :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
-      :config
-      (use-package org-prefs))
+      :init (add-hook 'c-mode-common-hook 'orgstruct-mode))
     #+END_SRC
 
     Additionally, I have a number of customizations I like to use
@@ -578,14 +568,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
    These packages are not loaded until used (e.g. minimal cost on
    startup)
-
-*** pw-misc
-    #+BEGIN_SRC emacs-lisp
-    (use-package pw-misc
-      :after compile
-      :config
-      (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
-    #+END_SRC
 
 *** anyins
     Freaky way to insert text
@@ -673,9 +655,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
                  magit-wip-before-change-mode
                  auto-revert-mode)
       :config (progn
-                (magit-wip-after-save-mode)
-                (magit-wip-after-apply-mode)
-                (magit-wip-before-change-mode)
                 (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
                 (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
                 (setq magit-commit-show-diff nil)
@@ -715,6 +694,13 @@ Emacs.font: Bitstream Vera Sans Mono-16
     
     Some commands I find useful
     
+    #+BEGIN_SRC emacs-lisp
+    (use-package pw-misc
+      :after compile
+      :config
+      (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
+    #+END_SRC
+
     #+BEGIN_SRC emacs-lisp
     (use-package pw-misc
       :bind (("C-c p" . pw/prev-frame)
@@ -930,8 +916,35 @@ Emacs.font: Bitstream Vera Sans Mono-16
     (setq-default indent-tabs-mode nil)
     #+END_SRC
 
-*** More X11 configuration
+** X11 configuration
 
+*** ~/.Xdefaults: Configuring X11 (optional)
+   
+   In my ~/.Xdefaults I have these lines
+   #+BEGIN_EXAMPLE
+Emacs*background: grey15
+Emacs*foreground: grey90
+Emacs*pointerColor: green
+Emacs*cursorColor: grey90
+Emacs.geometry: 135x65+50+0
+Emacs.verticalScrollBars: off
+Emacs.toolBar: 0
+! Try this to list all potential server side fonts:
+!     $ xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-m*'
+!     $ xlsfonts -fn '*-*-*-*-*-*-*-*-*-*-*-c*'
+! The "m" means monospace; "c" for character cell.
+!
+! You want this to be "loose" enough to handle bold and oblique.
+! The "140" is point size time 10 (e.g. 14 points); "100" is
+!Emacs.font: -adobe-courier-*-*-normal--*-170-100-*-m-*-iso8859-1
+
+! Or if in linux with real fonts
+! fc-list :spacing=mono
+! fc-list :space=cell
+Emacs.font: Bitstream Vera Sans Mono-16
+   #+END_EXAMPLE
+
+*** Cut and Paste
     Weird X11 stuff with the cut-and-paste.  I think these settings
     provide the best compromise.
 
