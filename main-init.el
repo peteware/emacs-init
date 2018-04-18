@@ -213,13 +213,6 @@
     (message "server-start")
     (server-start)))
 
-;; toolkit-tramp
-
-(use-package toolkit-tramp
-  :defer 60
-  :config
-  (setq password-cache-expiry nil))
-
 ;; uniquify
 ;;     Make it so buffers with the same name are are made unique by added
 ;;     directory path and killing a buffer renames all of them.
@@ -309,7 +302,7 @@
 (use-package swiper
   :after ivy
   :ensure t
-  :bind (("C-s" . 'swiper)))
+  :bind (("M-s" . 'swiper)))
 
 ;; scratch-ext
 ;;     Make *scratch* buffers get saved
@@ -324,6 +317,13 @@
     (scratch-ext-create-scratch)
     (set-buffer "*scratch*")
     (scratch-ext-restore-last-scratch)))
+
+;; toolkit-tramp
+
+(use-package toolkit-tramp
+  :defer 60
+  :config
+  (setq password-cache-expiry nil))
 
 ;; compile
 ;;     Setup compilation buffers
@@ -474,17 +474,6 @@
 (use-package anyins
   :ensure t
   :bind ("C-c i" . anyins-mode))
-
-;; avy
-;;     Fast way to jump to a specific character.  Prompts for
-;;     a character and then displays all of them but replaced
-;;     with leters a,b,c,...  You then type in which one to jump
-;;     to.
-
-(use-package avy
-  :ensure t
-  :bind (("M-s" . avy-goto-word-1))
-  :config (setq avi-all-windows nil))
 
 ;; beacon
 ;;     Highlight the line the point is on when the screen jumps around.
@@ -837,6 +826,21 @@
   :config
   (setq auto-revert-check-vc-info t)
   (global-auto-revert-mode))
+
+;; avy
+;;     Fast way to jump to a specific character.  Prompts for
+;;     a character and then displays all of them but replaced
+;;     with leters a,b,c,...  You then type in which one to jump
+;;     to.
+
+;;     - *DISABLED*.  I didn't use this and wanted the M-s binding
+;;       back
+
+(use-package avy
+  :disabled t
+  :ensure t
+  :bind (("M-s" . avy-goto-word-1))
+  :config (setq avi-all-windows nil))
 
 ;; cua-base (disabled)
 ;;     If you like windows style cut and paste then try this.  ^C & ^X only

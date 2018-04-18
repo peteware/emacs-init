@@ -27,7 +27,7 @@
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
  '(package-selected-packages
    (quote
-    (overcast-theme 0blayout delight counsel ivy magit-gh-pulls dracula-theme rtags magithub eopengrok mode-icons origami org-beautify-theme git-gutter-fringe+ git-gutter-fringe git-timemachine git-wip-timemachine zoom-frm zerodark-theme zenburn-theme use-package sublime-themes steady-theme smart-mode-line scratch-ext rainbow-identifiers powerline num3-mode nlinum magit log4j-mode ido-vertical-mode fill-column-indicator fastnav fancy-narrow ctags color-theme-modern color-identifiers-mode beacon babcore avy anyins alect-themes ag)))
+    (multiple-cursors overcast-theme 0blayout delight counsel ivy magit-gh-pulls dracula-theme rtags magithub eopengrok mode-icons origami org-beautify-theme git-gutter-fringe+ git-gutter-fringe git-timemachine git-wip-timemachine zoom-frm zerodark-theme zenburn-theme use-package sublime-themes steady-theme smart-mode-line scratch-ext rainbow-identifiers powerline num3-mode nlinum magit log4j-mode ido-vertical-mode fill-column-indicator fastnav fancy-narrow ctags color-theme-modern color-identifiers-mode beacon babcore avy anyins alect-themes ag)))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote
