@@ -439,6 +439,7 @@
          ("C-c r" . org-capture))
   :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
   :config (progn
+            (setq org-export-backends '(ascii html icalendar latex md))
             (setq org-list-allow-alphabetical t)))
 
 ;; Additionally, I have a number of customizations I like to use
