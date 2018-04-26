@@ -51,7 +51,7 @@ customizing it)
      $ ln -s ~/usr/emacs/emacs-init.el ~/.emacs
    ```
 
-1. Alterantively setup your .emacs with::
+1. Alternatively setup your .emacs with::
 
    ```elisp
      (add-to-list 'load-path "~/usr/emacs")
