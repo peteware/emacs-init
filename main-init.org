@@ -33,10 +33,43 @@
       (provide 'main-init)
     #+END_SRC
 
+*** Profile startup times
+    This is from a good article https://blog.d46.us/advanced-emacs-startup/
+    about speeding up emacs startup.
+
+    Use a hook so the message doesn't get clobbered by other messages.
+    #+BEGIN_SRC emacs-lisp
+      (add-hook 'emacs-startup-hook
+                (lambda ()
+                  (message "Emacs ready in %s with %d garbage collections."
+                           (format "%.2f seconds"
+                                   (float-time
+                                    (time-subtract after-init-time before-init-time)))
+                           gcs-done)))
+    #+END_SRC
+*** GC threshold
+    Temporarily increase GC threshold to 50MB then reduce to 800KB after startup.
+    #+BEGIN_SRC emacs-lisp
+      (setq gc-cons-threshold (* 50 1000 1000))    
+      (add-hook 'after-init-hook (lambda ()
+                                   (setq gc-cons-threshold (* 800 1000))))
+    #+END_SRC
+*** package
+    Use the emacs packaging system to automatically install some packages
+
+    #+BEGIN_SRC emacs-lisp
+      (require 'package)
+      (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+      (add-to-list 'package-archives
+                   '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+      (package-initialize)
+    #+END_SRC
+
+
 *** Setup proxies for package installation
     To get ~package-install~ to work you may need to setup some
     proxies.  This is specific to a corp desktop pc keyed off
-    the assumption I only every run cygwin in that environment.
+    the assumption I only ever run cygwin in that environment.
 
     #+BEGIN_SRC emacs-lisp
     (when (or (string-equal system-type "windows-nt")
@@ -53,9 +86,12 @@
    You can also not use a package by adding :disabled t to use-package
 
    #+BEGIN_SRC emacs-lisp
-   (eval-when-compile
-     (require 'use-package))
-   #+END_SRC
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile
+  (require 'use-package))
+    #+END_SRC
 
    I also like having ~use-package~ collect some info about
    the loaded packages and how long they take to load.  You
@@ -64,16 +100,6 @@
    #+BEGIN_SRC emacs-lisp
      (setq use-package-compute-statistics t)
    #+END_SRC
-*** package
-    Use the emacs packaging system to automatically install some packages
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package package
-      :config
-      (progn
-        (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-        (package-initialize t)))
-    #+END_SRC
 ** Standard packages loaded immediately
 
    This section is for standard packages that are loaded immediately
@@ -101,7 +127,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package bookmark
-      :defer 60
+      :defer 5
       :config
       (setq bookmark-save-flag 1))
     #+END_SRC
@@ -110,6 +136,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package delsel
+      :defer 5
       :config
       (delete-selection-mode -1))
     #+END_SRC
@@ -120,6 +147,7 @@
     #+BEGIN_SRC emacs-lisp
     (use-package desktop
       ;:defer 10
+      :defer 1
       :config
       (progn
         (setq desktop-save t)
@@ -145,7 +173,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package executable
-      ;:defer 60
+      :defer 2
       :config
       (add-hook 'after-save-hook
                 'executable-make-buffer-file-executable-if-script-p))
@@ -157,6 +185,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package face-remap
+      :defer 5
       :bind* (("C-c -" . text-scale-decrease)
               ("C-c +" . text-scale-increase)))
     #+END_SRC
@@ -166,6 +195,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package jit-lock
+      :defer 1
       :config
       (jit-lock-mode t))
     #+END_SRC
@@ -175,6 +205,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package jka-cmpr-hook
+      :defer 5
       :config
       (auto-compression-mode 1))
     #+END_SRC
@@ -184,6 +215,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package mwheel
+      :defer 1
       :config
       (progn
         (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
@@ -195,6 +227,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package outline
+      :defer 5
       :config
       (add-hook 'prog-mode-hook 'outline-minor-mode))
     #+END_SRC
@@ -204,7 +237,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package paren
-      :defer 60
+      :defer 5
       :config
       (show-paren-mode 1))
     #+END_SRC
@@ -214,7 +247,7 @@
     (use-package recentf
       ;;
       ;; Save list of recently visited files
-      :defer 15
+      :defer 5
       :config
       (progn
         (setq recentf-max-saved-items 100)
@@ -227,7 +260,7 @@
     (use-package savehist
       ;;
       ;; Save emacs's internal command history.
-      :defer 15
+      :defer 5
       :config
       (progn
         (setq savehist-additional-variables
@@ -246,7 +279,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package saveplace
-      :defer 30
+      :defer 5
       :config
       (progn
         (setq-default save-place t)
@@ -260,6 +293,8 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package scroll-bar
+      :defer 1
+      :disabled t
       :config
       (scroll-bar-mode -1))
     #+END_SRC
@@ -282,6 +317,7 @@
     directory path and killing a buffer renames all of them.
     #+BEGIN_SRC emacs-lisp
     (use-package uniquify
+      :defer 1
       :config
       (progn
         (setq uniquify-buffer-name-style 'post-forward)
@@ -300,6 +336,7 @@
     a two-way connection.
     #+BEGIN_SRC emacs-lisp
     (use-package atomic-chrome
+      :defer 15
       :config
       (atomic-chrome-start-server))
     #+END_SRC
@@ -308,6 +345,7 @@
     Bloomberg C++ coding style
     #+BEGIN_SRC emacs-lisp
     (use-package bb-style
+      :defer 1
       :config
       (progn
         ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
@@ -324,6 +362,7 @@
     modes in the modeline.  Uses for :diminish
     #+BEGIN_SRC emacs-lisp
     (use-package delight
+      :defer 5
       :ensure t)
     #+END_SRC
 
@@ -335,6 +374,7 @@
     #+BEGIN_SRC emacs-lisp
     (use-package fancy-narrow
       :delight fancy-narrow-mode
+      :defer 5
       :config
       (fancy-narrow-mode 1))
     #+END_SRC
@@ -347,6 +387,7 @@
     #+BEGIN_SRC emacs-lisp
     (use-package ivy
       :ensure t
+      :defer 1
       :delight ivy-mode
       :bind (("C-c C-r" . 'ivy-resume))
       :config (progn
@@ -388,6 +429,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package scratch-ext
+      :defer 5
       :ensure t
       :config
       (save-excursion
@@ -486,6 +528,7 @@
     #+BEGIN_SRC emacs-lisp
     (use-package grep
       ;:bind (("C-c g" . grep))
+      :defer 5
       :config
       (progn
         (setq grep-files-aliases
@@ -592,6 +635,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package beacon
+      :defer 15
       :config
       (progn
         (beacon-mode 1)
@@ -747,6 +791,7 @@
     saving the changes applies them to each file.
     #+BEGIN_SRC emacs-lisp
     (use-package wgrep
+      :defer 5
       :ensure t)
     #+END_SRC
 
@@ -1132,9 +1177,10 @@ Emacs.font: Bitstream Vera Sans Mono-16
     which keeps it from displaying on startup
     #+BEGIN_SRC emacs-lisp
 
-    (use-package tool-bar
-      :config
-      (tool-bar-mode -1))
+      (use-package tool-bar
+        :disabled t
+        :config
+        (tool-bar-mode -1))
     #+END_SRC
 
 *** menu-bar (disabled)
