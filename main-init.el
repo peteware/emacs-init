@@ -229,6 +229,7 @@
 ;;     a two-way connection.
 
 (use-package atomic-chrome
+  :disabled t
   :config
   (atomic-chrome-start-server))
 

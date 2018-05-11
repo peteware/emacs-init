@@ -299,9 +299,10 @@
     Store and this allows editting text areas in Chrome via
     a two-way connection.
     #+BEGIN_SRC emacs-lisp
-    (use-package atomic-chrome
-      :config
-      (atomic-chrome-start-server))
+      (use-package atomic-chrome
+        :disabled t
+        :config
+        (atomic-chrome-start-server))
     #+END_SRC
 
 *** bb-style
