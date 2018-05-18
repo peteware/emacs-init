@@ -43,7 +43,6 @@
 ;;     the assumption I only ever run cygwin in that environment.
 
 
-
 (when (or (string-equal system-type "windows-nt")
           (string-equal system-type "cygwin"))
   (setq password-cache-expiry nil)
@@ -62,6 +61,8 @@
   (package-install 'use-package))
 (eval-when-compile
   (require 'use-package))
+
+
 
 ;; I also like having ~use-package~ collect some info about
 ;; the loaded packages and how long they take to load.  You
@@ -313,10 +314,10 @@
 
 ;;     *DISABLED* as it hangs on large files
 
+
 (use-package fancy-narrow
   :disabled t
   :delight fancy-narrow-mode
-  :defer 5
   :config
   (fancy-narrow-mode 1))
 
