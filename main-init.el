@@ -6,10 +6,42 @@
 ;; make changes in this file; they'll be lost!
 (provide 'main-init)
 
+;; Profile startup times
+;;     This is from a good article https://blog.d46.us/advanced-emacs-startup/
+;;     about speeding up emacs startup.
+
+;;     Use a hook so the message doesn't get clobbered by other messages.
+
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "Emacs ready in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
+
+;; GC threshold
+;;     Temporarily increase GC threshold to 50MB then reduce to 800KB after startup.
+
+(setq gc-cons-threshold (* 50 1000 1000))    
+(add-hook 'after-init-hook (lambda ()
+                             (setq gc-cons-threshold (* 800 1000))))
+
+;; package
+;;     Use the emacs packaging system to automatically install some packages
+
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(package-initialize)
+
 ;; Setup proxies for package installation
 ;;     To get ~package-install~ to work you may need to setup some
 ;;     proxies.  This is specific to a corp desktop pc keyed off
-;;     the assumption I only every run cygwin in that environment.
+;;     the assumption I only ever run cygwin in that environment.
+
 
 
 (when (or (string-equal system-type "windows-nt")
@@ -25,10 +57,11 @@
 ;;    You can also not use a package by adding :disabled t to use-package
 
 
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 (eval-when-compile
   (require 'use-package))
-
-
 
 ;; I also like having ~use-package~ collect some info about
 ;; the loaded packages and how long they take to load.  You
@@ -36,16 +69,6 @@
 
 
 (setq use-package-compute-statistics t)
-
-;; package
-;;     Use the emacs packaging system to automatically install some packages
-
-
-(use-package package
-  :config
-  (progn
-    (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-    (package-initialize t)))
 
 ;; bind-key
 ;;     Using bind-key lets you run describe-personal-keybindings
@@ -69,7 +92,7 @@
 
 
 (use-package bookmark
-  :defer 60
+  :defer 5
   :config
   (setq bookmark-save-flag 1))
 
@@ -78,6 +101,7 @@
 
 
 (use-package delsel
+  :defer 5
   :config
   (delete-selection-mode -1))
 
@@ -87,6 +111,7 @@
 
 (use-package desktop
   ;:defer 10
+  :defer 1
   :config
   (progn
     (setq desktop-save t)
@@ -111,7 +136,7 @@
 
 
 (use-package executable
-  ;:defer 60
+  :defer 2
   :config
   (add-hook 'after-save-hook
             'executable-make-buffer-file-executable-if-script-p))
@@ -121,6 +146,7 @@
 
 
 (use-package face-remap
+  :defer 5
   :bind* (("C-c -" . text-scale-decrease)
           ("C-c +" . text-scale-increase)))
 
@@ -129,6 +155,7 @@
 
 
 (use-package jit-lock
+  :defer 1
   :config
   (jit-lock-mode t))
 
@@ -137,6 +164,7 @@
 
 
 (use-package jka-cmpr-hook
+  :defer 5
   :config
   (auto-compression-mode 1))
 
@@ -145,6 +173,7 @@
 
 
 (use-package mwheel
+  :defer 1
   :config
   (progn
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
@@ -155,6 +184,7 @@
 
 
 (use-package outline
+  :defer 5
   :config
   (add-hook 'prog-mode-hook 'outline-minor-mode))
 
@@ -163,7 +193,7 @@
 
 
 (use-package paren
-  :defer 60
+  :defer 5
   :config
   (show-paren-mode 1))
 
@@ -172,7 +202,7 @@
 (use-package recentf
   ;;
   ;; Save list of recently visited files
-  :defer 15
+  :defer 5
   :config
   (progn
     (setq recentf-max-saved-items 100)
@@ -184,7 +214,7 @@
 (use-package savehist
   ;;
   ;; Save emacs's internal command history.
-  :defer 15
+  :defer 5
   :config
   (progn
     (setq savehist-additional-variables
@@ -202,7 +232,7 @@
 
 
 (use-package saveplace
-  :defer 30
+  :defer 5
   :config
   (progn
     (setq-default save-place t)
@@ -215,6 +245,8 @@
 
 
 (use-package scroll-bar
+  :defer 1
+  :disabled t
   :config
   (scroll-bar-mode -1))
 
@@ -235,6 +267,7 @@
 ;;     directory path and killing a buffer renames all of them.
 
 (use-package uniquify
+  :defer 1
   :config
   (progn
     (setq uniquify-buffer-name-style 'post-forward)
@@ -254,6 +287,7 @@
 ;;     Bloomberg C++ coding style
 
 (use-package bb-style
+  :defer 1
   :config
   (progn
     ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
@@ -269,6 +303,7 @@
 ;;     modes in the modeline.  Uses for :diminish
 
 (use-package delight
+  :defer 5
   :ensure t)
 
 ;; fancy-narrow
@@ -278,10 +313,10 @@
 
 ;;     *DISABLED* as it hangs on large files
 
-
 (use-package fancy-narrow
   :disabled t
   :delight fancy-narrow-mode
+  :defer 5
   :config
   (fancy-narrow-mode 1))
 
@@ -293,6 +328,7 @@
 
 (use-package ivy
   :ensure t
+  :defer 1
   :delight ivy-mode
   :bind (("C-c C-r" . 'ivy-resume))
   :config (progn
@@ -331,6 +367,7 @@
 
 
 (use-package scratch-ext
+  :defer 5
   :ensure t
   :config
   (save-excursion
@@ -418,6 +455,7 @@
 
 (use-package grep
   ;:bind (("C-c g" . grep))
+  :defer 5
   :config
   (progn
     (setq grep-files-aliases
@@ -514,6 +552,7 @@
 
 
 (use-package beacon
+  :defer 15
   :config
   (progn
     (beacon-mode 1)
@@ -656,6 +695,7 @@
 ;;     saving the changes applies them to each file.
 
 (use-package wgrep
+  :defer 5
   :ensure t)
 
 ;; zoom-frm
@@ -1004,6 +1044,7 @@
 ;;     which keeps it from displaying on startup
 
 (use-package tool-bar
+  :disabled t
   :config
   (tool-bar-mode -1))
 
