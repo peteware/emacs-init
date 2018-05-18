@@ -1,4 +1,3 @@
-
 ;; Preamble
 ;;     This is at the beginning of main-init.el:
 
@@ -12,6 +11,7 @@
 ;;     proxies.  This is specific to a corp desktop pc keyed off
 ;;     the assumption I only every run cygwin in that environment.
 
+
 (when (or (string-equal system-type "windows-nt")
           (string-equal system-type "cygwin"))
   (setq password-cache-expiry nil)
@@ -24,17 +24,22 @@
 ;;    If a package is not available then ~use-package~ ignores it.
 ;;    You can also not use a package by adding :disabled t to use-package
 
+
 (eval-when-compile
   (require 'use-package))
 
+
+
 ;; I also like having ~use-package~ collect some info about
-;;    the loaded packages and how long they take to load.  You
-;;    can see the results with =M-x use-package-report=.
+;; the loaded packages and how long they take to load.  You
+;; can see the results with =M-x use-package-report=.
+
 
 (setq use-package-compute-statistics t)
 
 ;; package
 ;;     Use the emacs packaging system to automatically install some packages
+
 
 (use-package package
   :config
@@ -62,6 +67,7 @@
 ;;     You can save bookmarks with =C-x r m= and jump to them wih =C-x r b=
 ;;     This makes them save automatically
 
+
 (use-package bookmark
   :defer 60
   :config
@@ -69,6 +75,7 @@
 
 ;; delsel
 ;;     I can't handle the active region getting deleted
+
 
 (use-package delsel
   :config
@@ -102,6 +109,7 @@
 ;;     them executable.  It's considered a shell script if
 ;;     it starts with #!
 
+
 (use-package executable
   ;:defer 60
   :config
@@ -111,12 +119,14 @@
 ;; face-remap
 ;;     Change the font size in the current buffer (not the window)
 
+
 (use-package face-remap
   :bind* (("C-c -" . text-scale-decrease)
           ("C-c +" . text-scale-increase)))
 
 ;; jit-lock
 ;;     Setup lazy font locking
+
 
 (use-package jit-lock
   :config
@@ -125,12 +135,14 @@
 ;; jka-cmpr-hook
 ;;     Make visiting a *.gz automatically uncompress file
 
+
 (use-package jka-cmpr-hook
   :config
   (auto-compression-mode 1))
 
 ;; mwheel
 ;;     Make sure the mouse wheel scrolls
+
 
 (use-package mwheel
   :config
@@ -141,12 +153,14 @@
 
 ;; outline
 
+
 (use-package outline
   :config
   (add-hook 'prog-mode-hook 'outline-minor-mode))
 
 ;; paren
 ;;     Highlight matching paren
+
 
 (use-package paren
   :defer 60
@@ -184,7 +198,8 @@
 ;; saveplace
 ;;     This records the location of every file you visit and
 ;;     restores when you vist a file, goes to that location.  I also save
-;;     the file every couple hours because I don't always quit emacs
+;;     the file every couple hours because I don't always quit emacs 
+
 
 (use-package saveplace
   :defer 30
@@ -198,12 +213,14 @@
     
 ;;     Turn off the scroll bars
 
+
 (use-package scroll-bar
   :config
   (scroll-bar-mode -1))
 
 ;; server
 ;;     Make it so $EDITOR can popup in this emacs
+
 
 (use-package server
   :config
@@ -259,7 +276,11 @@
 ;;     rest of the buffer giving a much
 ;;     more natual look.
 
+;;     *DISABLED* as it hangs on large files
+
+
 (use-package fancy-narrow
+  :disabled t
   :delight fancy-narrow-mode
   :config
   (fancy-narrow-mode 1))
@@ -308,6 +329,7 @@
 ;; scratch-ext
 ;;     Make *scratch* buffers get saved
 
+
 (use-package scratch-ext
   :ensure t
   :config
@@ -321,6 +343,7 @@
 
 ;; toolkit-tramp
 
+
 (use-package toolkit-tramp
   :defer 60
   :config
@@ -328,6 +351,7 @@
 
 ;; compile
 ;;     Setup compilation buffers
+
 
 (use-package compile
   :bind ("C-c c" . compile)
@@ -353,6 +377,7 @@
 ;; ediff
 ;;     A nice graphical diff Make sure that ediff ignores all whitespace
 ;;     differences and highlights the individual differences
+
 
 (use-package ediff
   :commands ediff-load-version-control
@@ -381,6 +406,7 @@
 ;;     and the other window scrolls.  I bound F7 to do get
 ;;     rid of the other windows and split.
 
+
 (use-package follow
   :bind ("<f7>" . follow-delete-other-windows-and-split))
 
@@ -388,6 +414,7 @@
 ;;     ~rgrep~ recursively greps for a pattern.  It uses a key to specify
 ;;     filenames and ignores directories like CVS.  "cchh" is all C++
 ;;     files and headers.
+
 
 (use-package grep
   ;:bind (("C-c g" . grep))
@@ -423,6 +450,7 @@
 ;;     Make it so line numbers show up in left margin Used in C/C++
 ;;     mode.  (Tried nlinum but had refresh problems)
 
+
 (use-package linum
   :commands linum-mode
   :init (add-hook 'prog-mode-hook 'linum-mode)
@@ -443,8 +471,11 @@
             (setq org-export-backends '(ascii html icalendar latex md))
             (setq org-list-allow-alphabetical t)))
 
+
+
 ;; Additionally, I have a number of customizations I like to use
-;;     for org-mode.
+;; for org-mode.
+
 
 (use-package org-prefs
   :after org)
@@ -455,6 +486,7 @@
 ;;     line to highlight
     
 ;;     Use =M-x whitespace-cleanup= to fix all problems
+
 
 (use-package whitespace
   :bind ("C-c SPC" . whitespace-mode)
@@ -480,6 +512,7 @@
 ;; beacon
 ;;     Highlight the line the point is on when the screen jumps around.
 
+
 (use-package beacon
   :config
   (progn
@@ -490,6 +523,7 @@
 ;; comint-prefs
     
 ;;     Setup preferences for shell, compile and other comint based commands
+
 
 (use-package comint-prefs
   :after comint
@@ -554,6 +588,7 @@
 ;;     on package silver searcher for the executable
 ;;     to be installed.
 
+
 (use-package ag
   :ensure t
   :bind (("C-c f" . ag))
@@ -562,6 +597,7 @@
 ;; pw-misc
     
 ;;     Some commands I find useful
+    
 
 (use-package pw-misc
   :after compile
@@ -654,6 +690,8 @@
 
 (put 'narrow-to-region 'disabled nil)
 
+
+
 ;; Force Mac OS X to use Consolas at 16pt
 
 (if (eq (window-system) 'ns)
@@ -714,13 +752,16 @@
 (setq scroll-margin 2)
 (setq scroll-preserve-screen-position 'keep)
 
+
+
 ;; I set horizontal scrolling because I'd have trouble with
-;;     long lines in shell output.  This seemed to get
-;;     them to display faster by actually slowing things down
-    
-;;     - ~hscroll-margin~ is how close cursor gets before
-;;       doing horizontal scrolling
-;;     - ~hscroll-step~ is how far to scroll when marg is reached.
+;; long lines in shell output.  This seemed to get
+;; them to display faster by actually slowing things down
+
+;; - ~hscroll-margin~ is how close cursor gets before
+;;   doing horizontal scrolling
+;; - ~hscroll-step~ is how far to scroll when marg is reached.
+
 
 (setq hscroll-margin 1)
 (setq hscroll-step 5)
@@ -739,22 +780,30 @@
 (setq-default indicate-buffer-boundaries 'left)
 (setq-default indicate-empty-lines t)
 
+
+
 ;; Even though I did something with the mouse do not
-;;     popup a dialog box but prompt from the mode line
+;; popup a dialog box but prompt from the mode line
 
 (setq use-dialog-box nil)
 
+
+
 ;; This _sounds_ like something that should be nil but
-;;     the reality is that when user input stops redisplay
-;;     a bunch of screen optimizations are lost.  The
-;;     default is prior to emacs-24 is nil
+;; the reality is that when user input stops redisplay
+;; a bunch of screen optimizations are lost.  The
+;; default is prior to emacs-24 is nil
 
 (setq redisplay-dont-pause t)
 
+
+
 ;; I found visiting a file to be really slow and realized
-;;     it was from figuring out the version control
+;; it was from figuring out the version control
 
 (setq vc-handled-backends nil)
+
+
 
 ;; I don't like actual tabs being inserted
 
@@ -778,38 +827,52 @@
 
 (setq x-select-enable-clipboard t)
 
+
+
 ;; The following puts killed text into the X11 primary cut buffer.
-;;     Text copied in an xterm can either be pasted into emacs with a
-;;     middle-mouse or the usual yank operations like =C-y=.  You cannot
-;;     paste such text into other Window's applications without going through
-;;     emacs.  Usualy middle mouse button in an xterm pastes the text
-;;     from emacs.
+;; Text copied in an xterm can either be pasted into emacs with a
+;; middle-mouse or the usual yank operations like =C-y=.  You cannot
+;; paste such text into other Window's applications without going through
+;; emacs.  Usualy middle mouse button in an xterm pastes the text
+;; from emacs.
 
 (setq x-select-enable-primary t)
 
+
+
+
 ;; Alternatively, in Exceed, set the "X Selection Associated with
-;;     Edit Operations:" to be "PRIMARY" and use these settings.  This lets
-;;     older xterm/mrxvt co-exist with Windows applications.
-    
-;;     To copy to an xterm use left-mouse to select the text in emacs and
-;;     then usual paste with middle-mouse to paste to the xterm.
+;; Edit Operations:" to be "PRIMARY" and use these settings.  This lets
+;; older xterm/mrxvt co-exist with Windows applications.
+
+;; To copy to an xterm use left-mouse to select the text in emacs and
+;; then usual paste with middle-mouse to paste to the xterm.
+
 
 ;(setq x-select-enable-clipboard nil)
 ;(setq x-select-enable-primary t)
+
+
 
 ;; Do not beep if I kill text in a read-only buffer
 
 (setq kill-read-only-ok t)
 
+
+
 ;; Usually, my home directory is faster for saving files
-;;     then anywhere else.
+;; then anywhere else.
 
 (setq backup-directory-alist '(("." . "~/.backups")))
 
+
+
 ;; Make it so selecting the region highlights it and causes many
-;;     commands to work only on the region
+;; commands to work only on the region
 
 (setq transient-mark-mode t)
+
+
 
 ;; Ignore some other file extensions
 
@@ -821,6 +884,7 @@
    
 ;;     - *DISABLED*.  I found the emacs display would stop refreshing
 ;;                    after a number of files were loaded.
+
 
 (use-package autorevert
   :disabled t
@@ -876,6 +940,7 @@
     
 ;;     - *DISABLED* using ivy
 
+
 (use-package ido
   :disabled t
   :defer 5
@@ -903,6 +968,7 @@
 ;;     Causes ido-mode to display completions vertically
 ;;     and =Ctl n= and =Ctl p= move down and up in list
 
+
 (use-package ido-vertical-mode
   :after ido
   :defer 30
@@ -918,6 +984,7 @@
 ;;     adds recent files to the match
     
 ;;     - *DISABLED* (use ido instead)
+
 
 (use-package iswitchb
   :disabled t
@@ -945,6 +1012,7 @@
     
 ;;     - *DISABLED* (Turns out I like the menu-bar!)
 
+
 (use-package menu-bar
   :disabled t
   :config
@@ -952,6 +1020,7 @@
 
 ;; diminish (disabled)
 ;;     Do not display these minor modes in mode-line
+
 
 (use-package diminish
   :disabled t
@@ -963,6 +1032,7 @@
 ;;     This works with linum-mode but not in a tty
     
 ;;     - *DISABLED* (slow loading)
+
 
 (use-package git-gutter-fringe+
   :disabled t
@@ -985,6 +1055,7 @@
 ;;     Make it so line numbers show up in left margin
     
 ;;     - *DISABLED* (refresh problems on Mac OS X)
+
 
 (use-package nlinum
   :disabled t

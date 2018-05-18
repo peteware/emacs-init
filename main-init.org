@@ -333,11 +333,14 @@
     rest of the buffer giving a much
     more natual look.
 
+    *DISABLED* as it hangs on large files
+
     #+BEGIN_SRC emacs-lisp
-    (use-package fancy-narrow
-      :delight fancy-narrow-mode
-      :config
-      (fancy-narrow-mode 1))
+      (use-package fancy-narrow
+        :disabled t
+        :delight fancy-narrow-mode
+        :config
+        (fancy-narrow-mode 1))
     #+END_SRC
 
 *** ivy
