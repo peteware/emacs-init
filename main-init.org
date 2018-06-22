@@ -165,7 +165,12 @@
         (add-to-list 'desktop-modes-not-to-save 'dired-mode)
         ))
     #+END_SRC
-
+*** display line numbers
+    #+BEGIN_SRC emacs-lisp
+      (use-package display-line-numbers
+        :commands (display-line-numbers-mode)
+        :hook (prog-mode . display-line-numbers-mode))
+    #+END_SRC
 *** executable
     This makes saving shell scripts automatically make
     them executable.  It's considered a shell script if
@@ -310,6 +315,18 @@
             (setenv "EDITOR" "emacsclient"))
         (message "server-start")
         (server-start)))
+    #+END_SRC
+
+*** tool-bar
+    Turn the toolbar off.  I also turn it off in my .Xdefaults with:
+    
+    Emacs.toolBar:            0
+
+    which keeps it from displaying on startup
+    #+BEGIN_SRC emacs-lisp
+      (use-package tool-bar
+        :config
+        (tool-bar-mode -1))
     #+END_SRC
 
 *** uniquify
@@ -566,10 +583,11 @@
     mode.  (Tried nlinum but had refresh problems)
 
     #+BEGIN_SRC emacs-lisp
-    (use-package linum
-      :commands linum-mode
-      :init (add-hook 'prog-mode-hook 'linum-mode)
-      :config (setq linum-format 'dynamic))
+      (use-package linum
+        :unless display-line-numbers
+        :commands linum-mode
+        :init (add-hook 'prog-mode-hook 'linum-mode)
+        :config (setq linum-format 'dynamic))
     #+END_SRC
 
 *** org
@@ -1169,20 +1187,6 @@ Emacs.font: Bitstream Vera Sans Mono-16
               iswitchb-use-virtual-buffers t)
         (recentf-mode 1)
         (iswitchb-mode 1)))
-    #+END_SRC
-
-*** tool-bar (disabled)
-    Turn the toolbar off.  I also turn it off in my .Xdefaults with:
-    
-    Emacs.toolBar:            0
-
-    which keeps it from displaying on startup
-    #+BEGIN_SRC emacs-lisp
-
-      (use-package tool-bar
-        :disabled t
-        :config
-        (tool-bar-mode -1))
     #+END_SRC
 
 *** menu-bar (disabled)

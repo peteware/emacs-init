@@ -130,6 +130,12 @@
     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
     ))
 
+;; display line numbers
+
+(use-package display-line-numbers
+  :commands (display-line-numbers-mode)
+  :hook (prog-mode . display-line-numbers-mode))
+
 ;; executable
 ;;     This makes saving shell scripts automatically make
 ;;     them executable.  It's considered a shell script if
@@ -262,6 +268,17 @@
         (setenv "EDITOR" "emacsclient"))
     (message "server-start")
     (server-start)))
+
+;; tool-bar
+;;     Turn the toolbar off.  I also turn it off in my .Xdefaults with:
+    
+;;     Emacs.toolBar:            0
+
+;;     which keeps it from displaying on startup
+
+(use-package tool-bar
+  :config
+  (tool-bar-mode -1))
 
 ;; uniquify
 ;;     Make it so buffers with the same name are are made unique by added
@@ -491,6 +508,7 @@
 
 
 (use-package linum
+  :unless display-line-numbers
   :commands linum-mode
   :init (add-hook 'prog-mode-hook 'linum-mode)
   :config (setq linum-format 'dynamic))
@@ -1036,18 +1054,6 @@
           iswitchb-use-virtual-buffers t)
     (recentf-mode 1)
     (iswitchb-mode 1)))
-
-;; tool-bar (disabled)
-;;     Turn the toolbar off.  I also turn it off in my .Xdefaults with:
-    
-;;     Emacs.toolBar:            0
-
-;;     which keeps it from displaying on startup
-
-(use-package tool-bar
-  :disabled t
-  :config
-  (tool-bar-mode -1))
 
 ;; menu-bar (disabled)
 ;;     Turn the menubar off.
