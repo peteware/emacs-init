@@ -376,6 +376,7 @@
   :bind (("C-c g" .  'counsel-git)
          ("C-c j" .  'counsel-file-jump)
          ("C-c k" .  'counsel-ag)
+         ("C-c s" .  'counsel-shell-switch-buffer)
          )
   :config (progn (counsel-mode)))
 
@@ -699,9 +700,12 @@
 ;; shell-switch
     
 ;;     Pete's hack to make switching to a shell buffer
-;;     faster
+;;     faster.
+
+;;     DISABLED.  Trying out counsel-switch-shell-buffer
 
 (use-package shell-switch
+  :disabled t
   :commands (shell-switch shell-switch-other-window)
   :init
   (progn

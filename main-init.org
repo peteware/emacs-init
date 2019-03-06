@@ -423,15 +423,16 @@
     ~counsel~ builds on completion for ivy but adds
     searches across files.
     #+BEGIN_SRC emacs-lisp
-    (use-package counsel
-      :after ivy
-      :ensure t
-      :delight counsel-mode
-      :bind (("C-c g" .  'counsel-git)
-             ("C-c j" .  'counsel-file-jump)
-             ("C-c k" .  'counsel-ag)
-             )
-      :config (progn (counsel-mode)))
+      (use-package counsel
+        :after ivy
+        :ensure t
+        :delight counsel-mode
+        :bind (("C-c g" .  'counsel-git)
+               ("C-c j" .  'counsel-file-jump)
+               ("C-c k" .  'counsel-ag)
+               ("C-c s" .  'counsel-shell-switch-buffer)
+               )
+        :config (progn (counsel-mode)))
     #+END_SRC
 
 *** swiper
@@ -787,16 +788,19 @@
 *** shell-switch
     
     Pete's hack to make switching to a shell buffer
-    faster
+    faster.
+
+    DISABLED.  Trying out counsel-switch-shell-buffer
     #+BEGIN_SRC emacs-lisp
-    (use-package shell-switch
-      :commands (shell-switch shell-switch-other-window)
-      :init
-      (progn
-        (bind-key* "C-c s" 'shell-switch)
-        (bind-keys* :prefix-map clt-c-4-keymap
-                    :prefix "C-c 4"
-                    ("s" . shell-switch-other-window))))
+      (use-package shell-switch
+        :disabled t
+        :commands (shell-switch shell-switch-other-window)
+        :init
+        (progn
+          (bind-key* "C-c s" 'shell-switch)
+          (bind-keys* :prefix-map clt-c-4-keymap
+                      :prefix "C-c 4"
+                      ("s" . shell-switch-other-window))))
     #+END_SRC
 
 *** treemacs
