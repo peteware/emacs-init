@@ -54,30 +54,64 @@
       (add-hook 'after-init-hook (lambda ()
                                    (setq gc-cons-threshold (* 800 1000))))
     #+END_SRC
-*** package
-    Use the emacs packaging system to automatically install some packages
-
-    #+BEGIN_SRC emacs-lisp
-      (require 'package)
-      (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-      (add-to-list 'package-archives
-                   '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-      (package-initialize)
-    #+END_SRC
-
-
 *** Setup proxies for package installation
     To get ~package-install~ to work you may need to setup some
     proxies.  This is specific to a corp desktop pc keyed off
     the assumption I only ever run cygwin in that environment.
 
     #+BEGIN_SRC emacs-lisp
-    (when (or (string-equal system-type "windows-nt")
-              (string-equal system-type "cygwin"))
-      (setq password-cache-expiry nil)
-      (setq url-proxy-services '(("http" . "proxy.bloomberg.com:81"))))
+      (when (or (string-equal system-type "windows-nt")
+                (string-equal system-type "cygwin"))
+        (setq password-cache-expiry nil)
+        (setq url-proxy-services '(("http" . "proxy.bloomberg.com:81"))))
     #+END_SRC
 
+    Assume if this is Mac OS X that I've setup nodeproxy for corp
+    access
+
+    #+BEGIN_SRC emacs-lisp
+      (when (eq system-type 'darwin)
+        (setq url-proxy-services '(("http" . "localhost:8888")
+                                   ("https" . "localhost:8888"))))
+    #+END_SRC
+*** Do some weird Mac OS X stuff for my environment
+#+BEGIN_SRC emacs-lisp
+  (when (eq system-type 'darwin)
+      (setenv "PATH" "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_10:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_10")
+      ;(setq prog-mode-hook '(pw/trunc-lines outline-minor-mode display-line-numbers-mode))
+      (setq exec-path (cons "/usr/local/bin" exec-path)))
+#+END_SRC
+*** Configure frame geometry, fonts, transparency,
+
+#+BEGIN_SRC emacs-lisp
+    (when (display-graphic-p)
+      (setq initial-frame-alist
+            '((width . 110)
+              (height . 60)
+              (top . 29)
+              (left . 88)))
+      (setq default-frame-alist
+            '((width . 110)
+              (height . 60)
+              (top . 29)
+              (left . 1.0))))
+    (when (eq 'ns (window-system))
+      (add-to-list 'default-frame-alist
+                   '(font . "SF Mono-16"))
+      (add-to-list 'default-frame-alist
+                   '(alpha . (90 . 70))))
+#+END_SRC
+
+*** package
+    Use the emacs packaging system to automatically install some packages
+
+    #+BEGIN_SRC emacs-lisp
+      (require 'package)
+      (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+      ;; (add-to-list 'package-archives
+      ;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+      (package-initialize)
+    #+END_SRC
 *** Setup use-package
    You may need to =M-x package-install use-package= before
    any of this works
@@ -86,11 +120,11 @@
    You can also not use a package by adding :disabled t to use-package
 
    #+BEGIN_SRC emacs-lisp
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(eval-when-compile
-  (require 'use-package))
+     (unless (package-installed-p 'use-package)
+       (package-refresh-contents)
+       (package-install 'use-package))
+     (eval-when-compile
+       (require 'use-package))
     #+END_SRC
 
    I also like having ~use-package~ collect some info about
@@ -100,6 +134,7 @@
    #+BEGIN_SRC emacs-lisp
      (setq use-package-compute-statistics t)
    #+END_SRC
+
 ** Standard packages loaded immediately
 
    This section is for standard packages that are loaded immediately
@@ -292,18 +327,6 @@
         (run-at-time 3600  3600 'save-place-alist-to-file)))
     #+END_SRC
 
-*** scroll-bar
-    
-    Turn off the scroll bars
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package scroll-bar
-      :defer 1
-      :disabled t
-      :config
-      (scroll-bar-mode -1))
-    #+END_SRC
-
 *** server
     Make it so $EDITOR can popup in this emacs
 
@@ -347,17 +370,6 @@
    These are non-standard packages that are
    loaded immediately so have some affect on startup
 
-*** atomic-chrome
-    You must first install Atomic Chrome extension from Chrome Web
-    Store and this allows editting text areas in Chrome via
-    a two-way connection.
-    #+BEGIN_SRC emacs-lisp
-      (use-package atomic-chrome
-        :disabled t
-        :config
-        (atomic-chrome-start-server))
-    #+END_SRC
-
 *** bb-style
     Bloomberg C++ coding style
     #+BEGIN_SRC emacs-lisp
@@ -383,21 +395,6 @@
       :ensure t)
     #+END_SRC
 
-*** fancy-narrow
-    Causes narrow region to dim the
-    rest of the buffer giving a much
-    more natual look.
-
-    *DISABLED* as it hangs on large files
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package fancy-narrow
-        :disabled t
-        :delight fancy-narrow-mode
-        :config
-        (fancy-narrow-mode 1))
-    #+END_SRC
-
 *** ivy
     ~ivy~ changes completion so that matches are
     found via regular expressions and matches are
@@ -419,15 +416,9 @@
     #+BEGIN_SRC emacs-lisp
       (use-package ivy-rich
         :after ivy
-        :custom
-        (ivy-virtual-abbreviate 'full
-                                ivy-rich-switch-buffer-align-virtual-buffer t
-                                ivy-rich-path-style 'abbrev)
-        :config
-        (ivy-set-display-transformer 'ivy-switch-buffer
-                                     'ivy-rich-switch-buffer-transformer))
+        :config (progn
+                  ivy-rich-mode 1))
     #+END_SRC
-
 *** counsel
     ~counsel~ builds on completion for ivy but adds
     searches across files.
@@ -437,10 +428,8 @@
       :ensure t
       :delight counsel-mode
       :bind (("C-c g" .  'counsel-git)
-             ("C-c j" .  'counsel-git-grep)
+             ("C-c j" .  'counsel-file-jump)
              ("C-c k" .  'counsel-ag)
-             ("C-x l" .  'counsel-locate)
-             ("C-S-o" .  'counsel-rhythmbox)
              )
       :config (progn (counsel-mode)))
     #+END_SRC
@@ -475,10 +464,13 @@
 *** toolkit-tramp
 
     #+BEGIN_SRC emacs-lisp
-    (use-package toolkit-tramp
-      :defer 60
-      :config
-      (setq password-cache-expiry nil))
+          (use-package toolkit-tramp
+            :defer 60
+            :config
+            (progn
+              (setq password-cache-expiry nil)
+              (setq tramp-use-ssh-controlmaster-options nil)))
+      
     #+END_SRC
 
 ** Standard packages that defer loading
@@ -590,18 +582,6 @@
         (add-hook 'c-mode-hook 'hs-minor-mode)))
     #+END_SRC
 
-*** linum
-    Make it so line numbers show up in left margin Used in C/C++
-    mode.  (Tried nlinum but had refresh problems)
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package linum
-        :unless (featurep 'display-line-numbers)
-        :commands linum-mode
-        :hook (prog-mode . linum-mode)
-        :config (setq linum-format 'dynamic))
-    #+END_SRC
-
 *** org
     org-mode provides an outline, todo, diary, calendar like interface.
     #+BEGIN_SRC emacs-lisp
@@ -633,6 +613,14 @@
         :config
         (setq tramp-use-ssh-controlmaster-options nil
               tramp-copy-size-limit 1024))
+    #+END_SRC
+*** discover
+    Add some nice menus to common commands.  
+    See https://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
+    #+BEGIN_SRC emacs-lisp
+      (use-package discover
+        :config
+        (global-discover-mode 1))
     #+END_SRC
 *** whitespace
     Make "bad" whitespace be visible.  This causes tabs, and whitespace
@@ -952,9 +940,9 @@
 *** Incremental search highlighting
     Incremental search settings
     #+BEGIN_SRC emacs-lisp
-    (setq lazy-highlight-max-at-a-time 10)
-    (setq lazy-highlight-initial-delay .5)
-    (setq lazy-highlight-interval .1)
+      (setq lazy-highlight-max-at-a-time 10)
+      (setq lazy-highlight-initial-delay .25)
+      (setq lazy-highlight-interval 0)
     #+END_SRC
 
 *** Misc settings
@@ -1084,6 +1072,17 @@ Emacs.font: Bitstream Vera Sans Mono-16
 ** Disabled packages
    I've disabled these packages for various reasons.  I'm
    not sure why I leave them around.
+*** atomic-chrome
+    You must first install Atomic Chrome extension from Chrome Web
+    Store and this allows editting text areas in Chrome via
+    a two-way connection.
+    #+BEGIN_SRC emacs-lisp
+      (use-package atomic-chrome
+        :disabled t
+        :config
+        (atomic-chrome-start-server))
+    #+END_SRC
+
 *** autorevert (disabled)
     Cause the buffer to be automatically update when the
     file changes.
@@ -1125,6 +1124,21 @@ Emacs.font: Bitstream Vera Sans Mono-16
       :disabled t
       :config
       (cua-mode 1))
+    #+END_SRC
+
+*** fancy-narrow
+    Causes narrow region to dim the
+    rest of the buffer giving a much
+    more natual look.
+
+    *DISABLED* as it hangs on large files
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package fancy-narrow
+        :disabled t
+        :delight fancy-narrow-mode
+        :config
+        (fancy-narrow-mode 1))
     #+END_SRC
 
 *** hl-line (disabled)
@@ -1245,6 +1259,19 @@ Emacs.font: Bitstream Vera Sans Mono-16
                 (global-git-gutter+-mode)))
     #+END_SRC
 
+*** linum
+    Make it so line numbers show up in left margin Used in C/C++
+    mode.  (Tried nlinum but had refresh problems)
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package linum
+        :disabled t
+        :if (not (featurep 'display-line-numbers))
+        :commands linum-mode
+        :hook (prog-mode . linum-mode)
+        :config (setq linum-format 'dynamic))
+    #+END_SRC
+
 *** magithub (disabled)
     Interact with github via magit
     
@@ -1323,6 +1350,18 @@ Emacs.font: Bitstream Vera Sans Mono-16
       (progn
         (add-hook 'prog-mode-hook
                   'rainbow-identifiers-mode)))
+    #+END_SRC
+
+*** scroll-bar
+    
+    Turn off the scroll bars
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package scroll-bar
+      :defer 1
+      :disabled t
+      :config
+      (scroll-bar-mode -1))
     #+END_SRC
 
 *** smart-mode-line (disabled)

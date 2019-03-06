@@ -27,16 +27,6 @@
 (add-hook 'after-init-hook (lambda ()
                              (setq gc-cons-threshold (* 800 1000))))
 
-;; package
-;;     Use the emacs packaging system to automatically install some packages
-
-
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(package-initialize)
-
 ;; Setup proxies for package installation
 ;;     To get ~package-install~ to work you may need to setup some
 ;;     proxies.  This is specific to a corp desktop pc keyed off
@@ -47,6 +37,53 @@
           (string-equal system-type "cygwin"))
   (setq password-cache-expiry nil)
   (setq url-proxy-services '(("http" . "proxy.bloomberg.com:81"))))
+
+
+
+;; Assume if this is Mac OS X that I've setup nodeproxy for corp
+;; access
+
+
+(when (eq system-type 'darwin)
+  (setq url-proxy-services '(("http" . "localhost:8888")
+                             ("https" . "localhost:8888"))))
+
+;; Do some weird Mac OS X stuff for my environment
+
+(when (eq system-type 'darwin)
+    (setenv "PATH" "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_10:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_10")
+    ;(setq prog-mode-hook '(pw/trunc-lines outline-minor-mode display-line-numbers-mode))
+    (setq exec-path (cons "/usr/local/bin" exec-path)))
+
+;; Configure frame geometry, fonts, transparency,
+
+
+(when (display-graphic-p)
+  (setq initial-frame-alist
+        '((width . 110)
+          (height . 60)
+          (top . 29)
+          (left . 88)))
+  (setq default-frame-alist
+        '((width . 110)
+          (height . 60)
+          (top . 29)
+          (left . 1.0))))
+(when (eq 'ns (window-system))
+  (add-to-list 'default-frame-alist
+               '(font . "SF Mono-16"))
+  (add-to-list 'default-frame-alist
+               '(alpha . (90 . 70))))
+
+;; package
+;;     Use the emacs packaging system to automatically install some packages
+
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+;; (add-to-list 'package-archives
+;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(package-initialize)
 
 ;; Setup use-package
 ;;    You may need to =M-x package-install use-package= before
@@ -246,17 +283,6 @@
     (setq save-place-limit nil)
     (run-at-time 3600  3600 'save-place-alist-to-file)))
 
-;; scroll-bar
-    
-;;     Turn off the scroll bars
-
-
-(use-package scroll-bar
-  :defer 1
-  :disabled t
-  :config
-  (scroll-bar-mode -1))
-
 ;; server
 ;;     Make it so $EDITOR can popup in this emacs
 
@@ -291,16 +317,6 @@
     (setq uniquify-buffer-name-style 'post-forward)
     (setq uniquify-after-kill-buffer-p t)))
 
-;; atomic-chrome
-;;     You must first install Atomic Chrome extension from Chrome Web
-;;     Store and this allows editting text areas in Chrome via
-;;     a two-way connection.
-
-(use-package atomic-chrome
-  :disabled t
-  :config
-  (atomic-chrome-start-server))
-
 ;; bb-style
 ;;     Bloomberg C++ coding style
 
@@ -324,20 +340,6 @@
   :defer 5
   :ensure t)
 
-;; fancy-narrow
-;;     Causes narrow region to dim the
-;;     rest of the buffer giving a much
-;;     more natual look.
-
-;;     *DISABLED* as it hangs on large files
-
-
-(use-package fancy-narrow
-  :disabled t
-  :delight fancy-narrow-mode
-  :config
-  (fancy-narrow-mode 1))
-
 ;; ivy
 ;;     ~ivy~ changes completion so that matches are
 ;;     found via regular expressions and matches are
@@ -360,13 +362,8 @@
 
 (use-package ivy-rich
   :after ivy
-  :custom
-  (ivy-virtual-abbreviate 'full
-                          ivy-rich-switch-buffer-align-virtual-buffer t
-                          ivy-rich-path-style 'abbrev)
-  :config
-  (ivy-set-display-transformer 'ivy-switch-buffer
-                               'ivy-rich-switch-buffer-transformer))
+  :config (progn
+            ivy-rich-mode 1))
 
 ;; counsel
 ;;     ~counsel~ builds on completion for ivy but adds
@@ -377,10 +374,8 @@
   :ensure t
   :delight counsel-mode
   :bind (("C-c g" .  'counsel-git)
-         ("C-c j" .  'counsel-git-grep)
+         ("C-c j" .  'counsel-file-jump)
          ("C-c k" .  'counsel-ag)
-         ("C-x l" .  'counsel-locate)
-         ("C-S-o" .  'counsel-rhythmbox)
          )
   :config (progn (counsel-mode)))
 
@@ -415,7 +410,9 @@
 (use-package toolkit-tramp
   :defer 60
   :config
-  (setq password-cache-expiry nil))
+  (progn
+    (setq password-cache-expiry nil)
+    (setq tramp-use-ssh-controlmaster-options nil)))
 
 ;; compile
 ;;     Setup compilation buffers
@@ -515,17 +512,6 @@
     (add-hook 'c++-mode-hook 'hs-minor-mode)
     (add-hook 'c-mode-hook 'hs-minor-mode)))
 
-;; linum
-;;     Make it so line numbers show up in left margin Used in C/C++
-;;     mode.  (Tried nlinum but had refresh problems)
-
-
-(use-package linum
-  :unless (featurep 'display-line-numbers)
-  :commands linum-mode
-  :hook (prog-mode . linum-mode)
-  :config (setq linum-format 'dynamic))
-
 ;; org
 ;;     org-mode provides an outline, todo, diary, calendar like interface.
 
@@ -557,6 +543,14 @@
   :config
   (setq tramp-use-ssh-controlmaster-options nil
         tramp-copy-size-limit 1024))
+
+;; discover
+;;     Add some nice menus to common commands.  
+;;     See https://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
+
+(use-package discover
+  :config
+  (global-discover-mode 1))
 
 ;; whitespace
 ;;     Make "bad" whitespace be visible.  This causes tabs, and whitespace
@@ -850,8 +844,8 @@
 ;;     Incremental search settings
 
 (setq lazy-highlight-max-at-a-time 10)
-(setq lazy-highlight-initial-delay .5)
-(setq lazy-highlight-interval .1)
+(setq lazy-highlight-initial-delay .25)
+(setq lazy-highlight-interval 0)
 
 ;; Misc settings
 ;;     Cause the gutter to display little arrows and
@@ -958,6 +952,16 @@
 
 (setq completion-ignored-extensions (append completion-ignored-extensions '(".d" ".dd" ".tsk")))
 
+;; atomic-chrome
+;;     You must first install Atomic Chrome extension from Chrome Web
+;;     Store and this allows editting text areas in Chrome via
+;;     a two-way connection.
+
+(use-package atomic-chrome
+  :disabled t
+  :config
+  (atomic-chrome-start-server))
+
 ;; autorevert (disabled)
 ;;     Cause the buffer to be automatically update when the
 ;;     file changes.
@@ -998,6 +1002,20 @@
   :disabled t
   :config
   (cua-mode 1))
+
+;; fancy-narrow
+;;     Causes narrow region to dim the
+;;     rest of the buffer giving a much
+;;     more natual look.
+
+;;     *DISABLED* as it hangs on large files
+
+
+(use-package fancy-narrow
+  :disabled t
+  :delight fancy-narrow-mode
+  :config
+  (fancy-narrow-mode 1))
 
 ;; hl-line (disabled)
 ;;     `global-hl-line-mode' highlights the current line.  You should make sure
@@ -1109,6 +1127,18 @@
             (setq git-gutter-fr+-side 'right-fringe)
             (global-git-gutter+-mode)))
 
+;; linum
+;;     Make it so line numbers show up in left margin Used in C/C++
+;;     mode.  (Tried nlinum but had refresh problems)
+
+
+(use-package linum
+  :disabled t
+  :if (not (featurep 'display-line-numbers))
+  :commands linum-mode
+  :hook (prog-mode . linum-mode)
+  :config (setq linum-format 'dynamic))
+
 ;; magithub (disabled)
 ;;     Interact with github via magit
     
@@ -1182,6 +1212,17 @@
   (progn
     (add-hook 'prog-mode-hook
               'rainbow-identifiers-mode)))
+
+;; scroll-bar
+    
+;;     Turn off the scroll bars
+
+
+(use-package scroll-bar
+  :defer 1
+  :disabled t
+  :config
+  (scroll-bar-mode -1))
 
 ;; smart-mode-line (disabled)
     
