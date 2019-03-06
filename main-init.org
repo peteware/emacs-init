@@ -662,14 +662,16 @@
 *** beacon
     Highlight the line the point is on when the screen jumps around.
 
+    DISABLED as it was distracting in a termina window
     #+BEGIN_SRC emacs-lisp
-    (use-package beacon
-      :defer 15
-      :config
-      (progn
-        (beacon-mode 1)
-        (setq beacon-push-mark 35)
-        (setq beacon-color "#666600")))
+          (use-package beacon
+            :disabled t
+            :defer 15
+            :config
+            (progn
+              (beacon-mode 1)
+              (setq beacon-push-mark 35)
+              (setq beacon-color "#666600")))
     #+END_SRC
 
 *** comint-prefs

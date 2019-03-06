@@ -585,8 +585,10 @@
 ;; beacon
 ;;     Highlight the line the point is on when the screen jumps around.
 
+;;     DISABLED as it was distracting in a termina window
 
 (use-package beacon
+  :disabled t
   :defer 15
   :config
   (progn
