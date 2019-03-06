@@ -55,7 +55,10 @@ the end of the buffer.
 (defun shell-switch-internal(other-window)
   "Implements shell switching but with flag to indicate if other-window."
   (let* ((shells (sort (remove-if-not 'shell-switch-modep (buffer-list)) 'shell-switch-cmp-buffers))
-	(count (length shells)))
+	 (count (length shells)))
+    ;; make sure current shell is first
+    (if (shell-switch-modep (current-buffer))
+        (setq shells (append (list (current-buffer)) (remove (current-buffer) shells))))
     (cond ((= 0 count)
 	   ;; Create a new shell
 	   (shell))
@@ -65,7 +68,7 @@ the end of the buffer.
 	  ((and (> count 1)
 		(shell-switch-modep (current-buffer))
 		(eobp))
-	   ;; If > 1 shell and in shell buffer and at end of buffer then go to
+	   ;; If > 1 shell and in shell buffer and at end of buffer then go to next shell
 	   (let ((pos (position (current-buffer) shells)))
 	     (if (eq pos nil)
 		 (setq pos 0)
@@ -79,7 +82,9 @@ the end of the buffer.
 		  (hist shell-switch-history)
 		  (history-delete-duplicates t)
  		  (buf nil)
+                  (ivy-sort-functions-alist nil)
 		  )
+             (message (format "%s" shell-completions))
 	     (setq buf (completing-read
 			(concat "shell-switch (default \"" shell-last "\"): ")
 			shell-completions nil t nil 'hist nil))
