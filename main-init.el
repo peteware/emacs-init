@@ -131,6 +131,7 @@
     ))
 
 ;; display line numbers
+;;     This is the built-in line numbers added with Emacs 26.1
 
 (use-package display-line-numbers
   :commands (display-line-numbers-mode)
@@ -192,8 +193,7 @@
 
 (use-package outline
   :defer 5
-  :config
-  (add-hook 'prog-mode-hook 'outline-minor-mode))
+  :hook (prog-mode . outline-minor-mode))
 
 ;; paren
 ;;     Highlight matching paren
@@ -355,6 +355,19 @@
             (setq ivy-count-format "(%d/%d) ")
             (ivy-mode)))
 
+
+;; This adds some nice info when choosing buffers
+
+(use-package ivy-rich
+  :after ivy
+  :custom
+  (ivy-virtual-abbreviate 'full
+                          ivy-rich-switch-buffer-align-virtual-buffer t
+                          ivy-rich-path-style 'abbrev)
+  :config
+  (ivy-set-display-transformer 'ivy-switch-buffer
+                               'ivy-rich-switch-buffer-transformer))
+
 ;; counsel
 ;;     ~counsel~ builds on completion for ivy but adds
 ;;     searches across files.
@@ -508,9 +521,9 @@
 
 
 (use-package linum
-  :unless display-line-numbers
+  :unless (featurep 'display-line-numbers)
   :commands linum-mode
-  :init (add-hook 'prog-mode-hook 'linum-mode)
+  :hook (prog-mode . linum-mode)
   :config (setq linum-format 'dynamic))
 
 ;; org
@@ -536,6 +549,14 @@
 
 (use-package org-prefs
   :after org)
+
+;; tramp
+;;     This provides remote access to files and shells.  
+
+(use-package tramp
+  :config
+  (setq tramp-use-ssh-controlmaster-options nil
+        tramp-copy-size-limit 1024))
 
 ;; whitespace
 ;;     Make "bad" whitespace be visible.  This causes tabs, and whitespace

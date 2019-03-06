@@ -75,9 +75,7 @@ the end of the buffer.
 	  (t
 	   (let* ((shell-completions (mapcar 'shell-switch-prep shells))
 		  (names (mapcar 'buffer-name shells))
-		  (shell-last (if (member shell-switch-last names)
-				  shell-switch-last
-				(first names)))
+		  (shell-last (first names))
 		  (hist shell-switch-history)
 		  (history-delete-duplicates t)
  		  (buf nil)
