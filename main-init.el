@@ -27,10 +27,19 @@
 (add-hook 'after-init-hook (lambda ()
                              (setq gc-cons-threshold (* 800 1000))))
 
-;; Setup proxies for package installation
+;; Setup proxies, certificates for package installation
 ;;     To get ~package-install~ to work you may need to setup some
-;;     proxies.  This is specific to a corp desktop pc keyed off
-;;     the assumption I only ever run cygwin in that environment.
+;;     proxies and some SSL certificates for those proxies
+
+;;     This is for corp proxies.  No problem if file doesn't exist.
+
+
+(add-to-list 'gnutls-trustfiles (expand-file-name "~/.ssh/BBrootNEW.cer"))
+
+
+
+;; This is specific to a corp desktop pc keyed off
+;; the assumption I only ever run cygwin in that environment.
 
 
 (when (or (string-equal system-type "windows-nt")
@@ -41,7 +50,7 @@
 
 
 ;; Assume if this is Mac OS X that I've setup nodeproxy for corp
-;; access
+;; access.
 
 
 (when (eq system-type 'darwin)
@@ -362,8 +371,7 @@
 
 (use-package ivy-rich
   :after ivy
-  :config (progn
-            ivy-rich-mode 1))
+  :config (ivy-rich-mode 1))
 
 ;; counsel
 ;;     ~counsel~ builds on completion for ivy but adds
@@ -376,7 +384,7 @@
   :bind (("C-c g" .  'counsel-git)
          ("C-c j" .  'counsel-file-jump)
          ("C-c k" .  'counsel-ag)
-         ("C-c s" .  'counsel-shell-switch-buffer)
+         ("C-c s" .  'counsel-switch-to-shell-buffer)
          )
   :config (progn (counsel-mode)))
 
