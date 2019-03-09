@@ -158,8 +158,6 @@
 ;;     on startup.
 
 (use-package desktop
-  ;:defer 10
-  :defer 1
   :config
   (progn
     (setq desktop-save t)

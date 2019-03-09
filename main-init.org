@@ -189,25 +189,23 @@
     This causes the set of files being visited to be restored
     on startup.
     #+BEGIN_SRC emacs-lisp
-    (use-package desktop
-      ;:defer 10
-      :defer 1
-      :config
-      (progn
-        (setq desktop-save t)
-        (setq desktop-dirname "~/.emacs.d/")
-        (setq desktop-restore-frames nil)
-        (setq desktop-restore-eager 5)
-        (setq desktop-restore-in-current-display t)
-        (setq desktop-lazy-verbose nil)
-        (setq desktop-lazy-idle-delay 20)
-        (setq desktop-auto-save-timeout 7200)
-        (setq desktop-files-not-to-save "^$")
-        (setq desktop-load-locked-desktop t)
-        (desktop-save-mode 1)
-        (add-to-list 'desktop-modes-not-to-save 'Info-mode)
-        (add-to-list 'desktop-modes-not-to-save 'dired-mode)
-        ))
+      (use-package desktop
+        :config
+        (progn
+          (setq desktop-save t)
+          (setq desktop-dirname "~/.emacs.d/")
+          (setq desktop-restore-frames nil)
+          (setq desktop-restore-eager 5)
+          (setq desktop-restore-in-current-display t)
+          (setq desktop-lazy-verbose nil)
+          (setq desktop-lazy-idle-delay 20)
+          (setq desktop-auto-save-timeout 7200)
+          (setq desktop-files-not-to-save "^$")
+          (setq desktop-load-locked-desktop t)
+          (desktop-save-mode 1)
+          (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+          (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+          ))
     #+END_SRC
 *** display line numbers
     This is the built-in line numbers added with Emacs 26.1
