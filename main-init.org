@@ -116,7 +116,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (require 'package)
-      (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+      (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
       ;; (add-to-list 'package-archives
       ;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
       (package-initialize)
@@ -213,8 +213,8 @@
     This is the built-in line numbers added with Emacs 26.1
     #+BEGIN_SRC emacs-lisp
       (use-package display-line-numbers
-        :commands (display-line-numbers-mode)
-        :hook (prog-mode . display-line-numbers-mode))
+        :config
+        (add-hook 'prog-mode-hook 'display-line-numbers-mode))
     #+END_SRC
 *** executable
     This makes saving shell scripts automatically make
@@ -1279,11 +1279,9 @@ Emacs.font: Bitstream Vera Sans Mono-16
 
     #+BEGIN_SRC emacs-lisp
       (use-package linum
-        :disabled t
         :if (not (featurep 'display-line-numbers))
-        :commands linum-mode
-        :hook (prog-mode . linum-mode)
-        :config (setq linum-format 'dynamic))
+        :config (progn (setq linum-format 'dynamic)
+                       (add-hook 'prog-mode-hook 'linum-mode)))
     #+END_SRC
 
 *** magithub (disabled)

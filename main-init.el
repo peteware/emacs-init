@@ -90,7 +90,7 @@
 
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 ;; (add-to-list 'package-archives
 ;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
@@ -181,8 +181,8 @@
 ;;     This is the built-in line numbers added with Emacs 26.1
 
 (use-package display-line-numbers
-  :commands (display-line-numbers-mode)
-  :hook (prog-mode . display-line-numbers-mode))
+  :config
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode))
 
 ;; executable
 ;;     This makes saving shell scripts automatically make
@@ -1148,11 +1148,9 @@
 
 
 (use-package linum
-  :disabled t
   :if (not (featurep 'display-line-numbers))
-  :commands linum-mode
-  :hook (prog-mode . linum-mode)
-  :config (setq linum-format 'dynamic))
+  :config (progn (setq linum-format 'dynamic)
+                 (add-hook 'prog-mode-hook 'linum-mode)))
 
 ;; magithub (disabled)
 ;;     Interact with github via magit
