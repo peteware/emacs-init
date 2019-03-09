@@ -27,7 +27,7 @@
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
  '(package-selected-packages
    (quote
-    (magit-popup ivy-rich discover ivy-hydra org "org" "org" "org" ox-gfm multiple-cursors overcast-theme delight counsel ivy magit-gh-pulls dracula-theme rtags magithub eopengrok mode-icons origami org-beautify-theme zoom-frm zenburn-theme use-package sublime-themes smart-mode-line scratch-ext powerline magit log4j-mode fill-column-indicator ctags color-theme-modern beacon avy anyins ag)))
+    (hydra swiper magit-popup ivy-rich discover ivy-hydra org "org" "org" "org" ox-gfm multiple-cursors overcast-theme delight counsel ivy magit-gh-pulls dracula-theme rtags magithub eopengrok mode-icons origami org-beautify-theme zoom-frm zenburn-theme use-package sublime-themes smart-mode-line scratch-ext powerline magit log4j-mode fill-column-indicator ctags color-theme-modern beacon avy anyins ag)))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote
