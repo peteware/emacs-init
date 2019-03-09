@@ -31,9 +31,10 @@
 ;;     To get ~package-install~ to work you may need to setup some
 ;;     proxies and some SSL certificates for those proxies
 
-;;     This is for corp proxies.  No problem if file doesn't exist.
+;;     Add certificate for corp proxies.  No problem if file doesn't exist.
 
 
+(require 'gnutls)
 (add-to-list 'gnutls-trustfiles (expand-file-name "~/.ssh/BBrootNEW.cer"))
 
 
