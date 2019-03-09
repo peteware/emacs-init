@@ -27,10 +27,20 @@
 (add-hook 'after-init-hook (lambda ()
                              (setq gc-cons-threshold (* 800 1000))))
 
-;; Setup proxies for package installation
+;; Setup proxies, certificates for package installation
 ;;     To get ~package-install~ to work you may need to setup some
-;;     proxies.  This is specific to a corp desktop pc keyed off
-;;     the assumption I only ever run cygwin in that environment.
+;;     proxies and some SSL certificates for those proxies
+
+;;     Add certificate for corp proxies.  No problem if file doesn't exist.
+
+
+(require 'gnutls)
+(add-to-list 'gnutls-trustfiles (expand-file-name "~/.ssh/BBrootNEW.cer"))
+
+
+
+;; This is specific to a corp desktop pc keyed off
+;; the assumption I only ever run cygwin in that environment.
 
 
 (require 'gnutls)
@@ -43,7 +53,7 @@
 
 
 ;; Assume if this is Mac OS X that I've setup nodeproxy for corp
-;; access
+;; access.
 
 
 (when (eq system-type 'darwin)
@@ -586,8 +596,10 @@
 ;; beacon
 ;;     Highlight the line the point is on when the screen jumps around.
 
+;;     DISABLED as it was distracting in a termina window
 
 (use-package beacon
+  :disabled t
   :defer 15
   :config
   (progn
