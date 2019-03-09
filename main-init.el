@@ -43,8 +43,6 @@
 ;; the assumption I only ever run cygwin in that environment.
 
 
-(require 'gnutls)
-(add-to-list 'gnutls-trustfiles (expand-file-name "~/.ssh/BBrootNEW.cer"))
 (when (or (string-equal system-type "windows-nt")
           (string-equal system-type "cygwin"))
   (setq password-cache-expiry nil)
