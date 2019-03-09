@@ -3,7 +3,7 @@
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
-(package-initialize)
+;(package-initialize)
 
 (setq my-base-path "~/usr/emacs")
 (add-to-list 'load-path my-base-path)
@@ -27,7 +27,7 @@
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
  '(package-selected-packages
    (quote
-    (ivy-hydra org "org" "org" "org" ox-gfm multiple-cursors overcast-theme delight counsel ivy magit-gh-pulls dracula-theme rtags magithub eopengrok mode-icons origami org-beautify-theme zoom-frm zenburn-theme use-package sublime-themes smart-mode-line scratch-ext powerline magit log4j-mode fill-column-indicator ctags color-theme-modern beacon avy anyins ag)))
+    (magit-popup ivy-rich discover ivy-hydra org "org" "org" "org" ox-gfm multiple-cursors overcast-theme delight counsel ivy magit-gh-pulls dracula-theme rtags magithub eopengrok mode-icons origami org-beautify-theme zoom-frm zenburn-theme use-package sublime-themes smart-mode-line scratch-ext powerline magit log4j-mode fill-column-indicator ctags color-theme-modern beacon avy anyins ag)))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote
@@ -69,5 +69,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:background nil)))))
 (put 'erase-buffer 'disabled nil)

@@ -33,6 +33,8 @@
 ;;     the assumption I only ever run cygwin in that environment.
 
 
+(require 'gnutls)
+(add-to-list 'gnutls-trustfiles (expand-file-name "~/.ssh/BBrootNEW.cer"))
 (when (or (string-equal system-type "windows-nt")
           (string-equal system-type "cygwin"))
   (setq password-cache-expiry nil)
@@ -80,7 +82,7 @@
 
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 ;; (add-to-list 'package-archives
 ;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
@@ -171,8 +173,8 @@
 ;;     This is the built-in line numbers added with Emacs 26.1
 
 (use-package display-line-numbers
-  :commands (display-line-numbers-mode)
-  :hook (prog-mode . display-line-numbers-mode))
+  :config
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode))
 
 ;; executable
 ;;     This makes saving shell scripts automatically make
@@ -362,8 +364,7 @@
 
 (use-package ivy-rich
   :after ivy
-  :config (progn
-            ivy-rich-mode 1))
+  :config (ivy-rich-mode 1))
 
 ;; counsel
 ;;     ~counsel~ builds on completion for ivy but adds
@@ -376,7 +377,7 @@
   :bind (("C-c g" .  'counsel-git)
          ("C-c j" .  'counsel-file-jump)
          ("C-c k" .  'counsel-ag)
-         ("C-c s" .  'counsel-shell-switch-buffer)
+         ("C-c s" .  'counsel-switch-to-shell-buffer)
          )
   :config (progn (counsel-mode)))
 
@@ -1137,11 +1138,9 @@
 
 
 (use-package linum
-  :disabled t
   :if (not (featurep 'display-line-numbers))
-  :commands linum-mode
-  :hook (prog-mode . linum-mode)
-  :config (setq linum-format 'dynamic))
+  :config (progn (setq linum-format 'dynamic)
+                 (add-hook 'prog-mode-hook 'linum-mode)))
 
 ;; magithub (disabled)
 ;;     Interact with github via magit
