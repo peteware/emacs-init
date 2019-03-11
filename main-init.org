@@ -372,6 +372,14 @@
 
     #+END_SRC
 
+*** xterm-mouse-mode
+    Makes the mouse work when running in an xterm/iterm or other
+    terminal emulator.  Only enabled when no graphics
+    #+BEGIN_SRC emacs-lisp
+      (use-package xt-mouse
+        :unless (display-graphic-p)
+        (xterm-mouse-mode))
+    #+END_SRC
 ** Non-standard packages loaded immediately
 
    These are non-standard packages that are

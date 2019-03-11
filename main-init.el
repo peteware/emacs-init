@@ -325,6 +325,14 @@
     (setq uniquify-buffer-name-style 'post-forward)
     (setq uniquify-after-kill-buffer-p t)))
 
+;; xterm-mouse-mode
+;;     Makes the mouse work when running in an xterm/iterm or other
+;;     terminal emulator.  Only enabled when no graphics
+
+(use-package xt-mouse
+  :unless (display-graphic-p)
+  (xterm-mouse-mode))
+
 ;; bb-style
 ;;     Bloomberg C++ coding style
 
