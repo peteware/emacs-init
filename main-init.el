@@ -331,6 +331,7 @@
 
 (use-package xt-mouse
   :unless (display-graphic-p)
+  :config
   (xterm-mouse-mode))
 
 ;; bb-style

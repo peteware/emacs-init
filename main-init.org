@@ -378,6 +378,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package xt-mouse
         :unless (display-graphic-p)
+        :config
         (xterm-mouse-mode))
     #+END_SRC
 ** Non-standard packages loaded immediately
