@@ -331,6 +331,7 @@
 
 (use-package xt-mouse
   :unless (display-graphic-p)
+  :config
   (xterm-mouse-mode))
 
 ;; bb-style
@@ -393,7 +394,9 @@
          ("C-c k" .  'counsel-ag)
          ("C-c s" .  'counsel-switch-to-shell-buffer)
          )
-  :config (progn (counsel-mode)))
+  :config 
+  (progn (counsel-mode)
+         (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
 
 ;; swiper
 ;;     This changes incremental search to use ivy style completion
