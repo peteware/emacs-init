@@ -8,9 +8,9 @@ Setup M-p finds matching input."
   (font-lock-mode 1)                    ;If you find this slow, change it to 0
   (if (boundp 'font-lock-mode-disable-list)
       (add-to-list 'font-lock-mode-disable-list 'shell-mode))
-  (when (fboundp 'ansi-color-for-comint-mode-on)
-      (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-      (add-hook 'compilation-mode-hook 'ansi-color-for-comint-mode-on))
+  ;; (when (fboundp 'ansi-color-for-comint-mode-on)
+  ;;     (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+  ;;     (add-hook 'compilation-mode-hook 'ansi-color-for-comint-mode-on))
   (make-variable-buffer-local 'line-number-mode)
   (make-variable-buffer-local 'column-number-mode)
   (setq line-number-mode nil)

@@ -93,22 +93,22 @@
 *** Configure frame geometry, fonts, transparency,
 
 #+BEGIN_SRC emacs-lisp
-    (when (display-graphic-p)
-      (setq initial-frame-alist
-            '((width . 110)
-              (height . 60)
-              (top . 29)
-              (left . 88)))
-      (setq default-frame-alist
-            '((width . 110)
-              (height . 60)
-              (top . 29)
-              (left . 1.0))))
-    (when (eq 'ns (window-system))
-      (add-to-list 'default-frame-alist
-                   '(font . "SF Mono-16"))
-      (add-to-list 'default-frame-alist
-                   '(alpha . (90 . 70))))
+  (when (display-graphic-p)
+    (setq initial-frame-alist
+          '((width . 110)
+            (height . 60)
+            (top . 29)
+            (left . 88)))
+    (setq default-frame-alist
+          '((width . 110)
+            (height . 60)
+            (top . 29)
+            (left . 1.0))))
+  (when (eq 'ns (window-system))
+    (add-to-list 'default-frame-alist
+                 '(font . "SF Mono-16"))
+    (add-to-list 'default-frame-alist
+                 '(alpha . (90 . 70))))
 #+END_SRC
 
 *** package
