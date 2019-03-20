@@ -869,10 +869,19 @@
 
 *** overcast-theme
     #+BEGIN_SRC emacs-lisp
-    (use-package overcast-theme
+      (use-package overcast-theme
+        :disable t
+        :ensure t
+        :config
+        (load-theme 'overcast t))
+    #+END_SRC
+
+*** ample theme
+    #+BEGIN_SRC emacs-lisp
+    (use-package ample-theme
       :ensure t
       :config
-      (load-theme 'overcast t))
+      (load-theme 'ample t))
     #+END_SRC
 
 ** Various preferences

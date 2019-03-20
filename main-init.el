@@ -778,9 +778,17 @@
 ;; overcast-theme
 
 (use-package overcast-theme
+  :disable t
   :ensure t
   :config
   (load-theme 'overcast t))
+
+;; ample theme
+
+(use-package ample-theme
+  :ensure t
+  :config
+  (load-theme 'ample t))
 
 ;; Various preferences
 
