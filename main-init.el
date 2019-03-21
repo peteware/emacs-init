@@ -338,7 +338,6 @@
 ;;     Bloomberg C++ coding style
 
 (use-package bb-style
-  :defer 1
   :config
   (progn
     ;; Use bb-style for C/C++; associate .h files with c++-mode instead of

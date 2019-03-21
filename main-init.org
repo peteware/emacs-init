@@ -390,7 +390,6 @@
     Bloomberg C++ coding style
     #+BEGIN_SRC emacs-lisp
     (use-package bb-style
-      :defer 1
       :config
       (progn
         ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
