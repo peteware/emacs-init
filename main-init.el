@@ -54,9 +54,9 @@
 ;; access.
 
 
-(when (eq system-type 'darwin)
-  (setq url-proxy-services '(("http" . "localhost:8888")
-                             ("https" . "localhost:8888"))))
+;; (when (eq system-type 'darwin)
+;;   (setq url-proxy-services '(("http" . "localhost:8888")
+;;                              ("https" . "localhost:8888"))))
 
 ;; Do some weird Mac OS X stuff for my environment
 
@@ -777,7 +777,7 @@
 ;; overcast-theme
 
 (use-package overcast-theme
-  :disable t
+  :disabled t
   :ensure t
   :config
   (load-theme 'overcast t))

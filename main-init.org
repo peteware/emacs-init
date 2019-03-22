@@ -79,9 +79,9 @@
     access.
 
     #+BEGIN_SRC emacs-lisp
-      (when (eq system-type 'darwin)
-        (setq url-proxy-services '(("http" . "localhost:8888")
-                                   ("https" . "localhost:8888"))))
+      ;; (when (eq system-type 'darwin)
+      ;;   (setq url-proxy-services '(("http" . "localhost:8888")
+      ;;                              ("https" . "localhost:8888"))))
     #+END_SRC
 *** Do some weird Mac OS X stuff for my environment
 #+BEGIN_SRC emacs-lisp
@@ -869,7 +869,7 @@
 *** overcast-theme
     #+BEGIN_SRC emacs-lisp
       (use-package overcast-theme
-        :disable t
+        :disabled t
         :ensure t
         :config
         (load-theme 'overcast t))
