@@ -830,7 +830,7 @@
       :config
       (progn
         (defun pw/treemacs-ignore (file path)
-          (string-match-p "\.pyc$\\|\.sundev1\.\\|\.o$\\|\.d$" file))
+          (string-match-p "\\.pyc$\\|\\.sundev1\\.\\|\\.o$\\|\\.d$\\|__pycache__" file))
         (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
         (setq treemacs-show-hidden-files nil)
         (setq treemacs-collapse-dirs 2)))
