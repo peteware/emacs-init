@@ -774,7 +774,7 @@
   (progn
     (powerline-center-theme)))
 
-;; overcast-theme
+;; overcast-theme (disabled)
 
 (use-package overcast-theme
   :disabled t
@@ -782,12 +782,28 @@
   :config
   (load-theme 'overcast t))
 
-;; ample theme
+;; ample theme (disabled)
 
 (use-package ample-theme
+  :disabled t
   :ensure t
   :config
   (load-theme 'ample t))
+
+;; nord theme
+;;     I've been trying to find a theme that works well
+;;     with iterm2, emacs-25 and emacs-26.
+
+;;     If using iterm, you should change it to use following
+;;     color scheme:
+
+;;     https://github.com/arcticicestudio/nord-iterm2
+
+
+(use-package nord-theme
+  :ensure t
+  :config
+  (load-theme 'nord t))
 
 ;; Various preferences
 
@@ -1165,7 +1181,7 @@
 
 (use-package linum
   :if (not (featurep 'display-line-numbers))
-  :config (progn (setq linum-format 'dynamic)
+  :config (progn (setq linum-format "%5d ")
                  (add-hook 'prog-mode-hook 'linum-mode)))
 
 ;; magithub (disabled)
