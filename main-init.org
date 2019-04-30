@@ -866,7 +866,7 @@
         (powerline-center-theme)))
     #+END_SRC
 
-*** overcast-theme
+*** overcast-theme (disabled)
     #+BEGIN_SRC emacs-lisp
       (use-package overcast-theme
         :disabled t
@@ -875,14 +875,29 @@
         (load-theme 'overcast t))
     #+END_SRC
 
-*** ample theme
+*** ample theme (disabled)
     #+BEGIN_SRC emacs-lisp
-    (use-package ample-theme
-      :ensure t
-      :config
-      (load-theme 'ample t))
+      (use-package ample-theme
+        :disabled t
+        :ensure t
+        :config
+        (load-theme 'ample t))
     #+END_SRC
+*** nord theme
+    I've been trying to find a theme that works well
+    with iterm2, emacs-25 and emacs-26.
 
+    If using iterm, you should change it to use following
+    color scheme:
+
+    https://github.com/arcticicestudio/nord-iterm2
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package nord-theme
+        :ensure t
+        :config
+        (load-theme 'nord t))
+    #+END_SRC
 ** Various preferences
 
    Allow narrow to region (e.g. =C-X n n=)
@@ -1297,7 +1312,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+BEGIN_SRC emacs-lisp
       (use-package linum
         :if (not (featurep 'display-line-numbers))
-        :config (progn (setq linum-format 'dynamic)
+        :config (progn (setq linum-format "%5d ")
                        (add-hook 'prog-mode-hook 'linum-mode)))
     #+END_SRC
 
