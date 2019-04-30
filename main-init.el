@@ -247,7 +247,9 @@
 (use-package paren
   :defer 5
   :config
-  (show-paren-mode 1))
+  (progn
+    (setq show-paren-when-point-in-periphery t)
+    (show-paren-mode 1)))
 
 ;; recentf
 
@@ -772,7 +774,7 @@
 (use-package powerline
   :config
   (progn
-    (powerline-center-theme)))
+    (powerline-default-theme)))
 
 ;; overcast-theme (disabled)
 
@@ -803,7 +805,10 @@
 (use-package nord-theme
   :ensure t
   :config
-  (load-theme 'nord t))
+  (progn
+    (setq nord-region-highlight "snowstorm")
+    (setq nord-uniform-mode-lines t)
+    (load-theme 'nord t)))
 
 ;; Various preferences
 

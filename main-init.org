@@ -283,10 +283,12 @@
     Highlight matching paren
 
     #+BEGIN_SRC emacs-lisp
-    (use-package paren
-      :defer 5
-      :config
-      (show-paren-mode 1))
+      (use-package paren
+        :defer 5
+        :config
+        (progn
+          (setq show-paren-when-point-in-periphery t)
+          (show-paren-mode 1)))
     #+END_SRC
 
 *** recentf
@@ -863,7 +865,7 @@
     (use-package powerline
       :config
       (progn
-        (powerline-center-theme)))
+        (powerline-default-theme)))
     #+END_SRC
 
 *** overcast-theme (disabled)
@@ -896,7 +898,10 @@
       (use-package nord-theme
         :ensure t
         :config
-        (load-theme 'nord t))
+        (progn
+          (setq nord-region-highlight "snowstorm")
+          (setq nord-uniform-mode-lines t)
+          (load-theme 'nord t)))
     #+END_SRC
 ** Various preferences
 
