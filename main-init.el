@@ -564,11 +564,12 @@
   (setq tramp-use-ssh-controlmaster-options nil
         tramp-copy-size-limit 1024))
 
-;; discover
+;; discover (disabled)
 ;;     Add some nice menus to common commands.  
 ;;     See https://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
 
 (use-package discover
+  :disabled t
   :config
   (global-discover-mode 1))
 
@@ -806,7 +807,7 @@
   :ensure t
   :config
   (progn
-    (setq nord-region-highlight "snowstorm")
+    (setq nord-region-highlight 'snowstorm)
     (setq nord-uniform-mode-lines t)
     (load-theme 'nord t)))
 
@@ -868,14 +869,17 @@
 
 ;;     - ~scroll-step~ 0 works better with Emacs which now supports
 ;;       ~scroll-conservatively~.
+;;     - ~scroll-conservatively~ when > 100 then Emacs scrolls just
+;;       enough to make point visible.  This actuall works well 
+;;       for shell buffers but I also like it other places.
 ;;     - ~scroll-margin~ says to keep this many lines
 ;;        above or below so you get some context.
 ;;     - ~scroll-preserve-screen-position~ says when scrolling pages, keep
 ;;       point at same physical spot on screen.
 
 (setq scroll-step 0)
-(setq scroll-conservatively 15)
-(setq scroll-margin 2)
+(setq scroll-conservatively 101)
+(setq scroll-margin 0)
 (setq scroll-preserve-screen-position 'keep)
 
 
