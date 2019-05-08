@@ -21,11 +21,12 @@
                      gcs-done)))
 
 ;; GC threshold
-;;     Temporarily increase GC threshold to 50MB then reduce to 800KB after startup.
+;;     Temporarily increase GC threshold to 100MB then reduce to 800MB
+;;     (was 800KB) after startup.
 
-(setq gc-cons-threshold (* 50 1000 1000))    
+(setq gc-cons-threshold (* 100 1000 1000))
 (add-hook 'after-init-hook (lambda ()
-                             (setq gc-cons-threshold (* 800 1000))))
+                             (setq gc-cons-threshold (* 8 1000 1000))))
 
 ;; Setup proxies, certificates for package installation
 ;;     To get ~package-install~ to work you may need to setup some
