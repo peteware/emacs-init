@@ -439,18 +439,26 @@
     ~counsel~ builds on completion for ivy but adds
     searches across files.
     #+BEGIN_SRC emacs-lisp
-            (use-package counsel
-              :after ivy
-              :ensure t
-              :delight counsel-mode
-              :bind (("C-c g" .  'counsel-git)
-                     ("C-c j" .  'counsel-file-jump)
-                     ("C-c k" .  'counsel-ag)
-                     ("C-c s" .  'counsel-switch-to-shell-buffer)
-                     )
-              :config 
-              (progn (counsel-mode)
-                     (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
+      (use-package counsel
+        :after ivy
+        :ensure t
+        :delight counsel-mode
+        :bind (("C-c g" .  'counsel-git)
+               ("C-c j" .  'counsel-file-jump)
+               ("C-c k" .  'counsel-ag)
+               ("C-c s" .  'counsel-switch-to-shell-buffer)
+               )
+        :config 
+        (progn (counsel-mode)
+               (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
+    #+END_SRC
+
+    And I have some hacks to be a little smarter when switching
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package counsel-shell-switch
+        :after counsel
+        :bind (("C-c s" . 'pw/counsel-switch-to-shell-buffer)))
     #+END_SRC
 
 *** swiper
@@ -862,6 +870,13 @@
 *** powerline
     
     Make the modeline have lots of pretty graphics.
+
+    For `iterm2` I had to install some extra fonts
+    for these to look good:
+
+         https://github.com/powerline/fonts
+
+    
     #+BEGIN_SRC emacs-lisp
     (use-package powerline
       :config
@@ -901,7 +916,7 @@
         :config
         (progn
           (setq nord-region-highlight 'snowstorm)
-          (setq nord-uniform-mode-lines t)
+          (setq nord-uniform-mode-lines nil)
           (load-theme 'nord t)))
     #+END_SRC
 ** Various preferences

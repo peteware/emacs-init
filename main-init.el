@@ -399,6 +399,15 @@
   (progn (counsel-mode)
          (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
 
+
+
+;; And I have some hacks to be a little smarter when switching
+
+
+(use-package counsel-shell-switch
+  :after counsel
+  :bind (("C-c s" . 'pw/counsel-switch-to-shell-buffer)))
+
 ;; swiper
 ;;     This changes incremental search to use ivy style completion
 ;;     but displays all the matching lines in the completion buffer.
@@ -772,6 +781,13 @@
     
 ;;     Make the modeline have lots of pretty graphics.
 
+;;     For `iterm2` I had to install some extra fonts
+;;     for these to look good:
+
+;;          https://github.com/powerline/fonts
+
+    
+
 (use-package powerline
   :config
   (progn
@@ -808,7 +824,7 @@
   :config
   (progn
     (setq nord-region-highlight 'snowstorm)
-    (setq nord-uniform-mode-lines t)
+    (setq nord-uniform-mode-lines nil)
     (load-theme 'nord t)))
 
 ;; Various preferences
