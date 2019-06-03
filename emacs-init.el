@@ -26,7 +26,7 @@
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
  '(package-selected-packages
    (quote
-    (nord-theme rimero-theme company spaceline ample-theme ample-zen-theme hydra swiper magit-popup ivy-rich discover ivy-hydra org ox-gfm multiple-cursors delight counsel ivy magit-gh-pulls rtags eopengrok mode-icons origami org-beautify-theme zoom-frm use-package smart-mode-line scratch-ext powerline magit log4j-mode fill-column-indicator ctags avy anyins ag)))
+    (forge magit-todos vdiff vdiff-magit nord-theme rimero-theme company spaceline ample-theme ample-zen-theme hydra swiper magit-popup ivy-rich discover ivy-hydra org ox-gfm multiple-cursors delight counsel ivy magit-gh-pulls rtags eopengrok mode-icons origami org-beautify-theme zoom-frm use-package smart-mode-line scratch-ext powerline magit log4j-mode fill-column-indicator ctags avy anyins ag)))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote

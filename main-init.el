@@ -679,6 +679,25 @@
             (setq magit-view-git-manual-method 'man)
             (setq vc-handled-backends nil)))
 
+;; magit-todo
+
+;;     Include TODO, etc in the magit buffer
+
+
+(use-package magit-todos
+  :after magit
+  :ensure t
+  :config (magit-todos-mode))
+
+;; forge
+;;     This implements an interface to github that
+;;     integrates with magit
+
+
+(use-package forge
+  :disabled t
+  :after magit)
+
 ;; multiple-cursors
     
 ;;     You can place multiple cursors in a buffer
