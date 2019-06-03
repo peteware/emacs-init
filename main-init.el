@@ -394,7 +394,7 @@
   :bind (("C-c g" .  'counsel-git)
          ("C-c j" .  'counsel-file-jump)
          ("C-c k" .  'counsel-ag)
-         ("C-c s" .  'counsel-switch-to-shell-buffer)
+         ;("C-c s" .  'counsel-switch-to-shell-buffer)
          )
   :config 
   (progn (counsel-mode)
