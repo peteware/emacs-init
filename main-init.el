@@ -211,7 +211,9 @@
 (use-package jit-lock
   :defer 1
   :config
-  (jit-lock-mode t))
+  (progn
+    (setq jit-lock-defer-time 0.1)
+    (jit-lock-mode t)))
 
 ;; jka-cmpr-hook
 ;;     Make visiting a *.gz automatically uncompress file
@@ -671,7 +673,7 @@
             (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
             (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
             (setq magit-commit-show-diff nil)
-            (setq auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffers-p)
+            (setq auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffer-p)
             (remove-hook 'server-switch-hook 'magit-commit-diff)
             (setq magit-refresh-verbose t)
             (setq magit-save-repository-buffers nil)
