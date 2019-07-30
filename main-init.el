@@ -845,6 +845,7 @@
   (progn
     (setq nord-region-highlight 'snowstorm)
     (setq nord-uniform-mode-lines nil)
+    (setq nord-comment-brightness 20)
     (load-theme 'nord t)))
 
 ;; Various preferences
