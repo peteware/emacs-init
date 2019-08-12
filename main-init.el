@@ -70,6 +70,7 @@
 
 
 (when (display-graphic-p)
+  (setq-default cursor-type '(bar . 4))
   (setq initial-frame-alist
         '((width . 110)
           (height . 60)
