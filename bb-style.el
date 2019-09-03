@@ -81,7 +81,6 @@ c++-mode-hook and c-mode hook."
         ;; This only works with auto-newline but helps a lot
         (c-cleanup-list             . (scope-operator
                                        list-close-comma
-                                       space-before-funcall
                                        compact-empty-funcall
                                        defun-close-semi))
         (c-doc-comment-style       . javadoc)

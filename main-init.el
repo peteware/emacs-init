@@ -457,6 +457,11 @@
   (progn
     (setq compilation-scroll-output 'first-error)))
 
+;; clang-format+
+;;     Runs clang-format.  This is not enabled by default
+
+(use-package clang-format+)
+
 ;; ansi-color
 
 (use-package ansi-color

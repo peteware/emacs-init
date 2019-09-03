@@ -520,6 +520,11 @@
         (setq compilation-scroll-output 'first-error)))
     #+END_SRC
 
+*** clang-format+
+    Runs clang-format.  This is not enabled by default
+    #+BEGIN_SRC emacs-lisp
+      (use-package clang-format+)
+    #+END_SRC
 *** ansi-color
     #+BEGIN_SRC emacs-lisp
     (use-package ansi-color
