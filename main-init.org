@@ -521,7 +521,11 @@
     #+END_SRC
 
 *** clang-format+
-    Runs clang-format.  This is not enabled by default
+    Runs clang-format.  This is not enabled by default.  You can enable this
+    on a per-directory tree basis by adding the file `.dir-locals.el` that looks like this:
+    #+BEGIN_EXAMPLE
+      ((c++-mode . ((mode . clang-format+))))
+    #+END_EXAMPLE
     #+BEGIN_SRC emacs-lisp
       (use-package clang-format+)
     #+END_SRC

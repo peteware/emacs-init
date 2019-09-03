@@ -458,7 +458,11 @@
     (setq compilation-scroll-output 'first-error)))
 
 ;; clang-format+
-;;     Runs clang-format.  This is not enabled by default
+;;     Runs clang-format.  This is not enabled by default.  You can enable this
+;;     on a per-directory tree basis by adding the file `.dir-locals.el` that looks like this:
+;;     #+BEGIN_EXAMPLE
+;;       ((c++-mode . ((mode . clang-format+))))
+;;     #+END_EXAMPLE
 
 (use-package clang-format+)
 
