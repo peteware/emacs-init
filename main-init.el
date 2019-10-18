@@ -63,7 +63,6 @@
 
 (when (eq system-type 'darwin)
     (setenv "PATH" "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_10:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_10")
-    ;(setq prog-mode-hook '(pw/trunc-lines outline-minor-mode display-line-numbers-mode))
     (setq exec-path (cons "/usr/local/bin" exec-path)))
 
 ;; Configure frame geometry, fonts, transparency,
@@ -120,19 +119,15 @@
 ;;    If a package is not available then ~use-package~ ignores it.
 ;;    You can also not use a package by adding :disabled t to use-package
 
+;;    I also like having ~use-package~ collect some info about
+;;    the loaded packages and how long they take to load.  You
+;;    can see the results with =M-x use-package-report=.
 
+
+;(setq use-package-verbose t)
 (straight-use-package 'use-package)
-(eval-when-compile
-  (require 'use-package))
-
-
-
-;; I also like having ~use-package~ collect some info about
-;; the loaded packages and how long they take to load.  You
-;; can see the results with =M-x use-package-report=.
-
-
 (setq use-package-compute-statistics t)
+(require 'use-package)
 
 ;; bind-key
 ;;     Using bind-key lets you run describe-personal-keybindings
@@ -159,6 +154,15 @@
   :defer 5
   :config
   (setq bookmark-save-flag 1))
+
+;; cc-mode
+;;     Configure to put .h in c++-mode
+
+(use-package cc-mode
+  :commands (c-mode c++-mode)
+  :mode ("\\.h$" . c++-mode)
+  :config
+  (setq c-tab-always-indent nil))
 
 ;; delsel
 ;;     I can't handle the active region getting deleted
@@ -195,8 +199,7 @@
 ;;     This is the built-in line numbers added with Emacs 26.1
 
 (use-package display-line-numbers
-  :config
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode))
+  :hook (prog-mode . display-line-numbers-mode))
 
 ;; executable
 ;;     This makes saving shell scripts automatically make
@@ -357,14 +360,7 @@
 ;;     Bloomberg C++ coding style
 
 (use-package bb-style
-  :config
-  (progn
-    ;; Use bb-style for C/C++; associate .h files with c++-mode instead of
-    ;; c-mode
-    (setq c-default-style "bb")
-    (setq c-tab-always-indent nil)
-    (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
-  ))
+  :hook (c-mode-common . bb-c-mode))
 
 ;; delight
 
@@ -756,12 +752,7 @@
 (use-package pw-trunc-lines
   :commands pw/trunc-lines
   :bind ("C-c $" . pw/trunc-lines)
-  :init
-  (progn
-    (add-hook 'prog-mode-hook 'pw/trunc-lines)
-    (add-hook 'makefile-gmake-mode-hook 'pw/trunc-lines)
-    (add-hook 'compilation-mode-hook 'pw/trunc-lines)
-    (add-hook 'shell-mode-hook 'pw/trunc-lines)))
+  :hook ((c-mode-common makefile-gmake-mode compilation-mode shell-mode) . pw/trunc-lines))
 
 ;; treemacs
 
@@ -1038,13 +1029,3 @@
   :disabled t
   :config
   (menu-bar-mode -1))
-
-;; linum
-;;     Make it so line numbers show up in left margin Used in C/C++
-;;     mode.  (Tried nlinum but had refresh problems)
-
-
-(use-package linum
-  :if (not (featurep 'display-line-numbers))
-  :config (progn (setq linum-format "%5d ")
-                 (add-hook 'prog-mode-hook 'linum-mode)))

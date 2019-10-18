@@ -12,8 +12,6 @@
 ;; (add-to-list 'auto-mode-alist '("\\.h$" . c++-mode))
 
 (provide 'bb-style)
-(require 'whitespace)
-
 (defcustom bb-show-whitespace nil
   "If this variable is t, then show bad whitespace in c-mode.
 See `bb-whitespace-style for definition of bad whitespace."
@@ -48,9 +46,11 @@ how long lines word wrap, and if auto-hungry mode is enabled.
 You need to re-visit any files at these changes take place in the
 c++-mode-hook and c-mode hook."
   (interactive)
+  (require 'whitespace)
   (setq comment-column 48)
   (setq fill-column 80)
   (setq indent-tabs-mode nil)
+  (c-set-style "bb")
   (if (and (fboundp 'whitespace-mode) bb-show-whitespace)
       (progn
 	(make-variable-buffer-local 'whitespace-style)
@@ -60,9 +60,6 @@ c++-mode-hook and c-mode hook."
       (setq word-wrap nil))
   (if bb-enable-auto-hungry
       (c-toggle-auto-hungry-state 1)))
-
-(add-hook 'c++-mode-hook		'bb-c-mode)
-(add-hook 'c-mode-hook			'bb-c-mode)
 
 (setq bb-style-alist
       '((c-basic-offset                 . 4)
@@ -110,5 +107,4 @@ c++-mode-hook and c-mode hook."
             (namespace-close       . nil)
             ))
         ))
-(if (fboundp 'c-add-style)
-    (c-add-style "bb" bb-style-alist))
+(c-add-style "bb" bb-style-alist)
