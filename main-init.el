@@ -611,15 +611,6 @@
   (setq tramp-use-ssh-controlmaster-options nil
         tramp-copy-size-limit 1024))
 
-;; discover (disabled)
-;;     Add some nice menus to common commands.  
-;;     See https://www.masteringemacs.org/article/discoverel-discover-emacs-context-menus
-
-(use-package discover
-  :disabled t
-  :config
-  (global-discover-mode 1))
-
 ;; whitespace
 ;;     Make "bad" whitespace be visible.  This causes tabs, and whitespace
 ;;     at beginning and end of the buffer as well as at the end of the
@@ -648,20 +639,6 @@
 (use-package anyins
   :straight t
   :bind ("C-c i" . anyins-mode))
-
-;; beacon
-;;     Highlight the line the point is on when the screen jumps around.
-
-;;     DISABLED as it was distracting in a termina window
-
-(use-package beacon
-  :disabled t
-  :defer 15
-  :config
-  (progn
-    (beacon-mode 1)
-    (setq beacon-push-mark 35)
-    (setq beacon-color "#666600")))
 
 ;; comint-prefs
     
@@ -785,23 +762,6 @@
     (add-hook 'compilation-mode-hook 'pw/trunc-lines)
     (add-hook 'shell-mode-hook 'pw/trunc-lines)))
 
-;; shell-switch
-    
-;;     Pete's hack to make switching to a shell buffer
-;;     faster.
-
-;;     DISABLED.  Trying out counsel-switch-shell-buffer
-
-(use-package shell-switch
-  :disabled t
-  :commands (shell-switch shell-switch-other-window)
-  :init
-  (progn
-    (bind-key* "C-c s" 'shell-switch)
-    (bind-keys* :prefix-map clt-c-4-keymap
-                :prefix "C-c 4"
-                ("s" . shell-switch-other-window))))
-
 ;; treemacs
 
 (use-package treemacs
@@ -849,22 +809,6 @@
   :config
   (progn
     (powerline-default-theme)))
-
-;; overcast-theme (disabled)
-
-(use-package overcast-theme
-  :disabled t
-  :straight t
-  :config
-  (load-theme 'overcast t))
-
-;; ample theme (disabled)
-
-(use-package ample-theme
-  :disabled t
-  :straight t
-  :config
-  (load-theme 'ample t))
 
 ;; nord theme
 ;;     I've been trying to find a theme that works well
@@ -1082,148 +1026,6 @@
 
 (setq completion-ignored-extensions (append completion-ignored-extensions '(".d" ".dd" ".tsk")))
 
-;; atomic-chrome
-;;     You must first install Atomic Chrome extension from Chrome Web
-;;     Store and this allows editting text areas in Chrome via
-;;     a two-way connection.
-
-(use-package atomic-chrome
-  :disabled t
-  :config
-  (atomic-chrome-start-server))
-
-;; autorevert (disabled)
-;;     Cause the buffer to be automatically update when the
-;;     file changes.
-   
-;;     - *DISABLED*.  I found the emacs display would stop refreshing
-;;                    after a number of files were loaded.
-
-
-(use-package autorevert
-  :disabled t
-  :delight auto-revert-mode
-  :config
-  (setq auto-revert-check-vc-info t)
-  (global-auto-revert-mode))
-
-;; avy
-;;     Fast way to jump to a specific character.  Prompts for
-;;     a character and then displays all of them but replaced
-;;     with leters a,b,c,...  You then type in which one to jump
-;;     to.
-
-;;     - *DISABLED*.  I didn't use this and wanted the M-s binding
-;;       back
-
-(use-package avy
-  :disabled t
-  :straight t
-  :bind (("M-s" . avy-goto-word-1))
-  :config (setq avi-all-windows nil))
-
-;; cua-base (disabled)
-;;     If you like windows style cut and paste then try this.  ^C & ^X only
-;;     work when region is active, ^V and ^Z do paste and undo
-     
-;;     - *DISABLED* (I hate this)
-
-(use-package cua-base
-  :disabled t
-  :config
-  (cua-mode 1))
-
-;; fancy-narrow
-;;     Causes narrow region to dim the
-;;     rest of the buffer giving a much
-;;     more natual look.
-
-;;     *DISABLED* as it hangs on large files
-
-
-(use-package fancy-narrow
-  :disabled t
-  :delight fancy-narrow-mode
-  :config
-  (fancy-narrow-mode 1))
-
-;; hl-line (disabled)
-;;     `global-hl-line-mode' highlights the current line.  You should make sure
-;;     that `hl-line-face' is an appropriate, subtle color.  The sticky
-;;     flag keeps it highlighted in all windows
-    
-;;     - *DISABLED* (trying out beacon-mode which briefly highlights line)
-
-(use-package hl-line
-  :disabled t
-  :config
-  (progn
-    (setq hl-line-sticky-flag t)
-    (setq global-hl-line-sticky-flag t)
-    (global-hl-line-mode 1)))
-
-;; ido (disabled)
-    
-;;     Use a fancy auto-complete for buffers and files
-    
-;;     - *DISABLED* using ivy
-
-
-(use-package ido
-  :disabled t
-  :defer 5
-  :config
-  (progn
-    (setq ido-default-buffer-method 'selected-window)
-    (setq ido-default-file-method 'selected-window)
-    (setq ido-enable-flex-matching t)
-    (setq ido-enable-dot-prefix t)
-    (setq ido-enable-tramp-completion t)
-    (setq ido-max-directory-size 100000)
-    (setq ido-rotate-file-list-default t)
-    (setq ido-enter-matching-directory 'first)
-    (setq ido-use-virtual-buffers t)
-    ;(setq ido-use-virtual-buffers 'auto)
-    ;(setq ido-separator "|")
-    (setq ido-ignore-files (append ido-ignore-files '("\\`00" "\\'*.tsk")))
-    (setq ido-ignore-buffers
-          (list "\\` " ".*Completions.*" "\\*Buffer List\\*" "\\*Messages\\*"))
-    (setq ido-work-directory-list-ignore-regexps
-          (list "/bb/bin" "/bb/data" "/bb/data/tmp" "/bbsrc/apputil"))
-    (ido-mode 1)))
-
-;; ido-vertical (disabled)
-;;     Causes ido-mode to display completions vertically
-;;     and =Ctl n= and =Ctl p= move down and up in list
-
-
-(use-package ido-vertical-mode
-  :after ido
-  :defer 30
-  :straight t
-  :disabled t
-  :config
-  (ido-vertical-mode 1))
-
-;; iswitchb (disabled)
-    
-;;     `iswitchb-mode' provides a nice completion for switching between
-;;     buffers.  The `iswitchb-use-virtual-buffers' and `recentf-mode'
-;;     adds recent files to the match
-    
-;;     - *DISABLED* (use ido instead)
-
-
-(use-package iswitchb
-  :disabled t
-  :config
-  (progn
-    (setq iswitchb-default-method 'samewindow
-          iswitchb-max-to-show 5
-          iswitchb-use-virtual-buffers t)
-    (recentf-mode 1)
-    (iswitchb-mode 1)))
-
 ;; menu-bar (disabled)
 ;;     Turn the menubar off.
     
@@ -1235,28 +1037,6 @@
   :config
   (menu-bar-mode -1))
 
-;; diminish (disabled)
-;;     Do not display these minor modes in mode-line
-
-
-(use-package diminish
-  :disabled t
-  :config
-  (diminish 'abbrev-mode))
-
-;; git-getter-fringe+ (disabled)
-;;     Display lines that have changed in the left margin.
-;;     This works with linum-mode but not in a tty
-    
-;;     - *DISABLED* (slow loading)
-
-
-(use-package git-gutter-fringe+
-  :disabled t
-  :config (progn
-            (setq git-gutter-fr+-side 'right-fringe)
-            (global-git-gutter+-mode)))
-
 ;; linum
 ;;     Make it so line numbers show up in left margin Used in C/C++
 ;;     mode.  (Tried nlinum but had refresh problems)
@@ -1266,119 +1046,3 @@
   :if (not (featurep 'display-line-numbers))
   :config (progn (setq linum-format "%5d ")
                  (add-hook 'prog-mode-hook 'linum-mode)))
-
-;; magithub (disabled)
-;;     Interact with github via magit
-    
-;;     - *DISABLED* (slow loading)
-
-(use-package magithub
-  :after magit
-  :disabled t
-  :config
-  (magithub-feature-autoinject t))
-
-;; nlinum (disabled)
-;;     Make it so line numbers show up in left margin
-    
-;;     - *DISABLED* (refresh problems on Mac OS X)
-
-
-(use-package nlinum
-  :disabled t
-  :commands nlinum-mode
-  :init (add-hook 'prog-mode-hook 'nlinum-mode))
-
-;; fill-column-indicator (disabled)
-    
-;;     Make a vertical bar show at fill-column
-    
-;;     - *DISABLED* (didn't like it anymore)
-
-(use-package fill-column-indicator
-  :disabled t
-  :commands (fci-mode)
-  :init (add-hook 'prog-mode-hook 'fci-mode))
-
-;; num3-mode (disabled)
-    
-;;     Make long strings of digits alternate groups of 3 with bold.
-    
-;;     - *DISABLED* (I got tired of this highlight)
-
-(use-package num3-mode
-  :disabled t
-  :straight t
-  :commands num3-mode
-  :delight num3-mode
-  :init (add-hook 'prog-mode-hook 'num3-mode)
-  :config (make-face-bold 'num3-face-even))
-
-;; color-identifiers-mode (disabled)
-    
-;;     Make each variable in a different color
-    
-;;     - *DISABLED* (too many colors)
-
-(use-package color-identifiers-mode
-  :disabled t
-  :delight color-identifiers-mode
-  :init
-  (add-hook 'prog-mode-hook
-            'color-identifiers-mode)
-  :delight color-identifiers-mode)
-
-;; rainbow-identifiers (disabled)
-    
-;;     Make each variable a different color
-    
-;;     - *DISABLED* (using color-identifies-mode instead)
-
-(use-package rainbow-identifiers
-  :disabled t
-  :config
-  (progn
-    (add-hook 'prog-mode-hook
-              'rainbow-identifiers-mode)))
-
-;; scroll-bar
-    
-;;     Turn off the scroll bars
-
-
-(use-package scroll-bar
-  :defer 1
-  :disabled t
-  :config
-  (scroll-bar-mode -1))
-
-;; smart-mode-line (disabled)
-    
-;;     Smart mode line displays a more graphical modeline.
-    
-;;     DISABLED (Use powerline mode instead)
-
-(use-package smart-mode-line
-  :disabled t
-  :config
-  (progn
-    (setq sml/theme 'dark)
-    (sml/setup)))
-
-;; sublime-themes (disabled)
-;;     I like the wilson theme from the sublime-themes
-;;     package.
-
-(use-package sublime-themes
-  :disabled t
-  :straight t
-  :config
-  (load-theme 'wilson t nil))
-
-;; dracula-theme (disabled)
-
-(use-package dracula-theme
-  :disabled t
-  :straight t
-  :config
-  (load-theme 'dracula t nil))
