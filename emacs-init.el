@@ -24,9 +24,6 @@
  '(default-input-method "rfc1345")
  '(fci-rule-color "#383838")
  '(initial-frame-alist (quote ((menu-bar-lines . 1))))
- '(package-selected-packages
-   (quote
-    (clang-format+ forge magit-todos vdiff vdiff-magit nord-theme rimero-theme company spaceline ample-theme ample-zen-theme hydra swiper magit-popup ivy-rich discover ivy-hydra org ox-gfm multiple-cursors delight counsel ivy magit-gh-pulls rtags eopengrok mode-icons origami org-beautify-theme zoom-frm use-package smart-mode-line scratch-ext powerline magit log4j-mode fill-column-indicator ctags avy anyins ag)))
  '(vc-annotate-background "#2B2B2B")
  '(vc-annotate-color-map
    (quote
@@ -62,4 +59,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:height 160 :family "Consolas")))))

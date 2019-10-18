@@ -87,15 +87,31 @@
   (add-to-list 'default-frame-alist
                '(alpha . (90 . 70))))
 
+;; Install the straight.el package manager
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
 ;; package
 ;;     Use the emacs packaging system to automatically install some packages
 
 
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-;; (add-to-list 'package-archives
-;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(package-initialize)
+(unless (boundp 'bootstrap-version)
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  ;; (add-to-list 'package-archives
+  ;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+  (package-initialize))
 
 ;; Setup use-package
 ;;    You may need to =M-x package-install use-package= before
@@ -105,9 +121,7 @@
 ;;    You can also not use a package by adding :disabled t to use-package
 
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(straight-use-package 'use-package)
 (eval-when-compile
   (require 'use-package))
 
@@ -210,7 +224,6 @@
 
 
 (use-package jit-lock
-  :defer 1
   :config
   (progn
     (setq jit-lock-defer-time 0.1)
@@ -360,7 +373,7 @@
 
 (use-package delight
   :defer 5
-  :ensure t)
+  :straight t)
 
 ;; ivy
 ;;     ~ivy~ changes completion so that matches are
@@ -369,7 +382,7 @@
 ;;     ~ido~ and ~iswitchb~.
 
 (use-package ivy
-  :ensure t
+  :straight t
   :defer 1
   :delight ivy-mode
   :bind (("C-c C-r" . 'ivy-resume))
@@ -402,7 +415,7 @@
 
 (use-package counsel
   :after ivy
-  :ensure t
+  :straight t
   :delight counsel-mode
   :bind (("C-c g" .  'counsel-git)
          ("C-c j" .  'counsel-file-jump)
@@ -428,7 +441,7 @@
 
 (use-package swiper
   :after ivy
-  :ensure t
+  :straight t
   :bind (("M-s" . 'swiper)))
 
 ;; scratch-ext
@@ -437,7 +450,7 @@
 
 (use-package scratch-ext
   :defer 5
-  :ensure t
+  :straight t
   :config
   (save-excursion
     (setq scratch-ext-log-directory "~/.emacs.d/scratch")
@@ -474,7 +487,8 @@
 ;;       ((c++-mode . ((mode . clang-format+))))
 ;;     #+END_EXAMPLE
 
-(use-package clang-format+)
+(use-package clang-format+
+  :straight t)
 
 ;; ansi-color
 
@@ -592,6 +606,7 @@
 ;;     This provides remote access to files and shells.  
 
 (use-package tramp
+  :defer t
   :config
   (setq tramp-use-ssh-controlmaster-options nil
         tramp-copy-size-limit 1024))
@@ -631,7 +646,7 @@
 ;;            numbers "1. "  "2. " "3. " and inserts it at each markets tpot
 
 (use-package anyins
-  :ensure t
+  :straight t
   :bind ("C-c i" . anyins-mode))
 
 ;; beacon
@@ -681,7 +696,7 @@
 ;;     Download package if not installed!
 
 (use-package magit
-  :ensure t
+  :straight t
   :bind (("C-c m" . magit-status)
          ("C-c C-m" . magit-dispatch-popup))
   :delight '(magit-wip-after-save-mode
@@ -708,7 +723,7 @@
 
 (use-package magit-todos
   :after magit
-  :ensure t
+  :straight t
   :config (magit-todos-mode))
 
 ;; forge
@@ -737,7 +752,7 @@
 
 
 (use-package ag
-  :ensure t
+  :straight t
   :bind (("C-c f" . ag))
   :config (setq ag-reuse-buffers t))
 
@@ -790,7 +805,7 @@
 ;; treemacs
 
 (use-package treemacs
-  :ensure t
+  :straight t
   :bind (("C-x p" . treemacs-select-window)
          ("C-x t" . treemacs))
   :config
@@ -807,7 +822,7 @@
 
 (use-package wgrep
   :defer 5
-  :ensure t)
+  :straight t)
 
 ;; zoom-frm
     
@@ -839,7 +854,7 @@
 
 (use-package overcast-theme
   :disabled t
-  :ensure t
+  :straight t
   :config
   (load-theme 'overcast t))
 
@@ -847,7 +862,7 @@
 
 (use-package ample-theme
   :disabled t
-  :ensure t
+  :straight t
   :config
   (load-theme 'ample t))
 
@@ -862,7 +877,7 @@
 
 
 (use-package nord-theme
-  :ensure t
+  :straight t
   :config
   (progn
     (setq nord-region-highlight 'snowstorm)
@@ -1103,7 +1118,7 @@
 
 (use-package avy
   :disabled t
-  :ensure t
+  :straight t
   :bind (("M-s" . avy-goto-word-1))
   :config (setq avi-all-windows nil))
 
@@ -1185,7 +1200,7 @@
 (use-package ido-vertical-mode
   :after ido
   :defer 30
-  :ensure t
+  :straight t
   :disabled t
   :config
   (ido-vertical-mode 1))
@@ -1293,7 +1308,7 @@
 
 (use-package num3-mode
   :disabled t
-  :ensure t
+  :straight t
   :commands num3-mode
   :delight num3-mode
   :init (add-hook 'prog-mode-hook 'num3-mode)
@@ -1356,7 +1371,7 @@
 
 (use-package sublime-themes
   :disabled t
-  :ensure t
+  :straight t
   :config
   (load-theme 'wilson t nil))
 
@@ -1364,6 +1379,6 @@
 
 (use-package dracula-theme
   :disabled t
-  :ensure t
+  :straight t
   :config
   (load-theme 'dracula t nil))

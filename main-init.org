@@ -113,15 +113,31 @@
                  '(alpha . (90 . 70))))
 #+END_SRC
 
+*** Install the straight.el package manager
+    #+BEGIN_SRC emacs-lisp
+      (defvar bootstrap-version)
+      (let ((bootstrap-file
+             (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+            (bootstrap-version 5))
+        (unless (file-exists-p bootstrap-file)
+          (with-current-buffer
+              (url-retrieve-synchronously
+               "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+               'silent 'inhibit-cookies)
+            (goto-char (point-max))
+            (eval-print-last-sexp)))
+        (load bootstrap-file nil 'nomessage))
+    #+END_SRC
 *** package
     Use the emacs packaging system to automatically install some packages
 
     #+BEGIN_SRC emacs-lisp
-      (require 'package)
-      (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-      ;; (add-to-list 'package-archives
-      ;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-      (package-initialize)
+      (unless (boundp 'bootstrap-version)
+        (require 'package)
+        (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+        ;; (add-to-list 'package-archives
+        ;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+        (package-initialize))
     #+END_SRC
 *** Setup use-package
    You may need to =M-x package-install use-package= before
@@ -131,9 +147,7 @@
    You can also not use a package by adding :disabled t to use-package
 
    #+BEGIN_SRC emacs-lisp
-     (unless (package-installed-p 'use-package)
-       (package-refresh-contents)
-       (package-install 'use-package))
+     (straight-use-package 'use-package)
      (eval-when-compile
        (require 'use-package))
     #+END_SRC
@@ -245,7 +259,6 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package jit-lock
-        :defer 1
         :config
         (progn
           (setq jit-lock-defer-time 0.1)
@@ -413,7 +426,7 @@
     #+BEGIN_SRC emacs-lisp
     (use-package delight
       :defer 5
-      :ensure t)
+      :straight t)
     #+END_SRC
 
 *** ivy
@@ -423,7 +436,7 @@
     ~ido~ and ~iswitchb~.
     #+BEGIN_SRC emacs-lisp
     (use-package ivy
-      :ensure t
+      :straight t
       :defer 1
       :delight ivy-mode
       :bind (("C-c C-r" . 'ivy-resume))
@@ -455,7 +468,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package counsel
         :after ivy
-        :ensure t
+        :straight t
         :delight counsel-mode
         :bind (("C-c g" .  'counsel-git)
                ("C-c j" .  'counsel-file-jump)
@@ -481,7 +494,7 @@
     #+BEGIN_SRC emacs-lisp
     (use-package swiper
       :after ivy
-      :ensure t
+      :straight t
       :bind (("M-s" . 'swiper)))
     #+END_SRC
 
@@ -491,7 +504,7 @@
     #+BEGIN_SRC emacs-lisp
     (use-package scratch-ext
       :defer 5
-      :ensure t
+      :straight t
       :config
       (save-excursion
         (setq scratch-ext-log-directory "~/.emacs.d/scratch")
@@ -537,7 +550,8 @@
       ((c++-mode . ((mode . clang-format+))))
     #+END_EXAMPLE
     #+BEGIN_SRC emacs-lisp
-      (use-package clang-format+)
+      (use-package clang-format+
+        :straight t)
     #+END_SRC
 *** ansi-color
     #+BEGIN_SRC emacs-lisp
@@ -659,10 +673,11 @@
 *** tramp
     This provides remote access to files and shells.  
     #+BEGIN_SRC emacs-lisp
-      (use-package tramp
-        :config
-        (setq tramp-use-ssh-controlmaster-options nil
-              tramp-copy-size-limit 1024))
+            (use-package tramp
+              :defer t
+              :config
+              (setq tramp-use-ssh-controlmaster-options nil
+                    tramp-copy-size-limit 1024))
     #+END_SRC
 *** discover (disabled)
     Add some nice menus to common commands.  
@@ -705,7 +720,7 @@
            numbers "1. "  "2. " "3. " and inserts it at each markets tpot
     #+BEGIN_SRC emacs-lisp
     (use-package anyins
-      :ensure t
+      :straight t
       :bind ("C-c i" . anyins-mode))
     #+END_SRC
 
@@ -760,7 +775,7 @@
     Download package if not installed!
     #+BEGIN_SRC emacs-lisp
     (use-package magit
-      :ensure t
+      :straight t
       :bind (("C-c m" . magit-status)
              ("C-c C-m" . magit-dispatch-popup))
       :delight '(magit-wip-after-save-mode
@@ -787,7 +802,7 @@
     #+BEGIN_SRC emacs-lisp
             (use-package magit-todos
               :after magit
-              :ensure t
+              :straight t
               :config (magit-todos-mode))
     #+END_SRC
 *** forge
@@ -817,7 +832,7 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package ag
-      :ensure t
+      :straight t
       :bind (("C-c f" . ag))
       :config (setq ag-reuse-buffers t))
     #+END_SRC
@@ -876,7 +891,7 @@
 *** treemacs
     #+BEGIN_SRC emacs-lisp
     (use-package treemacs
-      :ensure t
+      :straight t
       :bind (("C-x p" . treemacs-select-window)
              ("C-x t" . treemacs))
       :config
@@ -894,7 +909,7 @@
     #+BEGIN_SRC emacs-lisp
     (use-package wgrep
       :defer 5
-      :ensure t)
+      :straight t)
     #+END_SRC
 
 *** zoom-frm
@@ -929,7 +944,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package overcast-theme
         :disabled t
-        :ensure t
+        :straight t
         :config
         (load-theme 'overcast t))
     #+END_SRC
@@ -938,7 +953,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package ample-theme
         :disabled t
-        :ensure t
+        :straight t
         :config
         (load-theme 'ample t))
     #+END_SRC
@@ -953,7 +968,7 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package nord-theme
-        :ensure t
+        :straight t
         :config
         (progn
           (setq nord-region-highlight 'snowstorm)
@@ -1221,7 +1236,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+BEGIN_SRC emacs-lisp
           (use-package avy
             :disabled t
-            :ensure t
+            :straight t
             :bind (("M-s" . avy-goto-word-1))
             :config (setq avi-all-windows nil))
     #+END_SRC
@@ -1308,7 +1323,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     (use-package ido-vertical-mode
       :after ido
       :defer 30
-      :ensure t
+      :straight t
       :disabled t
       :config
       (ido-vertical-mode 1))
@@ -1426,7 +1441,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+BEGIN_SRC emacs-lisp
     (use-package num3-mode
       :disabled t
-      :ensure t
+      :straight t
       :commands num3-mode
       :delight num3-mode
       :init (add-hook 'prog-mode-hook 'num3-mode)
@@ -1494,7 +1509,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+BEGIN_SRC emacs-lisp
     (use-package sublime-themes
       :disabled t
-      :ensure t
+      :straight t
       :config
       (load-theme 'wilson t nil))
     #+END_SRC
@@ -1503,7 +1518,7 @@ Emacs.font: Bitstream Vera Sans Mono-16
     #+BEGIN_SRC emacs-lisp
     (use-package dracula-theme
       :disabled t
-      :ensure t
+      :straight t
       :config
       (load-theme 'dracula t nil))
     #+END_SRC
