@@ -397,6 +397,7 @@
 
 (use-package ivy-rich
   :after ivy
+  :straight (:host github :repo "Yevgnen/ivy-rich")
   :config (progn
             (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
                        (plist-put (plist-get  ivy-rich-display-transformers-list 'ivy-switch-buffer)
@@ -806,6 +807,7 @@
     
 
 (use-package powerline
+  :straight (:host github :repo "milkypostman/powerline")
   :config
   (progn
     (powerline-default-theme)))
