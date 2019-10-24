@@ -471,6 +471,7 @@
         :bind (("C-c g" .  'counsel-git)
                ("C-c j" .  'counsel-file-jump)
                ("C-c k" .  'counsel-ag)
+               ("C-c c" .  'counsel-compile)
                ;("C-c s" .  'counsel-switch-to-shell-buffer)
                )
         :config 
@@ -490,10 +491,12 @@
     This changes incremental search to use ivy style completion
     but displays all the matching lines in the completion buffer.
     #+BEGIN_SRC emacs-lisp
-    (use-package swiper
-      :after ivy
-      :straight t
-      :bind (("M-s" . 'swiper)))
+      (use-package swiper
+        :after ivy
+        :straight t
+        :bind (("M-s" . 'swiper)
+               ("C-s" . 'swiper-isearch)
+               ("C-r" . 'swiper-isearch-backward)))
     #+END_SRC
 
 *** scratch-ext

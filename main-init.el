@@ -417,6 +417,7 @@
   :bind (("C-c g" .  'counsel-git)
          ("C-c j" .  'counsel-file-jump)
          ("C-c k" .  'counsel-ag)
+         ("C-c c" .  'counsel-compile)
          ;("C-c s" .  'counsel-switch-to-shell-buffer)
          )
   :config 
@@ -439,7 +440,9 @@
 (use-package swiper
   :after ivy
   :straight t
-  :bind (("M-s" . 'swiper)))
+  :bind (("M-s" . 'swiper)
+         ("C-s" . 'swiper-isearch)
+         ("C-r" . 'swiper-isearch-backward)))
 
 ;; scratch-ext
 ;;     Make *scratch* buffers get saved
