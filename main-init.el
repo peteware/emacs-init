@@ -417,7 +417,7 @@
   :bind (("C-c g" .  'counsel-git)
          ("C-c j" .  'counsel-file-jump)
          ("C-c k" .  'counsel-ag)
-         ("C-c c" .  'counsel-compile)
+         ("C-x b" .  'counsel-switch-buffer)
          ;("C-c s" .  'counsel-switch-to-shell-buffer)
          )
   :config 
@@ -488,7 +488,8 @@
 ;;     #+END_EXAMPLE
 
 (use-package clang-format+
-  :straight t)
+  :straight t
+  :hook (c++-mode . clang-format+-mode))
 
 ;; ansi-color
 
@@ -676,22 +677,25 @@
   :straight t
   :bind (("C-c m" . magit-status)
          ("C-c C-m" . magit-dispatch-popup))
-  :delight '(magit-wip-after-save-mode
-             magit-wip-after-save-local-mode
-             magit-wip-after-apply-mode
-             magit-wip-before-change-mode
-             auto-revert-mode)
+  :delight (magit-wip-mode)
+             (magit-wip-after-save-mode)
+             (magit-wip-after-apply-mode)
+             (magit-wip-before-change-mode)
+             (magit-wip-initial-backup-mode)
   :config (progn
             (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
             (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
             (setq magit-commit-show-diff nil)
-            (setq auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffer-p)
-            (remove-hook 'server-switch-hook 'magit-commit-diff)
+            (setq magit-wip-mode-lighter "")
+            ;(setq auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffer-p)
             (setq magit-refresh-verbose t)
             (setq magit-save-repository-buffers nil)
             (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
             (setq magit-view-git-manual-method 'man)
-            (setq vc-handled-backends nil)))
+            (setq magit-auto-revert-tracked-only t)
+            (setq vc-handled-backends nil)
+            (magit-wip-mode 1)
+            (magit-auto-revert-mode 1)))
 
 ;; magit-todo
 
