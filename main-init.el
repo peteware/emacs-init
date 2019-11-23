@@ -653,7 +653,8 @@
   (progn
     (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
     (add-hook 'comint-mode-hook 'comint-for-pete)
-    (add-hook 'dbx-mode-hook 'dbx-for-pete))  )
+    (add-hook 'dbx-mode-hook 'dbx-for-pete)
+    (add-hook 'compilation-mode-hook 'pw/turn-off-fontlock)))
 
 ;; csc-mode
 ;;     Bloomberg database schema
@@ -677,24 +678,16 @@
   :straight t
   :bind (("C-c m" . magit-status)
          ("C-c C-m" . magit-dispatch-popup))
-  :delight (magit-wip-mode)
-             (magit-wip-after-save-mode)
-             (magit-wip-after-apply-mode)
-             (magit-wip-before-change-mode)
-             (magit-wip-initial-backup-mode)
   :config (progn
             (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
             (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
             (setq magit-commit-show-diff nil)
-            (setq magit-wip-mode-lighter "")
-            ;(setq auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffer-p)
             (setq magit-refresh-verbose t)
             (setq magit-save-repository-buffers nil)
             (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
             (setq magit-view-git-manual-method 'man)
             (setq magit-auto-revert-tracked-only t)
             (setq vc-handled-backends nil)
-            (magit-wip-mode 1)
             (magit-auto-revert-mode 1)))
 
 ;; magit-todo
