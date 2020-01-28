@@ -488,8 +488,7 @@
 ;;     #+END_EXAMPLE
 
 (use-package clang-format+
-  :straight t
-  :hook (c++-mode . clang-format+-mode))
+  :straight t)
 
 ;; ansi-color
 

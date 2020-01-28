@@ -552,8 +552,7 @@
     #+END_EXAMPLE
     #+BEGIN_SRC emacs-lisp
       (use-package clang-format+
-        :straight t
-        :hook (c++-mode . clang-format+-mode))
+        :straight t)
     #+END_SRC
 *** ansi-color
     #+BEGIN_SRC emacs-lisp
