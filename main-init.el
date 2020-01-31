@@ -356,6 +356,20 @@
   :config
   (xterm-mouse-mode))
 
+(defun pw/xterm()
+  "Re-install xterm handlers for tmux purposes"
+  (interactive)
+  (terminal-init-xterm)
+  (pw/xterm-mouse))
+
+(defun pw/xterm-mouse ()
+  "Toggle xterm-mouse-mode.  Useful when re-connecting
+with tmux and state is lost"
+  (interactive)
+  (xterm-mouse-mode -1)
+  (sit-for .1)
+  (xterm-mouse-mode 1))
+
 ;; bb-style
 ;;     Bloomberg C++ coding style
 
