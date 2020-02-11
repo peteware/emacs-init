@@ -648,7 +648,7 @@
 
 (use-package comint-prefs
   :after comint
-  :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt)
+  :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt pw/turn-off-fontlock)
   :init
   (progn
     (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
