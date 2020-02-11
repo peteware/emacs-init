@@ -268,7 +268,7 @@
   :defer 5
   :config
   (progn
-    (setq show-paren-when-point-in-periphery t)
+    (setq show-paren-when-point-in-periphery nil)
     (show-paren-mode 1)))
 
 ;; recentf
@@ -499,6 +499,10 @@ with tmux and state is lost"
 ;;     on a per-directory tree basis by adding the file `.dir-locals.el` that looks like this:
 ;;     #+BEGIN_EXAMPLE
 ;;       ((c++-mode . ((mode . clang-format+))))
+;;     #+END_EXAMPLE
+;;     or as a shell script
+;;     #+BEGIN_EXAMPLE
+;;       echo '((c++-mode . ((mode . clang-format+))))' > .dir-locals.el
 ;;     #+END_EXAMPLE
 
 (use-package clang-format+
