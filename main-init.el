@@ -69,7 +69,7 @@
 
 
 (when (display-graphic-p)
-  (setq-default cursor-type '(bar . 8))
+  (setq-default cursor-type '(hbar . 3))
   (setq initial-frame-alist
         '((width . 110)
           (height . 60)
