@@ -69,7 +69,7 @@
 
 
 (when (display-graphic-p)
-  (setq-default cursor-type '(bar . 8))
+  (setq-default cursor-type '(hbar . 3))
   (setq initial-frame-alist
         '((width . 110)
           (height . 60)
@@ -268,7 +268,7 @@
   :defer 5
   :config
   (progn
-    (setq show-paren-when-point-in-periphery t)
+    (setq show-paren-when-point-in-periphery nil)
     (show-paren-mode 1)))
 
 ;; recentf
@@ -355,6 +355,20 @@
   :unless (display-graphic-p)
   :config
   (xterm-mouse-mode))
+
+(defun pw/xterm()
+  "Re-install xterm handlers for tmux purposes"
+  (interactive)
+  (terminal-init-xterm)
+  (pw/xterm-mouse))
+
+(defun pw/xterm-mouse ()
+  "Toggle xterm-mouse-mode.  Useful when re-connecting
+with tmux and state is lost"
+  (interactive)
+  (xterm-mouse-mode -1)
+  (sit-for .1)
+  (xterm-mouse-mode 1))
 
 ;; bb-style
 ;;     Bloomberg C++ coding style
@@ -486,10 +500,13 @@
 ;;     #+BEGIN_EXAMPLE
 ;;       ((c++-mode . ((mode . clang-format+))))
 ;;     #+END_EXAMPLE
+;;     or as a shell script
+;;     #+BEGIN_EXAMPLE
+;;       echo '((c++-mode . ((mode . clang-format+))))' > .dir-locals.el
+;;     #+END_EXAMPLE
 
 (use-package clang-format+
-  :straight t
-  :hook (c++-mode . clang-format+-mode))
+  :straight t)
 
 ;; ansi-color
 
