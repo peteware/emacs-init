@@ -850,7 +850,7 @@ with tmux and state is lost"
 ;; Force Mac OS X to use Consolas at 16pt
 
 (if (eq (window-system) 'ns)
-    (custom-set-faces '(default ((t (:height 160 :family "Consolas"))))))
+    (custom-set-faces '(default ((t (:height 160 :family "Consolas" :cursor-color "red"))))))
 
 ;; Clean startup
 
