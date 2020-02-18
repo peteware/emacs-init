@@ -74,12 +74,14 @@
         '((width . 110)
           (height . 60)
           (top . 29)
-          (left . 88)))
+          (left . 88)
+          (cursor-background "red")))
   (setq default-frame-alist
         '((width . 110)
           (height . 60)
           (top . 29)
-          (left . 1.0))))
+          (left . 1.0)
+          (cursor-background "red"))))
 (when (eq 'ns (window-system))
   (add-to-list 'default-frame-alist
                '(font . "SF Mono-16"))
