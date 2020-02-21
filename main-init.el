@@ -69,6 +69,7 @@
 
 
 (setq-default cursor-type '(hbar . 3))
+(setq-default cursor-in-non-selected-windows nil)
 (setq initial-frame-alist
       '((width . 110)
         (height . 60)
@@ -84,7 +85,7 @@
 (set-face-attribute 'cursor nil :background "red")
 (when (eq 'ns (window-system))
   (add-to-list 'default-frame-alist
-               '(font . "SF Mono-16"))
+               '(font . "JetBrains Mono-14"))
   (add-to-list 'default-frame-alist
                '(alpha . (90 . 70))))
 
