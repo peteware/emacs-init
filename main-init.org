@@ -110,7 +110,7 @@
   (set-face-attribute 'cursor nil :background "red")
   (when (eq 'ns (window-system))
     (add-to-list 'default-frame-alist
-                 '(font . "JetBrains Mono-14"))
+                 '(font . "JetBrains Mono"))
     (add-to-list 'default-frame-alist
                  '(alpha . (90 . 70))))
 
@@ -258,8 +258,8 @@
     #+BEGIN_SRC emacs-lisp
     (use-package face-remap
       :defer 5
-      :bind* (("C-c -" . text-scale-decrease)
-              ("C-c +" . text-scale-increase)))
+      :bind* (("C-c -" . text-scale-adjust)
+              ("C-c +" . text-scale-adjust)))
     #+END_SRC
 
 *** jit-lock
@@ -890,9 +890,11 @@
     text-scale-decrease I use this to change the entire window
     instead of the buffer
     #+BEGIN_SRC emacs-lisp
-    (use-package zoom-frm
-      :bind* (("C-c [" . zoom-frm-out)
-              ("C-c ]" . zoom-frm-in)))
+      (use-package zoom-frm
+        :straight t
+        :bind* (("C-c [" . zoom-frm-out)
+                ("C-c ]" . zoom-frm-in)
+                ("C-c 0" . zoom-frm-unzoom)))
     #+END_SRC
 
 *** powerline

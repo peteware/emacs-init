@@ -85,7 +85,7 @@
 (set-face-attribute 'cursor nil :background "red")
 (when (eq 'ns (window-system))
   (add-to-list 'default-frame-alist
-               '(font . "JetBrains Mono-14"))
+               '(font . "JetBrains Mono"))
   (add-to-list 'default-frame-alist
                '(alpha . (90 . 70))))
 
@@ -222,8 +222,8 @@
 
 (use-package face-remap
   :defer 5
-  :bind* (("C-c -" . text-scale-decrease)
-          ("C-c +" . text-scale-increase)))
+  :bind* (("C-c -" . text-scale-adjust)
+          ("C-c +" . text-scale-adjust)))
 
 ;; jit-lock
 ;;     Setup lazy font locking
@@ -803,8 +803,10 @@ with tmux and state is lost"
 ;;     instead of the buffer
 
 (use-package zoom-frm
+  :straight t
   :bind* (("C-c [" . zoom-frm-out)
-          ("C-c ]" . zoom-frm-in)))
+          ("C-c ]" . zoom-frm-in)
+          ("C-c 0" . zoom-frm-unzoom)))
 
 ;; powerline
     
