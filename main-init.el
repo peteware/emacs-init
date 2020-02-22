@@ -70,18 +70,27 @@
 
 (setq-default cursor-type '(hbar . 3))
 (setq-default cursor-in-non-selected-windows nil)
+(setq-default line-spacing .3)
 (setq initial-frame-alist
       '((width . 110)
         (height . 60)
         (top . 29)
         (left . 88)
-        (cursor-background "red")))
+        (right-divider-width . 5)
+        (bottom-divider-width . 5)
+        (ns-transparent-titlebar . t)
+        (inhibit-double-buffering . t)
+        (cursor-background . "red")))
 (setq default-frame-alist
       '((width . 110)
         (height . 60)
         (top . 29)
         (left . 1.0)
-        (cursor-background "red")))
+        (right-divider-width . 5)
+        (bottom-divider-width . 5)
+        (ns-transparent-titlebar . t)
+        (inhibit-double-buffering . t)
+        (cursor-background . "red")))
 (set-face-attribute 'cursor nil :background "red")
 (when (eq 'ns (window-system))
   (add-to-list 'default-frame-alist
@@ -855,7 +864,7 @@ with tmux and state is lost"
 ;; Force Mac OS X to use Consolas at 16pt
 
 (if (eq (window-system) 'ns)
-    (custom-set-faces '(default ((t (:height 160 :family "Consolas" :cursor-color "red"))))))
+    (custom-set-faces '(default ((t (:height 160 :family "JetBrains Mono" :cursor-color "red"))))))
 
 ;; Clean startup
 
