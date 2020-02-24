@@ -68,6 +68,7 @@
 ;; Configure frame geometry, fonts, transparency,
 
 
+(scroll-bar-mode -1)
 (setq-default cursor-type '(hbar . 3))
 (setq-default cursor-in-non-selected-windows nil)
 (setq-default line-spacing .3)
@@ -75,26 +76,18 @@
       '((width . 110)
         (height . 60)
         (top . 29)
-        (left . 88)
-        (right-divider-width . 5)
-        (bottom-divider-width . 5)
-        (ns-transparent-titlebar . t)
-        (inhibit-double-buffering . t)
-        (cursor-background . "red")))
+        (left . 88)))
 (setq default-frame-alist
-      '((width . 110)
-        (height . 60)
-        (top . 29)
-        (left . 1.0)
-        (right-divider-width . 5)
-        (bottom-divider-width . 5)
+      '((right-divider-width . 5)
         (ns-transparent-titlebar . t)
         (inhibit-double-buffering . t)
-        (cursor-background . "red")))
+        (vertical-scrollbars . nil)))
 (set-face-attribute 'cursor nil :background "red")
+;(set-face-attribute 'default nil :height 160)
+
 (when (eq 'ns (window-system))
-  (add-to-list 'default-frame-alist
-               '(font . "JetBrains Mono"))
+  ;; (add-to-list 'default-frame-alist
+  ;;              '(font . "JetBrains Mono"))
   (add-to-list 'default-frame-alist
                '(alpha . (90 . 70))))
 
@@ -858,13 +851,6 @@ with tmux and state is lost"
 ;;    Allow narrow to region (e.g. =C-X n n=)
 
 (put 'narrow-to-region 'disabled nil)
-
-
-
-;; Force Mac OS X to use Consolas at 16pt
-
-(if (eq (window-system) 'ns)
-    (custom-set-faces '(default ((t (:height 160 :family "JetBrains Mono" :cursor-color "red"))))))
 
 ;; Clean startup
 
