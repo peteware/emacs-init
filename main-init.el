@@ -71,7 +71,7 @@
 (scroll-bar-mode -1)
 (setq-default cursor-type '(hbar . 3))
 (setq-default cursor-in-non-selected-windows nil)
-(setq-default line-spacing .3)
+(setq-default line-spacing .2)
 (setq initial-frame-alist
       '((width . 110)
         (height . 60)
@@ -83,11 +83,7 @@
         (inhibit-double-buffering . t)
         (vertical-scrollbars . nil)))
 (set-face-attribute 'cursor nil :background "red")
-;(set-face-attribute 'default nil :height 160)
-
 (when (eq 'ns (window-system))
-  ;; (add-to-list 'default-frame-alist
-  ;;              '(font . "JetBrains Mono"))
   (add-to-list 'default-frame-alist
                '(alpha . (90 . 70))))
 
