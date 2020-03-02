@@ -407,7 +407,7 @@ with tmux and state is lost"
 ;; This adds some nice info when choosing buffers
 
 (use-package ivy-rich
-  :after ivy
+  :after (ivy counsel)
   :straight (:host github :repo "Yevgnen/ivy-rich")
   :config (progn
             (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
