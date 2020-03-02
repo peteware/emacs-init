@@ -495,6 +495,12 @@ with tmux and state is lost"
   (progn
     (setq compilation-scroll-output 'first-error)))
 
+;; compile-plus
+;;     This makes compile create separate buffers for directory and command
+
+(use-package emacs-compile-plus
+  :straight (emacs-compile-plus :type git :host github :repo "ibizaman/emacs-compile-plus" :branch "master"))
+
 ;; clang-format+
 ;;     Runs clang-format.  This is not enabled by default.  You can enable this
 ;;     on a per-directory tree basis by adding the file `.dir-locals.el` that looks like this:
