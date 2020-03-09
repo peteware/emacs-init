@@ -559,9 +559,12 @@
         (setq compilation-scroll-output 'first-error)))
     #+END_SRC
 *** compile-plus
-    This makes compile create separate buffers for directory and command
+    This makes compile create separate buffers for directory and command.
+
+    Disabled as it prompted for wrong directory all the time
     #+BEGIN_SRC emacs-lisp
       (use-package emacs-compile-plus
+        :disabled t
         :straight (emacs-compile-plus :type git :host github :repo "ibizaman/emacs-compile-plus" :branch "master"))
     #+END_SRC
 *** clang-format+
