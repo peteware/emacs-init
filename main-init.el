@@ -496,9 +496,12 @@ with tmux and state is lost"
     (setq compilation-scroll-output 'first-error)))
 
 ;; compile-plus
-;;     This makes compile create separate buffers for directory and command
+;;     This makes compile create separate buffers for directory and command.
+
+;;     Disabled.  Prompting for directory was annoying
 
 (use-package emacs-compile-plus
+  :disabled t
   :straight (emacs-compile-plus :type git :host github :repo "ibizaman/emacs-compile-plus" :branch "master"))
 
 ;; clang-format+
