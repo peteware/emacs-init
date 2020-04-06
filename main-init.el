@@ -611,12 +611,9 @@ with tmux and state is lost"
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
-  :commands orgstruct-mode
-  :delight orgstruct-mode
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
          ("C-c r" . org-capture))
-  :init (add-hook 'c-mode-common-hook 'orgstruct-mode)
   :config (progn
             (setq org-export-backends '(ascii html icalendar latex md))
             (setq org-list-allow-alphabetical t)))
