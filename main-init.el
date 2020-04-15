@@ -7,8 +7,7 @@
 (provide 'main-init)
 
 ;; Profile startup times
-;;     This is from a good article https://blog.d46.us/advanced-emacs-startup/
-;;     about speeding up emacs startup.
+;;     This is from a good [[https://github.com/raxod502/straight.el][article]] about speeding up emacs startup.
 
 ;;     Use a hook so the message doesn't get clobbered by other messages.
 
@@ -21,7 +20,7 @@
                      gcs-done)))
 
 ;; GC threshold
-;;     Temporarily increase GC threshold to 100MB then reduce to 800MB
+;;     Temporarily increase GC threshold to 100MB then reduce to 8MB
 ;;     (was 800KB) after startup.
 
 (setq gc-cons-threshold (* 100 1000 1000))
@@ -29,8 +28,8 @@
                              (setq gc-cons-threshold (* 8 1000 1000))))
 
 ;; Setup proxies, certificates for package installation
-;;     To get ~package-install~ to work you may need to setup some
-;;     proxies and some SSL certificates for those proxies
+;;     To get =package-install= or =straight.el= to work you may need to setup
+;;     proxies and SSL certificates for those proxies
 
 ;;     Add certificate for corp proxies.  No problem if file doesn't exist.
 
@@ -118,7 +117,7 @@
 ;;    any of this works
    
 ;;    If a package is not available then ~use-package~ ignores it.
-;;    You can also not use a package by adding :disabled t to use-package
+;;    You can also not use a package by adding =:disabled t= to use-package
 
 ;;    I also like having ~use-package~ collect some info about
 ;;    the loaded packages and how long they take to load.  You
@@ -131,7 +130,7 @@
 (require 'use-package)
 
 ;; bind-key
-;;     Using bind-key lets you run describe-personal-keybindings
+;;     Using bind-key lets you run =M-x describe-personal-keybindings=
 ;;     which is a nice way of keep track of what you've changed.
 
 (use-package bind-key
