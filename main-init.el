@@ -498,7 +498,7 @@ with tmux and state is lost"
 ;; compile-plus
 ;;     This makes compile create separate buffers for directory and command.
 
-;;     Disabled.  Prompting for directory was annoying
+;;     Disabled as it prompted for wrong directory all the time
 
 (use-package emacs-compile-plus
   :disabled t
