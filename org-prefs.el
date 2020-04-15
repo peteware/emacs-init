@@ -12,8 +12,8 @@
   (turn-on-orgstruct))
 
 (add-hook 'org-mode-hook 'turn-on-font-lock)  ; Org buffers only
-(add-hook 'c++-mode-hook 'pw/c++-orgstruct)
-(add-hook 'c-mode-hook 'pw/c++-orgstruct)
+;(add-hook 'c++-mode-hook 'pw/c++-orgstruct)
+;(add-hook 'c-mode-hook 'pw/c++-orgstruct)
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
 (setq calendar-latitude 40.76)
