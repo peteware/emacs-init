@@ -80,7 +80,7 @@
 (setq default-frame-alist
       '((right-divider-width . 5)
         (ns-transparent-titlebar . t)
-        (inhibit-double-buffering . t)
+        ;(inhibit-double-buffering . t)
         (vertical-scrollbars . nil)))
 (set-face-attribute 'cursor nil :background "red")
 (when (eq 'ns (window-system))
