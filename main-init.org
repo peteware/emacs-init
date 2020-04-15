@@ -1,11 +1,11 @@
 #+STARTUP: content
 #+PROPERTY: header-args  :tangle yes :comments org
 * Emacs setup
-  My configurations are based on [[https://github.com/jwiegley/use-package][~use-package~]] which
+  My configurations are based on [[https://github.com/jwiegley/use-package][use-package.el]] which
   combines the loading of a package along with its configuration.
-  I also rely on ~(package-install)~ to download extra packages.
+  I also rely on [[https://github.com/raxod502/straight.el][straight.el]] to download extra packages.
   
-  This file is written with [[https://orgmode.org/][org-mode]] and then [[https://orgmode.org/manual/Extracting-source-code.html#Extracting-source-code][=tangled=]] to 
+  This file is written with [[https://orgmode.org/][org-mode]] and then [[https://orgmode.org/manual/Extracting-source-code.html#Extracting-source-code][tangled]] to 
   produce the actual source.
 
 ** A few setup things  
@@ -14,7 +14,7 @@
    this file, =main-init.el=:
 
 ** ~/.emacs: where it starts 
-   I have this in my ~/.emacs and ~/.xemacs/init.el:
+   I have this in my =~/.emacs= and =~/.xemacs/init.el=:
    
    #+BEGIN_EXAMPLE
    (add-to-list 'load-path "~/usr/emacs")
@@ -22,7 +22,7 @@
    #+END_EXAMPLE
 ** main-init.el: main configuration
    I've moved almost all the customization into
-   ~main-init.el~ to avoid various emacs
+   =main-init.el= to avoid various emacs
    commands from changing this file.
 *** Preamble
     This is at the beginning of main-init.el:
@@ -34,8 +34,7 @@
     #+END_SRC
 
 *** Profile startup times
-    This is from a good article https://blog.d46.us/advanced-emacs-startup/
-    about speeding up emacs startup.
+    This is from a good [[https://github.com/raxod502/straight.el][article]] about speeding up emacs startup.
 
     Use a hook so the message doesn't get clobbered by other messages.
     #+BEGIN_SRC emacs-lisp
@@ -48,7 +47,7 @@
                            gcs-done)))
     #+END_SRC
 *** GC threshold
-    Temporarily increase GC threshold to 100MB then reduce to 800MB
+    Temporarily increase GC threshold to 100MB then reduce to 8MB
     (was 800KB) after startup.
     #+BEGIN_SRC emacs-lisp
       (setq gc-cons-threshold (* 100 1000 1000))
@@ -56,8 +55,8 @@
                                    (setq gc-cons-threshold (* 8 1000 1000))))
     #+END_SRC
 *** Setup proxies, certificates for package installation
-    To get ~package-install~ to work you may need to setup some
-    proxies and some SSL certificates for those proxies
+    To get =package-install= or =straight.el= to work you may need to setup
+    proxies and SSL certificates for those proxies
 
     Add certificate for corp proxies.  No problem if file doesn't exist.
 
@@ -144,7 +143,7 @@
    any of this works
    
    If a package is not available then ~use-package~ ignores it.
-   You can also not use a package by adding :disabled t to use-package
+   You can also not use a package by adding =:disabled t= to use-package
 
    I also like having ~use-package~ collect some info about
    the loaded packages and how long they take to load.  You
@@ -162,7 +161,7 @@
    This section is for standard packages that are loaded immediately
 
 *** bind-key
-    Using bind-key lets you run describe-personal-keybindings
+    Using bind-key lets you run =M-x describe-personal-keybindings=
     which is a nice way of keep track of what you've changed.
     #+BEGIN_SRC emacs-lisp
     (use-package bind-key
