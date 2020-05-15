@@ -741,6 +741,7 @@ with tmux and state is lost"
   :config (progn
             (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
             (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
+            (remove-hook 'magit-status-headers-hook 'magit-insert-tags-header)
             (setq magit-commit-show-diff nil)
             (setq magit-refresh-verbose t)
             (setq magit-save-repository-buffers nil)
