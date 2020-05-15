@@ -439,28 +439,63 @@
       :defer 5
       :straight t)
     #+END_SRC
-
+*** ctrlf
+    This replaces =swiper= and built in incremental search
+    #+begin_src emacs-lisp
+      (use-package ctrlf
+	:straight t)
+      (ctrlf-mode +1)
+    #+end_src
+*** selectrum
+    This is an alternative to ivy 
+    #+begin_src emacs-lisp
+      (use-package selectrum
+        :straight t
+        :after ivy
+        :config (progn (selectrum-mode +1)))
+    #+end_src
+*** prescient
+    Provides better sorting of selections
+    #+begin_src emacs-lisp
+      (use-package prescient
+        :straight t
+        :after (ivy counsel)
+        :config
+        (progn
+          (prescient-persist-mode +1)))
+      (use-package selectrum-prescient
+        :straight t
+        :after (ivy counsel)
+        :config
+        (progn (selectrum-prescient-mode +1)))
+      (use-package ivy-prescient
+        :after (ivy counsel)
+        :straight t
+        :config
+        (progn (ivy-prescient-mode +1)))
+    #+end_src
 *** ivy
     ~ivy~ changes completion so that matches are
     found via regular expressions and matches are
     navigable by moving up and down lines.  Replaces
     ~ido~ and ~iswitchb~.
     #+BEGIN_SRC emacs-lisp
-    (use-package ivy
-      :straight t
-      :defer 1
-      :delight ivy-mode
-      :bind (("C-c C-r" . 'ivy-resume))
-      :config (progn
-                (setq ivy-wrap t)
-                (setq ivy-use-virtual-buffers t)
-                (setq ivy-count-format "(%d/%d) ")
-                (ivy-mode)))
+      (use-package ivy
+        :straight t
+        :defer 1
+        :delight ivy-mode
+        :bind (("C-c C-r" . 'ivy-resume))
+        :config (progn
+                  (setq ivy-wrap t)
+                  (setq ivy-use-virtual-buffers t)
+                  (setq ivy-count-format "(%d/%d) ")
+                  (ivy-mode)))
     #+END_SRC
     This adds some nice info when choosing buffers
     #+BEGIN_SRC emacs-lisp
       (use-package ivy-rich
         :after (ivy counsel)
+        :disabled t
         :straight (:host github :repo "Yevgnen/ivy-rich")
         :config (progn
                   (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
@@ -507,6 +542,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package swiper
         :after ivy
+        :disabled t
         :straight t
         :bind (("M-s" . 'swiper)
                ("C-s" . 'swiper-isearch)

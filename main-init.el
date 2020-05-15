@@ -385,6 +385,41 @@ with tmux and state is lost"
   :defer 5
   :straight t)
 
+;; ctrlf
+;;     This replaces =swiper= and built in incremental search
+
+(use-package ctrlf
+  :straight t)
+(ctrlf-mode +1)
+
+;; selectrum
+;;     This is an alternative to ivy 
+
+(use-package selectrum
+  :straight t
+  :after ivy
+  :config (progn (selectrum-mode +1)))
+
+;; prescient
+;;     Provides better sorting of selections
+
+(use-package prescient
+  :straight t
+  :after (ivy counsel)
+  :config
+  (progn
+    (prescient-persist-mode +1)))
+(use-package selectrum-prescient
+  :straight t
+  :after (ivy counsel)
+  :config
+  (progn (selectrum-prescient-mode +1)))
+(use-package ivy-prescient
+  :after (ivy counsel)
+  :straight t
+  :config
+  (progn (ivy-prescient-mode +1)))
+
 ;; ivy
 ;;     ~ivy~ changes completion so that matches are
 ;;     found via regular expressions and matches are
@@ -407,6 +442,7 @@ with tmux and state is lost"
 
 (use-package ivy-rich
   :after (ivy counsel)
+  :disabled t
   :straight (:host github :repo "Yevgnen/ivy-rich")
   :config (progn
             (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
@@ -453,6 +489,7 @@ with tmux and state is lost"
 
 (use-package swiper
   :after ivy
+  :disabled t
   :straight t
   :bind (("M-s" . 'swiper)
          ("C-s" . 'swiper-isearch)
