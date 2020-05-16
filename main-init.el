@@ -389,36 +389,45 @@ with tmux and state is lost"
 ;;     This replaces =swiper= and built in incremental search
 
 (use-package ctrlf
-  :straight t)
-(ctrlf-mode +1)
+  :straight t
+  :config
+  (progn
+    (setq ctrlf-mode-bindings
+          '(([remap isearch-forward        ] . ctrlf-forward-fuzzy-regexp)
+            ([remap isearch-backward       ] . ctrlf-backward-fuzzy-regexp)
+            ([remap isearch-forward-regexp ] . ctrlf-forward-regexp)
+            ([remap isearch-backward-regexp] . ctrlf-backward-regexp)))
+    (ctrlf-mode +1)))
 
 ;; selectrum
 ;;     This is an alternative to ivy 
 
 (use-package selectrum
   :straight t
-  :after ivy
-  :config (progn (selectrum-mode +1)))
+  :after (ivy counsel)
+  :config
+  (progn (selectrum-mode +1)
+         (setq selectrum-show-indices t)))
 
 ;; prescient
 ;;     Provides better sorting of selections
 
 (use-package prescient
-  :straight t
-  :after (ivy counsel)
-  :config
-  (progn
-    (prescient-persist-mode +1)))
-(use-package selectrum-prescient
-  :straight t
-  :after (ivy counsel)
-  :config
-  (progn (selectrum-prescient-mode +1)))
-(use-package ivy-prescient
-  :after (ivy counsel)
-  :straight t
-  :config
-  (progn (ivy-prescient-mode +1)))
+        :straight t
+        :after (ivy counsel)
+s        :config
+        (progn
+          (prescient-persist-mode +1)))
+      (use-package selectrum-prescient
+        :straight t
+        :after (ivy counsel)
+        :config
+        (progn (selectrum-prescient-mode +1)))
+      (use-package ivy-prescient
+        :after (ivy counsel)
+        :straight t
+        :config
+        (progn (ivy-prescient-mode +1)))
 
 ;; ivy
 ;;     ~ivy~ changes completion so that matches are
@@ -435,7 +444,7 @@ with tmux and state is lost"
             (setq ivy-wrap t)
             (setq ivy-use-virtual-buffers t)
             (setq ivy-count-format "(%d/%d) ")
-            (ivy-mode)))
+            (ivy-mode -1)))
 
 
 ;; This adds some nice info when choosing buffers
@@ -467,11 +476,11 @@ with tmux and state is lost"
   :bind (("C-c g" .  'counsel-git)
          ("C-c j" .  'counsel-file-jump)
          ("C-c k" .  'counsel-ag)
-         ("C-x b" .  'counsel-switch-buffer)
+         ;("C-x b" .  'counsel-switch-buffer)
          ;("C-c s" .  'counsel-switch-to-shell-buffer)
          )
   :config 
-  (progn (counsel-mode)
+  (progn (counsel-mode -1)
          (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
 
 
@@ -481,6 +490,7 @@ with tmux and state is lost"
 
 (use-package counsel-shell-switch
   :after counsel
+  :disabled t
   :bind (("C-c s" . 'pw/counsel-switch-to-shell-buffer)))
 
 ;; swiper
@@ -814,6 +824,13 @@ with tmux and state is lost"
   :commands pw/trunc-lines
   :bind ("C-c $" . pw/trunc-lines)
   :hook ((c-mode-common makefile-gmake-mode compilation-mode shell-mode) . pw/trunc-lines))
+
+;; pw-shell-scomplete
+;;     Use the existing completion framework to switch shell buffers.  This way it
+;;     integrates smoothly with selectrum and prescient
+
+(use-package pw-shell-scomplete
+  :bind (("C-c s" . 'pw/shell-scomplete-to-shell-buffer)))
 
 ;; treemacs
 
