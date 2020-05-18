@@ -469,7 +469,7 @@
       (use-package prescient
         :straight t
         :after (ivy counsel)
-s        :config
+        :config
         (progn
           (prescient-persist-mode +1)))
       (use-package selectrum-prescient

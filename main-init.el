@@ -413,21 +413,21 @@ with tmux and state is lost"
 ;;     Provides better sorting of selections
 
 (use-package prescient
-        :straight t
-        :after (ivy counsel)
-s        :config
-        (progn
-          (prescient-persist-mode +1)))
-      (use-package selectrum-prescient
-        :straight t
-        :after (ivy counsel)
-        :config
-        (progn (selectrum-prescient-mode +1)))
-      (use-package ivy-prescient
-        :after (ivy counsel)
-        :straight t
-        :config
-        (progn (ivy-prescient-mode +1)))
+  :straight t
+  :after (ivy counsel)
+  :config
+  (progn
+    (prescient-persist-mode +1)))
+(use-package selectrum-prescient
+  :straight t
+  :after (ivy counsel)
+  :config
+  (progn (selectrum-prescient-mode +1)))
+(use-package ivy-prescient
+  :after (ivy counsel)
+  :straight t
+  :config
+  (progn (ivy-prescient-mode +1)))
 
 ;; ivy
 ;;     ~ivy~ changes completion so that matches are
