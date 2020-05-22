@@ -403,6 +403,7 @@ with tmux and state is lost"
 ;;     This is an alternative to ivy 
 
 (use-package selectrum
+  :disabled t
   :straight t
   :after (ivy counsel)
   :config
@@ -419,6 +420,7 @@ with tmux and state is lost"
   (progn
     (prescient-persist-mode +1)))
 (use-package selectrum-prescient
+  :disabled t
   :straight t
   :after (ivy counsel)
   :config
@@ -444,7 +446,7 @@ with tmux and state is lost"
             (setq ivy-wrap t)
             (setq ivy-use-virtual-buffers t)
             (setq ivy-count-format "(%d/%d) ")
-            (ivy-mode -1)))
+            (ivy-mode 1)))
 
 
 ;; This adds some nice info when choosing buffers

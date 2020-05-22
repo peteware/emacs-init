@@ -457,6 +457,7 @@
     This is an alternative to ivy 
     #+begin_src emacs-lisp
       (use-package selectrum
+        :disabled t
         :straight t
         :after (ivy counsel)
         :config
@@ -473,6 +474,7 @@
         (progn
           (prescient-persist-mode +1)))
       (use-package selectrum-prescient
+        :disabled t
         :straight t
         :after (ivy counsel)
         :config
@@ -498,7 +500,7 @@
                   (setq ivy-wrap t)
                   (setq ivy-use-virtual-buffers t)
                   (setq ivy-count-format "(%d/%d) ")
-                  (ivy-mode -1)))
+                  (ivy-mode 1)))
     #+END_SRC
     This adds some nice info when choosing buffers
     #+BEGIN_SRC emacs-lisp
