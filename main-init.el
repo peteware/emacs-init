@@ -431,6 +431,21 @@ with tmux and state is lost"
   :config
   (progn (ivy-prescient-mode +1)))
 
+;; git-link
+;;     ~git-link~ makes it easy to get the url link directly to a
+;;     github repo.  The following adds setup for bbgithub.
+
+(use-package git-link
+  :straight t
+  :bind (("C-c b l" . 'git-link)
+         ("C-c b h" . 'git-link-homepage))
+  :config
+  (progn
+    (add-to-list 'git-link-remote-alist
+                 '("bbgithub\\.dev\\.bloomberg\\.com" git-link-github))
+    (add-to-list 'git-link-commit-remote-alist
+                 '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
+
 ;; ivy
 ;;     ~ivy~ changes completion so that matches are
 ;;     found via regular expressions and matches are
@@ -453,7 +468,6 @@ with tmux and state is lost"
 
 (use-package ivy-rich
   :after (ivy counsel)
-  :disabled t
   :straight (:host github :repo "Yevgnen/ivy-rich")
   :config (progn
             (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
@@ -751,8 +765,8 @@ with tmux and state is lost"
   :bind (("C-c m" . magit-status)
          ("C-c C-m" . magit-dispatch-popup))
   :config (progn
-            (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
-            (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
+            ;(add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
+            ;(add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
             (remove-hook 'magit-status-headers-hook 'magit-insert-tags-header)
             (setq magit-commit-show-diff nil)
             (setq magit-refresh-verbose t)
@@ -770,6 +784,7 @@ with tmux and state is lost"
 
 (use-package magit-todos
   :after magit
+  :disabled t
   :straight t
   :config (magit-todos-mode))
 
