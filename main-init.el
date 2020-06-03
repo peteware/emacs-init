@@ -77,7 +77,8 @@
         (top . 29)
         (left . 88)))
 (setq default-frame-alist
-      '((right-divider-width . 5)
+      '((menu-bar-lines . 0)
+        (right-divider-width . 5)
         (ns-transparent-titlebar . t)
         ;(inhibit-double-buffering . t)
         (vertical-scrollbars . nil)))
@@ -178,16 +179,17 @@
 ;;     on startup.
 
 (use-package desktop
+  :defer 2
   :config
   (progn
     (setq desktop-save t)
     (setq desktop-dirname "~/.emacs.d/")
     (setq desktop-restore-frames nil)
-    (setq desktop-restore-eager 5)
+    (setq desktop-restore-eager 0)
     (setq desktop-restore-in-current-display t)
     (setq desktop-lazy-verbose nil)
     (setq desktop-lazy-idle-delay 20)
-    (setq desktop-auto-save-timeout 7200)
+    (setq desktop-auto-save-timeout 300)
     (setq desktop-files-not-to-save "^$")
     (setq desktop-load-locked-desktop t)
     (desktop-save-mode 1)
@@ -370,6 +372,24 @@ with tmux and state is lost"
   (sit-for .1)
   (xterm-mouse-mode 1))
 
+(defun iterm-cut-base64 (text)
+  "Take TEXT and send it to iterm to copy."
+  (interactive)
+  (let ((base-64 (base64-encode-string text :no-line-break)))
+    (send-string-to-terminal (concat "\e]1337;Copy=:" base-64 "\a"))))
+
+(setq mouse-drag-copy-region t)
+(unless (display-graphic-p)
+  (setq interprogram-cut-function 'iterm-cut-base64))
+
+;; menu-bar (disabled)
+;;     Turn the menubar off on terminal windows
+    
+
+(use-package menu-bar
+  :config
+  (menu-bar-mode (if (display-graphic-p) 1 -1)))
+
 ;; bb-style
 ;;     Bloomberg C++ coding style
 
@@ -468,6 +488,7 @@ with tmux and state is lost"
 
 (use-package ivy-rich
   :after (ivy counsel)
+  :disabled t
   :straight (:host github :repo "Yevgnen/ivy-rich")
   :config (progn
             (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
@@ -1108,14 +1129,3 @@ with tmux and state is lost"
 ;; Ignore some other file extensions
 
 (setq completion-ignored-extensions (append completion-ignored-extensions '(".d" ".dd" ".tsk")))
-
-;; menu-bar (disabled)
-;;     Turn the menubar off.
-    
-;;     - *DISABLED* (Turns out I like the menu-bar!)
-
-
-(use-package menu-bar
-  :disabled t
-  :config
-  (menu-bar-mode -1))

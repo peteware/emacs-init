@@ -102,7 +102,8 @@
           (top . 29)
           (left . 88)))
   (setq default-frame-alist
-        '((right-divider-width . 5)
+        '((menu-bar-lines . 0)
+          (right-divider-width . 5)
           (ns-transparent-titlebar . t)
           ;(inhibit-double-buffering . t)
           (vertical-scrollbars . nil)))
@@ -211,16 +212,17 @@
     on startup.
     #+BEGIN_SRC emacs-lisp
       (use-package desktop
+        :defer 2
         :config
         (progn
           (setq desktop-save t)
           (setq desktop-dirname "~/.emacs.d/")
           (setq desktop-restore-frames nil)
-          (setq desktop-restore-eager 5)
+          (setq desktop-restore-eager 0)
           (setq desktop-restore-in-current-display t)
           (setq desktop-lazy-verbose nil)
           (setq desktop-lazy-idle-delay 20)
-          (setq desktop-auto-save-timeout 7200)
+          (setq desktop-auto-save-timeout 300)
           (setq desktop-files-not-to-save "^$")
           (setq desktop-load-locked-desktop t)
           (desktop-save-mode 1)
@@ -417,7 +419,27 @@
         (xterm-mouse-mode -1)
         (sit-for .1)
         (xterm-mouse-mode 1))
+
+      (defun iterm-cut-base64 (text)
+        "Take TEXT and send it to iterm to copy."
+        (interactive)
+        (let ((base-64 (base64-encode-string text :no-line-break)))
+          (send-string-to-terminal (concat "\e]1337;Copy=:" base-64 "\a"))))
+
+      (setq mouse-drag-copy-region t)
+      (unless (display-graphic-p)
+        (setq interprogram-cut-function 'iterm-cut-base64))
+
     #+END_SRC
+*** menu-bar (disabled)
+    Turn the menubar off on terminal windows
+    
+    #+BEGIN_SRC emacs-lisp
+      (use-package menu-bar
+        :config
+        (menu-bar-mode (if (display-graphic-p) 1 -1)))
+    #+END_SRC
+
 ** Non-standard packages loaded immediately
 
    These are non-standard packages that are
@@ -522,6 +544,7 @@
     #+BEGIN_SRC emacs-lisp
       (use-package ivy-rich
         :after (ivy counsel)
+        :disabled t
         :straight (:host github :repo "Yevgnen/ivy-rich")
         :config (progn
                   (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
@@ -1223,15 +1246,3 @@ Emacs.font: Bitstream Vera Sans Mono-16
 ** Disabled packages
    I've disabled these packages for various reasons.  I'm
    not sure why I leave them around.
-*** menu-bar (disabled)
-    Turn the menubar off.
-    
-    - *DISABLED* (Turns out I like the menu-bar!)
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package menu-bar
-      :disabled t
-      :config
-      (menu-bar-mode -1))
-    #+END_SRC
-
