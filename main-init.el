@@ -125,7 +125,7 @@
 ;;    can see the results with =M-x use-package-report=.
 
 
-;(setq use-package-verbose t)
+(setq use-package-verbose t)
 (straight-use-package 'use-package)
 (setq use-package-compute-statistics t)
 (require 'use-package)
@@ -152,6 +152,7 @@
 
 
 (use-package bookmark
+  :disabled t
   :defer 5
   :config
   (setq bookmark-save-flag 1))
@@ -179,7 +180,6 @@
 ;;     on startup.
 
 (use-package desktop
-  :defer 2
   :config
   (progn
     (setq desktop-save t)
@@ -259,7 +259,7 @@
 
 
 (use-package outline
-  :defer 5
+  :defer 60
   :hook (prog-mode . outline-minor-mode))
 
 ;; paren
@@ -267,17 +267,18 @@
 
 
 (use-package paren
-  :defer 5
+  :defer 60
   :config
   (progn
     (setq show-paren-when-point-in-periphery nil)
     (show-paren-mode 1)))
 
 ;; recentf
+;;     Displays list of recently visited files in menu
+
 
 (use-package recentf
-  ;;
-  ;; Save list of recently visited files
+  :disabled t
   :defer 5
   :config
   (progn
@@ -320,6 +321,7 @@
 
 
 (use-package server
+  :defer 5
   :config
   (progn
     (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
@@ -335,6 +337,7 @@
 ;;     which keeps it from displaying on startup
 
 (use-package tool-bar
+  :defer 1
   :config
   (tool-bar-mode -1))
 
@@ -387,6 +390,7 @@ with tmux and state is lost"
     
 
 (use-package menu-bar
+  :defer 5
   :config
   (menu-bar-mode (if (display-graphic-p) 1 -1)))
 
@@ -410,13 +414,14 @@ with tmux and state is lost"
 
 (use-package ctrlf
   :straight t
+  :defer 5
   :config
   (progn
     (setq ctrlf-mode-bindings
-          '(([remap isearch-forward        ] . ctrlf-forward-fuzzy-regexp)
-            ([remap isearch-backward       ] . ctrlf-backward-fuzzy-regexp)
-            ([remap isearch-forward-regexp ] . ctrlf-forward-regexp)
-            ([remap isearch-backward-regexp] . ctrlf-backward-regexp)))
+	  '(([remap isearch-forward        ] . ctrlf-forward-fuzzy-regexp)
+	    ([remap isearch-backward       ] . ctrlf-backward-fuzzy-regexp)
+	    ([remap isearch-forward-regexp ] . ctrlf-forward-regexp)
+	    ([remap isearch-backward-regexp] . ctrlf-backward-regexp)))
     (ctrlf-mode +1)))
 
 ;; selectrum
@@ -457,14 +462,15 @@ with tmux and state is lost"
 
 (use-package git-link
   :straight t
+  :defer 10
   :bind (("C-c b l" . 'git-link)
-         ("C-c b h" . 'git-link-homepage))
+	 ("C-c b h" . 'git-link-homepage))
   :config
   (progn
     (add-to-list 'git-link-remote-alist
-                 '("bbgithub\\.dev\\.bloomberg\\.com" git-link-github))
+		 '("bbgithub\\.dev\\.bloomberg\\.com" git-link-github))
     (add-to-list 'git-link-commit-remote-alist
-                 '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
+		 '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
 
 ;; ivy
 ;;     ~ivy~ changes completion so that matches are
@@ -510,16 +516,17 @@ with tmux and state is lost"
 (use-package counsel
   :after ivy
   :straight t
+  :defer 1
   :delight counsel-mode
   :bind (("C-c g" .  'counsel-git)
-         ("C-c j" .  'counsel-file-jump)
-         ("C-c k" .  'counsel-ag)
-         ;("C-x b" .  'counsel-switch-buffer)
-         ;("C-c s" .  'counsel-switch-to-shell-buffer)
-         )
+	 ("C-c j" .  'counsel-file-jump)
+	 ("C-c k" .  'counsel-ag)
+	 ;("C-x b" .  'counsel-switch-buffer)
+	 ;("C-c s" .  'counsel-switch-to-shell-buffer)
+	 )
   :config 
   (progn (counsel-mode -1)
-         (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
+	 (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
 
 
 
@@ -548,7 +555,7 @@ with tmux and state is lost"
 
 
 (use-package scratch-ext
-  :defer 5
+  :defer 2
   :straight t
   :config
   (save-excursion
@@ -558,16 +565,6 @@ with tmux and state is lost"
     (scratch-ext-create-scratch)
     (set-buffer "*scratch*")
     (scratch-ext-restore-last-scratch)))
-
-;; toolkit-tramp
-
-
-(use-package toolkit-tramp
-  :defer 60
-  :config
-  (progn
-    (setq password-cache-expiry nil)
-    (setq tramp-use-ssh-controlmaster-options nil)))
 
 ;; compile
 ;;     Setup compilation buffers
@@ -600,21 +597,23 @@ with tmux and state is lost"
 ;;     #+END_EXAMPLE
 
 (use-package clang-format+
-  :straight t)
+  :straight t
+  :defer 1)
 
 ;; ansi-color
 
 (use-package ansi-color
   :after compile
+  :defer 5
   :config
   (progn
     (defun pw/colorize-compilation-buffer ()
       (let ((inhibit-read-only t))
-        (ansi-color-apply-on-region compilation-filter-start (point-max))))
+	(ansi-color-apply-on-region compilation-filter-start (point-max))))
     (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer)
     (setq ansi-color-names-vector ; better contrast colors
-          ["black" "red4" "green4" "yellow4"
-           "#8be9fd" "magenta4" "cyan4" "white"])
+	  ["black" "red4" "green4" "yellow4"
+	   "#8be9fd" "magenta4" "cyan4" "white"])
     (setq ansi-color-map (ansi-color-make-color-map))))
 
 ;; ediff
@@ -709,16 +708,8 @@ with tmux and state is lost"
 
 
 (use-package org-prefs
+  :defer 10
   :after org)
-
-;; tramp
-;;     This provides remote access to files and shells.  
-
-(use-package tramp
-  :defer t
-  :config
-  (setq tramp-use-ssh-controlmaster-options nil
-        tramp-copy-size-limit 1024))
 
 ;; whitespace
 ;;     Make "bad" whitespace be visible.  This causes tabs, and whitespace
@@ -756,6 +747,7 @@ with tmux and state is lost"
 
 (use-package comint-prefs
   :after comint
+  :defer 10
   :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt pw/turn-off-fontlock)
   :init
   (progn
@@ -847,13 +839,12 @@ with tmux and state is lost"
 
 (use-package pw-misc
   :after compile
+  :defer 10
+  :bind (("C-c p" . pw/prev-frame)
+	 ("C-c \\" . pw/reindent)
+	 ("C-c e" . pw/eval-region-or-defun))
   :config
   (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
-
-(use-package pw-misc
-  :bind (("C-c p" . pw/prev-frame)
-         ("C-c \\" . pw/reindent)
-         ("C-c e" . pw/eval-region-or-defun)))
 
 ;; pw-trunc-lines
     
@@ -918,6 +909,7 @@ with tmux and state is lost"
 
 (use-package powerline
   :straight (:host github :repo "milkypostman/powerline")
+  :defer 1
   :config
   (progn
     (powerline-default-theme)))
