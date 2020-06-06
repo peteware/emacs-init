@@ -85,7 +85,7 @@
 (set-face-attribute 'cursor nil :background "red")
 (when (eq 'ns (window-system))
   (add-to-list 'default-frame-alist
-               '(alpha . (90 . 70))))
+               '(alpha . (100 . 100))))
 
 ;; Install the straight.el package manager
 
