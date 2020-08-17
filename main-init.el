@@ -751,6 +751,7 @@ with tmux and state is lost"
   :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt pw/turn-off-fontlock)
   :init
   (progn
+    (setq comint-terminfo-terminal "emacs")
     (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
     (add-hook 'comint-mode-hook 'comint-for-pete)
     (add-hook 'dbx-mode-hook 'dbx-for-pete)
