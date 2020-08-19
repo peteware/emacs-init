@@ -1019,6 +1019,15 @@ with tmux and state is lost"
 (setq lazy-highlight-initial-delay .25)
 (setq lazy-highlight-interval 0)
 
+;; Speed up long lines; no bidi
+;;     Emacs has serious performace problems with
+;;     long lines.  One thing that seems to help is
+;;     hardcoding the bi-directional settings.  This
+;;     will break right-to-left languages
+
+(setq-default bidi-display-reordering nil)
+(setq-default bidi-paragraph-direction 'left-to-right)
+
 ;; Misc settings
 ;;     Cause the gutter to display little arrows and
 ;;     boxes if there is more to a file

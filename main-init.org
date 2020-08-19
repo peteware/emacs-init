@@ -1023,7 +1023,7 @@
 
    Allow narrow to region (e.g. =C-X n n=)
    #+BEGIN_SRC emacs-lisp
-   (put 'narrow-to-region 'disabled nil)
+     (put 'narrow-to-region 'disabled nil)
    #+END_SRC
 *** Clean startup
 
@@ -1108,6 +1108,15 @@
       (setq lazy-highlight-interval 0)
     #+END_SRC
 
+*** Speed up long lines; no bidi
+    Emacs has serious performace problems with
+    long lines.  One thing that seems to help is
+    hardcoding the bi-directional settings.  This
+    will break right-to-left languages
+    #+BEGIN_SRC emacs-lisp
+      (setq-default bidi-display-reordering nil)
+      (setq-default bidi-paragraph-direction 'left-to-right)
+    #+END_SRC
 *** Misc settings
     Cause the gutter to display little arrows and
     boxes if there is more to a file
