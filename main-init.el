@@ -763,6 +763,17 @@ with tmux and state is lost"
 (use-package csc-mode
   :mode ("\\.csc2$" . csc-mode))
 
+;; markdown-mode
+;;     Highlighting for markdown
+
+(use-package markdown-mode
+  :straight t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
 ;; lrl-mode
 ;;     Bloomberg database params
 
@@ -876,6 +887,16 @@ with tmux and state is lost"
     (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
     (setq treemacs-show-hidden-files nil)
     (setq treemacs-collapse-dirs 2)))
+
+;; tramp
+;;     Make connecting through our vpn easier
+
+(use-package tramp
+  :config
+  (progn
+    (setq tramp-default-remote-shell "/opt/bb/bin/bash")
+    (setq tramp-remote-path  (cons "/home/pware/usr/bin" (cons "/opt/bb/bin" tramp-remote-path)))
+    (setq tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='~/.ssh/sockets/%%r@%%h-%%p' -o ControlPersist=24h")))
 
 ;; wgrep
 ;;     This lets you save the results from grep, edit those results and then

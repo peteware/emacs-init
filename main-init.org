@@ -839,13 +839,23 @@
       :mode ("\\.csc2$" . csc-mode))
     #+END_SRC
 
+*** markdown-mode
+    Highlighting for markdown
+    #+BEGIN_SRC emacs-lisp
+      (use-package markdown-mode
+        :straight t
+        :commands (markdown-mode gfm-mode)
+        :mode (("README\\.md\\'" . gfm-mode)
+               ("\\.md\\'" . markdown-mode)
+               ("\\.markdown\\'" . markdown-mode))
+        :init (setq markdown-command "multimarkdown"))
+    #+END_SRC
 *** lrl-mode
     Bloomberg database params
     #+BEGIN_SRC emacs-lisp
     (use-package lrl-mode
       :mode ("\\.lrl\\'" . lrl-mode))
     #+END_SRC
-
 *** magit
     
     Provide a way of interacting with a Git repository.
@@ -959,6 +969,16 @@
         (setq treemacs-collapse-dirs 2)))
     #+END_SRC
 
+*** tramp
+    Make connecting through our vpn easier
+    #+begin_src emacs-lisp
+      (use-package tramp
+        :config
+        (progn
+          (setq tramp-default-remote-shell "/opt/bb/bin/bash")
+          (setq tramp-remote-path  (cons "/home/pware/usr/bin" (cons "/opt/bb/bin" tramp-remote-path)))
+          (setq tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='~/.ssh/sockets/%%r@%%h-%%p' -o ControlPersist=24h")))
+    #+end_src
 *** wgrep
     This lets you save the results from grep, edit those results and then
     saving the changes applies them to each file.
