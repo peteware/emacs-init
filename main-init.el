@@ -75,14 +75,16 @@
       '((width . 110)
         (height . 60)
         (top . 29)
-        (left . 88)))
+        (left . 88)
+        (cursor-color . "orange")))
 (setq default-frame-alist
       '((menu-bar-lines . 0)
         (right-divider-width . 5)
         (ns-transparent-titlebar . t)
+        (cursor-color . "orange")
         ;(inhibit-double-buffering . t)
-        (vertical-scrollbars . nil)))
-(set-face-attribute 'cursor nil :background "red")
+        (vertical-scroll-bars . nil)))
+;(set-face-attribute 'cursor nil :background "orange")
 (when (eq 'ns (window-system))
   (add-to-list 'default-frame-alist
                '(alpha . (100 . 100))))
@@ -417,11 +419,11 @@ with tmux and state is lost"
   :defer 5
   :config
   (progn
+    (setq ctrlf-auto-recenter t)
     (setq ctrlf-mode-bindings
-	  '(([remap isearch-forward        ] . ctrlf-forward-fuzzy-regexp)
-	    ([remap isearch-backward       ] . ctrlf-backward-fuzzy-regexp)
-	    ([remap isearch-forward-regexp ] . ctrlf-forward-regexp)
-	    ([remap isearch-backward-regexp] . ctrlf-backward-regexp)))
+          '(([remap isearch-forward        ] . ctrlf-forward-fuzzy-regexp)
+            ([remap isearch-backward       ] . ctrlf-backward-fuzzy-regexp)
+            ([remap isearch-forward-regexp ] . ctrlf-forward-regexp)))
     (ctrlf-mode +1)))
 
 ;; selectrum
