@@ -974,6 +974,7 @@
 *** tramp
     Make connecting through our vpn easier.
 
+**** Setting up ssh/scp
     I have my =~/.ssh/config= with the following (there's more, but this is what counts) and
     I've configured my public/private keys.
     #+begin_example
@@ -994,14 +995,41 @@
 
     To confirm this is working you should be able to =ssh= to a dev machine.  For example:
     #+begin_example
-      $ ssh -Y xlnxdv-ob-490.dev.bloomberg.com
+      $ ssh xlnxdv-ob-490.dev.bloomberg.com
     #+end_example
-
+**** How to visit a remote file
     Finally, I connect using the =scp:= method.  Supposedly that is better for
     large files but I haven't benchmarked it.  So I'll typically visit:
     #+begin_example
       /scp:pware@xlnxdv-ob-490.dev.bloomberg.com:.bashrc
     #+end_example
+**** Debugging
+    If =ssh= is working from the command line then the most likely
+    issue is tramp is not able to find the prompt for your shell.
+    This is usually caused by having a fancy =PS1=.  Try enabling
+    debug output =(setq tramp-verbose 4)= and the output appears in a
+    buffer =*debug tramp...=.  Succesful output looks like:
+    #+begin_example
+      13:03:26.038202 tramp-maybe-open-connection (3) # Opening connection for pware@xlnxdv-ob-490.dev.bloomberg.com using scp...
+      13:03:26.068906 tramp-maybe-open-connection (3) # Sending command ‘exec ssh -l pware   -e none xlnxdv-ob-490.dev.bloomberg.com’
+      13:03:26.069096 tramp-process-actions (3) # Waiting for prompts from remote shell...
+      13:03:26.596117 tramp-process-actions (3) # Waiting for prompts from remote shell...done
+      13:03:26.596185 tramp-maybe-open-connection (3) # Found remote shell prompt on ‘xlnxdv-ob-490.dev.bloomberg.com’
+    #+end_example
+    If there are problems, you'll need to increase the debug level
+    =(setq tramp-verbose 6)= and now you'll start getting 1000s of
+    lines like:
+    #+begin_example
+      10:38:12.778374 tramp-process-one-action (5) # Looking for regexp ...
+    #+end_example
+    I looked for =Last login= as that is printed out but the actual
+    output may vary.  If you don't see a very recognizable prompt then
+    that is the problem.
+
+    You can use =M-x tramp-cleanup-all-connections= to test your connections.
+
+    Good luck!
+**** tramp config
     And the actual elisp part of things:
     #+begin_src emacs-lisp
       (use-package tramp
@@ -1009,7 +1037,6 @@
         (progn
           (setq tramp-default-remote-shell "/opt/bb/bin/bash")
           (setq tramp-remote-path  (cons "/home/pware/usr/bin" (cons "/opt/bb/bin" tramp-remote-path)))
-          #(setq tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='~/.ssh/sockets/%%r@%%h-%%p' -o ControlPersist=24h")
           (setq tramp-use-ssh-controlmaster-options nil)))
     #+end_src
 *** wgrep

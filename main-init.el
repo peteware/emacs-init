@@ -890,37 +890,7 @@ with tmux and state is lost"
     (setq treemacs-show-hidden-files nil)
     (setq treemacs-collapse-dirs 2)))
 
-;; tramp
-;;     Make connecting through our vpn easier.
-
-;;     I have my =~/.ssh/config= with the following (there's more, but this is what counts) and
-;;     I've configured my public/private keys.
-;;     #+begin_example
-;;       Host v5dev
-;;           Hostname v5devgateway.bdns.bloomberg.com
-
-;;       Host v5devgateway.bdns.bloomberg.com
-;;           RequestTTY force
-
-;;       Host *.bloomberg.com !bbgithub.dev.bloomberg.com !v5prqsgateway.bdns.bloomberg.com
-;;           ControlMaster auto
-;;           ControlPath ~/.ssh/sockets/%r@%h-%p
-;;           ControlPersist 24h
-;;           ProxyCommand   ssh -e none v5dev %h nc %h %p
-;;           ForwardX11      yes
-;;           ForwardAgent    yes
-;;     #+end_example
-
-;;     To confirm this is working you should be able to =ssh= to a dev machine.  For example:
-;;     #+begin_example
-;;       $ ssh -Y xlnxdv-ob-490.dev.bloomberg.com
-;;     #+end_example
-
-;;     Finally, I connect using the =scp:= method.  Supposedly that is better for
-;;     large files but I haven't benchmarked it.  So I'll typically visit:
-;;     #+begin_example
-;;       /scp:pware@xlnxdv-ob-490.dev.bloomberg.com:.bashrc
-;;     #+end_example
+;; tramp config
 ;;     And the actual elisp part of things:
 
 (use-package tramp
@@ -928,7 +898,6 @@ with tmux and state is lost"
   (progn
     (setq tramp-default-remote-shell "/opt/bb/bin/bash")
     (setq tramp-remote-path  (cons "/home/pware/usr/bin" (cons "/opt/bb/bin" tramp-remote-path)))
-    #(setq tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='~/.ssh/sockets/%%r@%%h-%%p' -o ControlPersist=24h")
     (setq tramp-use-ssh-controlmaster-options nil)))
 
 ;; wgrep
