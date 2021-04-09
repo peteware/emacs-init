@@ -765,6 +765,17 @@ with tmux and state is lost"
 (use-package csc-mode
   :mode ("\\.csc2$" . csc-mode))
 
+;; dash-at-point
+;;     This integrates with =dash= to lookup documentation.
+
+(use-package dash-at-point
+  :straight t
+  :bind (
+         ("C-c d" . 'dash-at-point)
+         ("C-c D" . 'dash-at-point-with-docset))
+  :config (progn
+            (add-to-list 'dash-at-point-mode-alist '(c++-mode . "bde,cpp"))))
+
 ;; markdown-mode
 ;;     Highlighting for markdown
 
