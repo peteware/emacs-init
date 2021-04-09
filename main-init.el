@@ -482,7 +482,6 @@ with tmux and state is lost"
 
 (use-package ivy
   :straight t
-  :defer 1
   :delight ivy-mode
   :bind (("C-c C-r" . 'ivy-resume))
   :config (progn
