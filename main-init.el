@@ -419,7 +419,7 @@ with tmux and state is lost"
   :defer 5
   :config
   (progn
-    (setq ctrlf-auto-recenter t)
+    (setq ctrlf-auto-recenter nil) ; 't fails when multiple buffers open
     (setq ctrlf-mode-bindings
           '(([remap isearch-forward        ] . ctrlf-forward-fuzzy-regexp)
             ([remap isearch-backward       ] . ctrlf-backward-fuzzy-regexp)
@@ -517,7 +517,6 @@ with tmux and state is lost"
 (use-package counsel
   :after ivy
   :straight t
-  :defer 1
   :delight counsel-mode
   :bind (("C-c g" .  'counsel-git)
 	 ("C-c j" .  'counsel-file-jump)

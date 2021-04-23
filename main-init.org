@@ -475,7 +475,7 @@
         :defer 5
         :config
         (progn
-          (setq ctrlf-auto-recenter t)
+          (setq ctrlf-auto-recenter nil) ; 't fails when multiple buffers open
           (setq ctrlf-mode-bindings
                 '(([remap isearch-forward        ] . ctrlf-forward-fuzzy-regexp)
                   ([remap isearch-backward       ] . ctrlf-backward-fuzzy-regexp)
@@ -573,7 +573,6 @@
       (use-package counsel
 	:after ivy
 	:straight t
-	:defer 1
 	:delight counsel-mode
 	:bind (("C-c g" .  'counsel-git)
 	       ("C-c j" .  'counsel-file-jump)
@@ -633,11 +632,11 @@
     Setup compilation buffers
 
     #+BEGIN_SRC emacs-lisp
-    (use-package compile
-      :bind ("C-c c" . compile)
-      :config
-      (progn
-        (setq compilation-scroll-output 'first-error)))
+      (use-package compile
+        :bind ("C-c c" . compile)
+        :config
+        (progn
+          (setq compilation-scroll-output 'first-error)))
     #+END_SRC
 *** compile-plus
     This makes compile create separate buffers for directory and command.
@@ -756,7 +755,7 @@
         (add-hook 'c++-mode-hook 'hs-minor-mode)
         (add-hook 'c-mode-hook 'hs-minor-mode)))
     #+END_SRC
-
+q
 *** org
     org-mode provides an outline, todo, diary, calendar like interface.
     #+BEGIN_SRC emacs-lisp
