@@ -173,7 +173,7 @@
 
 
 (use-package delsel
-  :defer 5
+  ;:defer 5
   :config
   (delete-selection-mode -1))
 
@@ -212,17 +212,14 @@
 
 
 (use-package executable
-  :defer 2
-  :config
-  (add-hook 'after-save-hook
-            'executable-make-buffer-file-executable-if-script-p))
+  :hook (after-save . executable-make-buffer-file-executable-if-script-p))
 
 ;; face-remap
 ;;     Change the font size in the current buffer (not the window)
 
 
 (use-package face-remap
-  :defer 5
+  ;:defer 5
   :bind* (("C-c -" . text-scale-adjust)
           ("C-c +" . text-scale-adjust)))
 
@@ -748,7 +745,6 @@ with tmux and state is lost"
 
 (use-package comint-prefs
   :after comint
-  :defer 10
   :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt pw/turn-off-fontlock)
   :init
   (progn
@@ -863,12 +859,11 @@ with tmux and state is lost"
 
 (use-package pw-misc
   :after compile
-  :defer 10
+  ;:defer 10
   :bind (("C-c p" . pw/prev-frame)
-	 ("C-c \\" . pw/reindent)
-	 ("C-c e" . pw/eval-region-or-defun))
-  :config
-  (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
+         ("C-c \\" . pw/reindent)
+         ("C-c e" . pw/eval-region-or-defun))
+  :hook (compilation-mode-hook . pw/no-line-column-number))
 
 ;; pw-trunc-lines
     
