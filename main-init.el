@@ -219,7 +219,6 @@
 
 
 (use-package face-remap
-  ;:defer 5
   :bind* (("C-c -" . text-scale-adjust)
           ("C-c +" . text-scale-adjust)))
 
@@ -258,7 +257,6 @@
 
 
 (use-package outline
-  :defer 60
   :hook (prog-mode . outline-minor-mode))
 
 ;; paren
@@ -266,24 +264,10 @@
 
 
 (use-package paren
-  :defer 60
   :config
   (progn
     (setq show-paren-when-point-in-periphery nil)
     (show-paren-mode 1)))
-
-;; recentf
-;;     Displays list of recently visited files in menu
-
-
-(use-package recentf
-  :disabled t
-  :defer 5
-  :config
-  (progn
-    (setq recentf-max-saved-items 100)
-    (setq recentf-auto-cleanup 3600)    ;cleanup after idle 1hr
-    (recentf-mode 1)))
 
 ;; savehist
 
@@ -336,7 +320,6 @@
 ;;     which keeps it from displaying on startup
 
 (use-package tool-bar
-  :defer 1
   :config
   (tool-bar-mode -1))
 
@@ -345,7 +328,6 @@
 ;;     directory path and killing a buffer renames all of them.
 
 (use-package uniquify
-  :defer 1
   :config
   (progn
     (setq uniquify-buffer-name-style 'post-forward)
@@ -405,7 +387,6 @@ with tmux and state is lost"
 ;;     modes in the modeline.  Uses for :diminish
 
 (use-package delight
-  :defer 5
   :straight t)
 
 ;; ctrlf
@@ -461,7 +442,6 @@ with tmux and state is lost"
 
 (use-package git-link
   :straight t
-  :defer 10
   :bind (("C-c b l" . 'git-link)
 	 ("C-c b h" . 'git-link-homepage))
   :config
@@ -514,7 +494,6 @@ with tmux and state is lost"
 (use-package counsel
   :after ivy
   :straight t
-  :defer 1
   :delight counsel-mode
   :bind (("C-c g" .  'counsel-git)
 	 ("C-c j" .  'counsel-file-jump)

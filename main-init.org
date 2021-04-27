@@ -1,4 +1,4 @@
-#+STARTUP: content
+#+STARTUP: showeverything
 #+PROPERTY: header-args  :tangle yes :comments org
 * Emacs setup
   My configurations are based on [[https://github.com/jwiegley/use-package][use-package.el]] which
@@ -252,7 +252,6 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package face-remap
-      ;:defer 5
       :bind* (("C-c -" . text-scale-adjust)
               ("C-c +" . text-scale-adjust)))
     #+END_SRC
@@ -295,7 +294,6 @@
 
     #+BEGIN_SRC emacs-lisp
     (use-package outline
-      :defer 60
       :hook (prog-mode . outline-minor-mode))
     #+END_SRC
 
@@ -304,25 +302,10 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package paren
-        :defer 60
         :config
         (progn
           (setq show-paren-when-point-in-periphery nil)
           (show-paren-mode 1)))
-    #+END_SRC
-
-*** recentf
-    Displays list of recently visited files in menu
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package recentf
-        :disabled t
-        :defer 5
-        :config
-        (progn
-          (setq recentf-max-saved-items 100)
-          (setq recentf-auto-cleanup 3600)    ;cleanup after idle 1hr
-          (recentf-mode 1)))
     #+END_SRC
 
 *** savehist
@@ -379,7 +362,6 @@
     which keeps it from displaying on startup
     #+BEGIN_SRC emacs-lisp
       (use-package tool-bar
-        :defer 1
         :config
         (tool-bar-mode -1))
     #+END_SRC
@@ -389,12 +371,10 @@
     directory path and killing a buffer renames all of them.
     #+BEGIN_SRC emacs-lisp
     (use-package uniquify
-      :defer 1
       :config
       (progn
         (setq uniquify-buffer-name-style 'post-forward)
         (setq uniquify-after-kill-buffer-p t)))
-
     #+END_SRC
 
 *** xterm-mouse-mode
@@ -459,7 +439,6 @@
     modes in the modeline.  Uses for :diminish
     #+BEGIN_SRC emacs-lisp
     (use-package delight
-      :defer 5
       :straight t)
     #+END_SRC
 *** ctrlf
@@ -515,7 +494,6 @@
     #+BEGIN_SRC emacs-lisp
       (use-package git-link
 	:straight t
-	:defer 10
 	:bind (("C-c b l" . 'git-link)
 	       ("C-c b h" . 'git-link-homepage))
 	:config
@@ -568,7 +546,6 @@
       (use-package counsel
 	:after ivy
 	:straight t
-	:defer 1
 	:delight counsel-mode
 	:bind (("C-c g" .  'counsel-git)
 	       ("C-c j" .  'counsel-file-jump)
