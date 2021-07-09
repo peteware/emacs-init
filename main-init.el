@@ -68,8 +68,8 @@
 
 
 (scroll-bar-mode -1)
-(setq-default cursor-type '(hbar . 3))
-(setq-default cursor-in-non-selected-windows nil)
+(setq-default cursor-type 'box)
+(setq-default cursor-in-non-selected-windows 'hollow)
 (setq-default line-spacing .2)
 (setq initial-frame-alist
       '((width . 110)
