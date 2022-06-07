@@ -68,8 +68,8 @@
 
 
 (scroll-bar-mode -1)
-(setq-default cursor-type '(hbar . 3))
-(setq-default cursor-in-non-selected-windows nil)
+(setq-default cursor-type 'box)
+(setq-default cursor-in-non-selected-windows 'hollow)
 (setq-default line-spacing .2)
 (setq initial-frame-alist
       '((width . 110)
@@ -392,7 +392,7 @@ with tmux and state is lost"
   :defer 5
   :config
   (progn
-    (setq ctrlf-auto-recenter t)
+    (setq ctrlf-auto-recenter nil) ; 't fails when multiple buffers open
     (setq ctrlf-mode-bindings
           '(([remap isearch-forward        ] . ctrlf-forward-fuzzy-regexp)
             ([remap isearch-backward       ] . ctrlf-backward-fuzzy-regexp)
