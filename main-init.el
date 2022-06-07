@@ -173,7 +173,6 @@
 
 
 (use-package delsel
-  ;:defer 5
   :config
   (delete-selection-mode -1))
 
@@ -246,7 +245,6 @@
 
 
 (use-package mwheel
-  :defer 1
   :config
   (progn
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
@@ -292,7 +290,6 @@
 
 
 (use-package saveplace
-  :defer 5
   :config
   (progn
     (setq-default save-place t)
@@ -304,7 +301,6 @@
 
 
 (use-package server
-  :defer 5
   :config
   (progn
     (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
@@ -371,7 +367,6 @@ with tmux and state is lost"
     
 
 (use-package menu-bar
-  :defer 5
   :config
   (menu-bar-mode (if (display-graphic-p) 1 -1)))
 
@@ -470,22 +465,35 @@ with tmux and state is lost"
 
 ;; This adds some nice info when choosing buffers
 
-(use-package ivy-rich
-  :after (ivy counsel)
-  :disabled t
-  :straight (:host github :repo "Yevgnen/ivy-rich")
-  :config
-  (progn
-    (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
-               (plist-put
-                (plist-get  ivy-rich-display-transformers-list 'ivy-switch-buffer)
-                ':columns '((ivy-rich-candidate (:width 0.40))
-                            (ivy-rich-switch-buffer-size (:width 7))
-                            (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
-                            (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
-                            (ivy-rich-switch-buffer-project (:width 15 :face success))
-                            (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))))
-    (ivy-rich-mode 1)))
+(use-package lsp-ui
+  :ensure t)
+(use-package lsp-ivy
+  :ensure t
+  :after (ivy counsel lsp-mode))
+
+(use-package lsp-mode
+  :ensure t
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((c++-mode . lsp))
+  :commands lsp)
+      (use-package ivy-rich
+        :after (ivy counsel)
+        :disabled t
+        :straight (:host github :repo "Yevgnen/ivy-rich")
+        :config
+        (progn
+          (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
+                     (plist-put
+                      (plist-get  ivy-rich-display-transformers-list 'ivy-switch-buffer)
+                      ':columns '((ivy-rich-candidate (:width 0.40))
+                                  (ivy-rich-switch-buffer-size (:width 7))
+                                  (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+                                  (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
+                                  (ivy-rich-switch-buffer-project (:width 15 :face success))
+                                  (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))))
+          (ivy-rich-mode 1)))
 
 ;; counsel
 ;;     ~counsel~ builds on completion for ivy but adds
@@ -532,7 +540,7 @@ with tmux and state is lost"
 
 
 (use-package scratch-ext
-  :defer 2
+  :defer 5
   :straight t
   :config
   (save-excursion
@@ -574,14 +582,12 @@ with tmux and state is lost"
 ;;     #+END_EXAMPLE
 
 (use-package clang-format+
-  :straight t
-  :defer 1)
+  :straight t)
 
 ;; ansi-color
 
 (use-package ansi-color
   :after compile
-  :defer 5
   :config
   (progn
     (defun pw/colorize-compilation-buffer ()
@@ -671,7 +677,7 @@ with tmux and state is lost"
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
-  :bind (("C-c l" . org-store-link)
+  :bind (;("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
          ("C-c r" . org-capture))
   :config (progn
@@ -685,7 +691,6 @@ with tmux and state is lost"
 
 
 (use-package org-prefs
-  :defer 10
   :after org)
 
 ;; whitespace
@@ -838,7 +843,6 @@ with tmux and state is lost"
 
 (use-package pw-misc
   :after compile
-  ;:defer 10
   :bind (("C-c p" . pw/prev-frame)
          ("C-c \\" . pw/reindent)
          ("C-c e" . pw/eval-region-or-defun))
@@ -917,7 +921,6 @@ with tmux and state is lost"
 
 (use-package powerline
   :straight (:host github :repo "milkypostman/powerline")
-  :defer 1
   :config
   (progn
     (powerline-default-theme)))
