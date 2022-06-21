@@ -1,3 +1,4 @@
+
 #+STARTUP: content
 #+PROPERTY: header-args  :tangle yes :comments org
 * Emacs setup
@@ -519,16 +520,16 @@
     github repo.  The following adds setup for bbgithub.
     #+BEGIN_SRC emacs-lisp
       (use-package git-link
-	:straight t
-	:defer 10
-	:bind (("C-c b l" . 'git-link)
-	       ("C-c b h" . 'git-link-homepage))
-	:config
-	(progn
-	  (add-to-list 'git-link-remote-alist
-		       '("bbgithub\\.dev\\.bloomberg\\.com" git-link-github))
-	  (add-to-list 'git-link-commit-remote-alist
-		       '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
+        :straight t
+        :defer 10
+        :bind (("C-c b l" . 'git-link)
+               ("C-c b h" . 'git-link-homepage))
+        :config
+        (progn
+          (add-to-list 'git-link-remote-alist
+                       '("bbgithub\\.dev\\.bloomberg\\.com" git-link-github))
+          (add-to-list 'git-link-commit-remote-alist
+                       '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
 
     #+END_SRC
 *** ivy
@@ -755,7 +756,6 @@
         (add-hook 'c++-mode-hook 'hs-minor-mode)
         (add-hook 'c-mode-hook 'hs-minor-mode)))
     #+END_SRC
-q
 *** org
     org-mode provides an outline, todo, diary, calendar like interface.
     #+BEGIN_SRC emacs-lisp
@@ -814,6 +814,17 @@ q
       :bind ("C-c i" . anyins-mode))
     #+END_SRC
 
+*** black
+    This enables the python code formater =black= to run when
+    a python file is saved.
+
+
+    #+begin_src emacs-lisp
+      (use-package python-black
+        :straight t            
+        :hook (python-mode . python-black-on-save-mode))
+    #+end_src
+
 *** comint-prefs
     
     Setup preferences for shell, compile and other comint based commands
@@ -849,6 +860,28 @@ q
                ("C-c D" . 'dash-at-point-with-docset))
         :config (progn
                   (add-to-list 'dash-at-point-mode-alist '(c++-mode . "bde,cpp"))))
+    #+end_src
+*** docker
+    Replaces the docker ui with an emacs interface
+
+    #+begin_src emacs-lisp
+      (use-package docker
+        :straight t
+        :bind ("C-c d" . docker))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (use-package dockerfile-mode
+        :straight t
+        :mode
+        ("Dockerfile\\'" . dockerfile-mode)
+        :config
+        (setq-default docker-use-sudo nil))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (use-package docker-tramp
+        :straight t)
     #+end_src
 *** markdown-mode
     Highlighting for markdown
@@ -967,19 +1000,33 @@ q
     
 *** treemacs
     #+BEGIN_SRC emacs-lisp
-    (use-package treemacs
-      :straight t
-      :bind (("C-x p" . treemacs-select-window)
-             ("C-x t" . treemacs))
-      :config
-      (progn
-        (defun pw/treemacs-ignore (file path)
-          (string-match-p "\\.pyc$\\|\\.sundev1\\.\\|\\.o$\\|\\.d$\\|__pycache__" file))
-        (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
-        (setq treemacs-show-hidden-files nil)
-        (setq treemacs-collapse-dirs 2)))
+      (use-package treemacs
+        :straight t
+        :bind (("C-c t" . treemacs))
+        :config
+        (progn
+          (defun pw/treemacs-ignore (file path)
+            (string-match-p "\\.pyc$\\|\\.sundev1\\.\\|\\.o$\\|\\.d$\\|__pycache__" file))
+          (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
+          (setq treemacs-show-hidden-files nil)
+          (setq treemacs-collapse-dirs 2)))
     #+END_SRC
 
+*** tree-sitter
+    This is an experiment system for fast, incremental parsing
+    of programming languages.  This uses highlighting and folding
+    #+begin_src elisp
+      (use-package tree-sitter
+        :straight t
+        :config
+        (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+      (use-package tree-sitter-langs
+        :straight t)
+      (use-package ts-fold
+        :straight (ts-fold :type git :host github :repo "jcs090218/ts-fold")
+        :bind ("C-c @ t" . ts-fold-toggle)
+      )
+    #+end_src
 *** tramp
     Make connecting through our vpn easier.
 
@@ -1089,6 +1136,31 @@ q
           (powerline-default-theme)))
     #+END_SRC
 
+*** modus theme
+    Previously, I liked the "nord" theme but recently
+    the higher visibility offered by modus has been better.
+
+    I've chosen the darker theme, modus-vivendi with a few
+    customizations.  It's well documented at:
+
+    https://github.com/protesilaos/modus-themes
+
+    #+begin_src emacs-lisp
+      (use-package modus-themes
+        :straight t
+        :init
+        ;; Add all your customizations prior to loading the themes
+        (setq modus-themes-italic-constructs nil
+              modus-themes-bold-constructs t
+              modus-themes-links '(no-underline)
+              modus-themes-syntax '(faint alt-syntax green-strings yellow-comments))
+
+        ;; Load the theme files before enabling a theme
+        (modus-themes-load-themes)
+        :config
+        ;; Load the theme of your choice:
+        (modus-themes-load-vivendi))
+    #+end_src
 *** nord theme
     I've been trying to find a theme that works well
     with iterm2, emacs-25 and emacs-26.
@@ -1100,6 +1172,7 @@ q
 
     #+BEGIN_SRC emacs-lisp
       (use-package nord-theme
+        :disabled t
         :straight t
         :config
         (progn

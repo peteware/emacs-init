@@ -466,13 +466,13 @@ with tmux and state is lost"
   :straight t
   :defer 10
   :bind (("C-c b l" . 'git-link)
-	 ("C-c b h" . 'git-link-homepage))
+         ("C-c b h" . 'git-link-homepage))
   :config
   (progn
     (add-to-list 'git-link-remote-alist
-		 '("bbgithub\\.dev\\.bloomberg\\.com" git-link-github))
+                 '("bbgithub\\.dev\\.bloomberg\\.com" git-link-github))
     (add-to-list 'git-link-commit-remote-alist
-		 '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
+                 '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
 
 ;; ivy
 ;;     ~ivy~ changes completion so that matches are
@@ -740,6 +740,16 @@ with tmux and state is lost"
   :straight t
   :bind ("C-c i" . anyins-mode))
 
+;; black
+;;     This enables the python code formater =black= to run when
+;;     a python file is saved.
+
+
+
+(use-package python-black
+  :straight t            
+  :hook (python-mode . python-black-on-save-mode))
+
 ;; comint-prefs
     
 ;;     Setup preferences for shell, compile and other comint based commands
@@ -773,6 +783,24 @@ with tmux and state is lost"
          ("C-c D" . 'dash-at-point-with-docset))
   :config (progn
             (add-to-list 'dash-at-point-mode-alist '(c++-mode . "bde,cpp"))))
+
+;; docker
+;;     Replaces the docker ui with an emacs interface
+
+
+(use-package docker
+  :straight t
+  :bind ("C-c d" . docker))
+
+(use-package dockerfile-mode
+  :straight t
+  :mode
+  ("Dockerfile\\'" . dockerfile-mode)
+  :config
+  (setq-default docker-use-sudo nil))
+
+(use-package docker-tramp
+  :straight t)
 
 ;; markdown-mode
 ;;     Highlighting for markdown
@@ -889,8 +917,7 @@ with tmux and state is lost"
 
 (use-package treemacs
   :straight t
-  :bind (("C-x p" . treemacs-select-window)
-         ("C-x t" . treemacs))
+  :bind (("C-c t" . treemacs))
   :config
   (progn
     (defun pw/treemacs-ignore (file path)
@@ -898,6 +925,21 @@ with tmux and state is lost"
     (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
     (setq treemacs-show-hidden-files nil)
     (setq treemacs-collapse-dirs 2)))
+
+;; tree-sitter
+;;     This is an experiment system for fast, incremental parsing
+;;     of programming languages.  This uses highlighting and folding
+
+(use-package tree-sitter
+  :straight t
+  :config
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+(use-package tree-sitter-langs
+  :straight t)
+(use-package ts-fold
+  :straight (ts-fold :type git :host github :repo "jcs090218/ts-fold")
+  :bind ("C-c @ t" . ts-fold-toggle)
+)
 
 ;; tramp config
 ;;     And the actual elisp part of things:
@@ -947,6 +989,31 @@ with tmux and state is lost"
   (progn
     (powerline-default-theme)))
 
+;; modus theme
+;;     Previously, I liked the "nord" theme but recently
+;;     the higher visibility offered by modus has been better.
+
+;;     I've chosen the darker theme, modus-vivendi with a few
+;;     customizations.  It's well documented at:
+
+;;     https://github.com/protesilaos/modus-themes
+
+
+(use-package modus-themes
+  :straight t
+  :init
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-italic-constructs nil
+        modus-themes-bold-constructs t
+        modus-themes-links '(no-underline)
+        modus-themes-syntax '(faint alt-syntax green-strings yellow-comments))
+
+  ;; Load the theme files before enabling a theme
+  (modus-themes-load-themes)
+  :config
+  ;; Load the theme of your choice:
+  (modus-themes-load-vivendi))
+
 ;; nord theme
 ;;     I've been trying to find a theme that works well
 ;;     with iterm2, emacs-25 and emacs-26.
@@ -958,6 +1025,7 @@ with tmux and state is lost"
 
 
 (use-package nord-theme
+  :disabled t
   :straight t
   :config
   (progn
