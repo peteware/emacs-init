@@ -173,7 +173,6 @@
 
 
 (use-package delsel
-  :defer 5
   :config
   (delete-selection-mode -1))
 
@@ -212,17 +211,13 @@
 
 
 (use-package executable
-  :defer 2
-  :config
-  (add-hook 'after-save-hook
-            'executable-make-buffer-file-executable-if-script-p))
+  :hook (after-save . executable-make-buffer-file-executable-if-script-p))
 
 ;; face-remap
 ;;     Change the font size in the current buffer (not the window)
 
 
 (use-package face-remap
-  :defer 5
   :bind* (("C-c -" . text-scale-adjust)
           ("C-c +" . text-scale-adjust)))
 
@@ -250,7 +245,6 @@
 
 
 (use-package mwheel
-  :defer 1
   :config
   (progn
     (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
@@ -261,7 +255,6 @@
 
 
 (use-package outline
-  :defer 60
   :hook (prog-mode . outline-minor-mode))
 
 ;; paren
@@ -269,24 +262,10 @@
 
 
 (use-package paren
-  :defer 60
   :config
   (progn
     (setq show-paren-when-point-in-periphery nil)
     (show-paren-mode 1)))
-
-;; recentf
-;;     Displays list of recently visited files in menu
-
-
-(use-package recentf
-  :disabled t
-  :defer 5
-  :config
-  (progn
-    (setq recentf-max-saved-items 100)
-    (setq recentf-auto-cleanup 3600)    ;cleanup after idle 1hr
-    (recentf-mode 1)))
 
 ;; savehist
 
@@ -311,7 +290,6 @@
 
 
 (use-package saveplace
-  :defer 5
   :config
   (progn
     (setq-default save-place t)
@@ -323,7 +301,6 @@
 
 
 (use-package server
-  :defer 5
   :config
   (progn
     (if (not (string-match "emacsclient" (or (getenv "EDITOR") "")))
@@ -339,7 +316,6 @@
 ;;     which keeps it from displaying on startup
 
 (use-package tool-bar
-  :defer 1
   :config
   (tool-bar-mode -1))
 
@@ -348,7 +324,6 @@
 ;;     directory path and killing a buffer renames all of them.
 
 (use-package uniquify
-  :defer 1
   :config
   (progn
     (setq uniquify-buffer-name-style 'post-forward)
@@ -392,7 +367,6 @@ with tmux and state is lost"
     
 
 (use-package menu-bar
-  :defer 5
   :config
   (menu-bar-mode (if (display-graphic-p) 1 -1)))
 
@@ -408,7 +382,6 @@ with tmux and state is lost"
 ;;     modes in the modeline.  Uses for :diminish
 
 (use-package delight
-  :defer 5
   :straight t)
 
 ;; ctrlf
@@ -464,7 +437,6 @@ with tmux and state is lost"
 
 (use-package git-link
   :straight t
-  :defer 10
   :bind (("C-c b l" . 'git-link)
          ("C-c b h" . 'git-link-homepage))
   :config
@@ -493,22 +465,35 @@ with tmux and state is lost"
 
 ;; This adds some nice info when choosing buffers
 
-(use-package ivy-rich
-  :after (ivy counsel)
-  :disabled t
-  :straight (:host github :repo "Yevgnen/ivy-rich")
-  :config
-  (progn
-    (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
-               (plist-put
-                (plist-get  ivy-rich-display-transformers-list 'ivy-switch-buffer)
-                ':columns '((ivy-rich-candidate (:width 0.40))
-                            (ivy-rich-switch-buffer-size (:width 7))
-                            (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
-                            (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
-                            (ivy-rich-switch-buffer-project (:width 15 :face success))
-                            (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))))
-    (ivy-rich-mode 1)))
+(use-package lsp-ui
+  :ensure t)
+(use-package lsp-ivy
+  :ensure t
+  :after (ivy counsel lsp-mode))
+
+(use-package lsp-mode
+  :ensure t
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((c++-mode . lsp))
+  :commands lsp)
+      (use-package ivy-rich
+        :after (ivy counsel)
+        :disabled t
+        :straight (:host github :repo "Yevgnen/ivy-rich")
+        :config
+        (progn
+          (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
+                     (plist-put
+                      (plist-get  ivy-rich-display-transformers-list 'ivy-switch-buffer)
+                      ':columns '((ivy-rich-candidate (:width 0.40))
+                                  (ivy-rich-switch-buffer-size (:width 7))
+                                  (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+                                  (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
+                                  (ivy-rich-switch-buffer-project (:width 15 :face success))
+                                  (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))))
+          (ivy-rich-mode 1)))
 
 ;; counsel
 ;;     ~counsel~ builds on completion for ivy but adds
@@ -555,7 +540,7 @@ with tmux and state is lost"
 
 
 (use-package scratch-ext
-  :defer 2
+  :defer 5
   :straight t
   :config
   (save-excursion
@@ -597,14 +582,12 @@ with tmux and state is lost"
 ;;     #+END_EXAMPLE
 
 (use-package clang-format+
-  :straight t
-  :defer 1)
+  :straight t)
 
 ;; ansi-color
 
 (use-package ansi-color
   :after compile
-  :defer 5
   :config
   (progn
     (defun pw/colorize-compilation-buffer ()
@@ -694,7 +677,7 @@ with tmux and state is lost"
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
-  :bind (("C-c l" . org-store-link)
+  :bind (;("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
          ("C-c r" . org-capture))
   :config (progn
@@ -708,7 +691,6 @@ with tmux and state is lost"
 
 
 (use-package org-prefs
-  :defer 10
   :after org)
 
 ;; whitespace
@@ -757,7 +739,6 @@ with tmux and state is lost"
 
 (use-package comint-prefs
   :after comint
-  :defer 10
   :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt pw/turn-off-fontlock)
   :init
   (progn
@@ -890,12 +871,10 @@ with tmux and state is lost"
 
 (use-package pw-misc
   :after compile
-  :defer 10
   :bind (("C-c p" . pw/prev-frame)
-	 ("C-c \\" . pw/reindent)
-	 ("C-c e" . pw/eval-region-or-defun))
-  :config
-  (add-hook 'compilation-mode-hook 'pw/no-line-column-number))
+         ("C-c \\" . pw/reindent)
+         ("C-c e" . pw/eval-region-or-defun))
+  :hook (compilation-mode-hook . pw/no-line-column-number))
 
 ;; pw-trunc-lines
     
@@ -984,7 +963,6 @@ with tmux and state is lost"
 
 (use-package powerline
   :straight (:host github :repo "milkypostman/powerline")
-  :defer 1
   :config
   (progn
     (powerline-default-theme)))
