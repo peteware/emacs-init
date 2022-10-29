@@ -600,7 +600,7 @@
         (setq scratch-ext-log-directory "~/.emacs.d/scratch")
         (if (not (file-exists-p scratch-ext-log-directory))
             (mkdir scratch-ext-log-directory t))
-        (scratch-ext-create-scratch)
+        (scratch-ext-create-scratch-if-necessary)
         (set-buffer "*scratch*")
         (scratch-ext-restore-last-scratch)))
     #+END_SRC

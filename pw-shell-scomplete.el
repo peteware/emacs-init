@@ -12,7 +12,8 @@
   (if (not (bufferp buffer))
       nil
       (or (eq 'shell-mode (buffer-local-value 'major-mode buffer))
-          (eq 'term-mode (buffer-local-value 'major-mode buffer)))))
+          (eq 'term-mode (buffer-local-value 'major-mode buffer))
+          (eq 'vterm-mode (buffer-local-value 'major-mode buffer)))))
 
 (defun pw/shell-scomplete--buffers ()
   (seq-filter 'pw/shell-scomplete--shell-p (buffer-list)))
@@ -23,10 +24,7 @@ Reuse any existing window already displaying the named buffer.
 If there is no such buffer, start a new `shell' with NAME."
   (if (get-buffer name)
       (let ((start-buffer (buffer-name)))
-        (pop-to-buffer name '((display-buffer-reuse-window
-                               display-buffer-same-window)
-                              (inhibit-same-window . nil)
-                              (reusable-frames . visible)))
+        (display-buffer name '(display-buffer-same-window))
         (if (equal name start-buffer)
             (goto-char (point-max))))
     (shell name)))
