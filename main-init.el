@@ -148,17 +148,6 @@
          ("<triple-wheel-right>" . 'ignore)
          ))
 
-;; bookmark
-;;     You can save bookmarks with =C-x r m= and jump to them wih =C-x r b=
-;;     This makes them save automatically
-
-
-(use-package bookmark
-  :disabled t
-  :defer 5
-  :config
-  (setq bookmark-save-flag 1))
-
 ;; cc-mode
 ;;     Configure to put .h in c++-mode
 
@@ -370,6 +359,238 @@ with tmux and state is lost"
   :config
   (menu-bar-mode (if (display-graphic-p) 1 -1)))
 
+;; vertico
+;;    This is the base package
+
+
+(use-package vertico
+  :straight t
+  :init
+  (vertico-mode))
+
+;; orderless
+
+
+(use-package orderless
+  :straight t
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
+
+;; consult
+
+;; Example configuration for Consult
+(use-package consult
+  ;; Replace bindings. Lazily loaded due by `use-package'.
+  :straight t
+  :bind (;; C-c bindings (mode-specific-map)
+         ("C-c M-x" . consult-mode-command)
+         ("C-c h" . consult-history)
+         ;("C-c k" . consult-kmacro)
+         ("C-c m" . consult-man)
+         ("C-c i" . consult-info)
+         ([remap Info-search] . consult-info)
+         ;; C-x bindings (ctl-x-map)
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ;; M-g bindings (goto-map)
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+         ;; M-s bindings (search-map)
+         ("M-s d" . consult-find)
+         ("M-s D" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; "C-+"
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+  ;; By default `consult-project-function' uses `project-root' from project.el.
+  ;; Optionally configure a different project root function.
+  ;;;; 1. project.el (the default)
+  ;; (setq consult-project-function #'consult--default-project--function)
+  ;;;; 2. vc.el (vc-root-dir)
+  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+  ;;;; 3. locate-dominating-file
+  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+  ;;;; 4. projectile.el (projectile-project-root)
+  ;; (autoload 'projectile-project-root "projectile")
+  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;;;; 5. No project support
+  ;; (setq consult-project-function nil)
+)
+
+;; Consult search with silver searcher
+
+
+(use-package consult-ag
+  :straight t
+  :bind ("C-c k" . consult-ag))
+
+;; Add decorations to completions
+
+
+(use-package marginalia
+  :straight t
+  :bind (("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+
+;; prescient
+;;     Provides better sorting of selections
+
+(use-package prescient
+  :straight t
+  :disabled t
+  :after (ivy counsel)
+  :config
+  (progn
+    (prescient-persist-mode +1)))
+(use-package ivy-prescient
+  :after (ivy counsel)
+  :disabled t
+  :straight t
+  :config
+  (progn (ivy-prescient-mode +1)))
+
+;; ivy
+;;     ~ivy~ changes completion so that matches are
+;;     found via regular expressions and matches are
+;;     navigable by moving up and down lines.  Replaces
+;;     ~ido~ and ~iswitchb~.
+
+(use-package ivy
+  :straight t
+  :disabled t
+  :delight ivy-mode
+  :bind (("C-c C-r" . 'ivy-resume))
+  :config (progn
+            (setq ivy-wrap t)
+            (setq ivy-use-virtual-buffers t)
+            (setq ivy-count-format "(%d/%d) ")
+            (ivy-mode 1)))
+
+
+;; This adds some nice info when choosing buffers
+
+(use-package lsp-ui
+  :ensure t)
+(use-package lsp-ivy
+  :disabled t
+  :ensure t
+  :after (ivy counsel lsp-mode))
+
+(use-package lsp-mode
+  :disabled t
+  :ensure t
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((c++-mode . lsp))
+  :commands lsp)
+
+;; counsel
+;;     ~counsel~ builds on completion for ivy but adds
+;;     searches across files.
+
+(use-package counsel
+  :disabled t
+  :after ivy
+  :straight t
+  :delight counsel-mode
+  :bind (("C-c g" .  'counsel-git)
+	 ("C-c j" .  'counsel-file-jump)
+	 ("C-c k" .  'counsel-ag)
+	 ;("C-x b" .  'counsel-switch-buffer)
+	 ;("C-c s" .  'counsel-switch-to-shell-buffer)
+	 )
+  :config 
+  (progn (counsel-mode -1)
+	 (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
+
 ;; bb-style
 ;;     Bloomberg C++ coding style
 
@@ -399,38 +620,6 @@ with tmux and state is lost"
             ([remap isearch-forward-regexp ] . ctrlf-forward-regexp)))
     (ctrlf-mode +1)))
 
-;; selectrum
-;;     This is an alternative to ivy 
-
-(use-package selectrum
-  :disabled t
-  :straight t
-  :after (ivy counsel)
-  :config
-  (progn (selectrum-mode +1)
-         (setq selectrum-show-indices t)))
-
-;; prescient
-;;     Provides better sorting of selections
-
-(use-package prescient
-  :straight t
-  :after (ivy counsel)
-  :config
-  (progn
-    (prescient-persist-mode +1)))
-(use-package selectrum-prescient
-  :disabled t
-  :straight t
-  :after (ivy counsel)
-  :config
-  (progn (selectrum-prescient-mode +1)))
-(use-package ivy-prescient
-  :after (ivy counsel)
-  :straight t
-  :config
-  (progn (ivy-prescient-mode +1)))
-
 ;; git-link
 ;;     ~git-link~ makes it easy to get the url link directly to a
 ;;     github repo.  The following adds setup for bbgithub.
@@ -445,95 +634,6 @@ with tmux and state is lost"
                  '("bbgithub\\.dev\\.bloomberg\\.com" git-link-github))
     (add-to-list 'git-link-commit-remote-alist
                  '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
-
-;; ivy
-;;     ~ivy~ changes completion so that matches are
-;;     found via regular expressions and matches are
-;;     navigable by moving up and down lines.  Replaces
-;;     ~ido~ and ~iswitchb~.
-
-(use-package ivy
-  :straight t
-  :delight ivy-mode
-  :bind (("C-c C-r" . 'ivy-resume))
-  :config (progn
-            (setq ivy-wrap t)
-            (setq ivy-use-virtual-buffers t)
-            (setq ivy-count-format "(%d/%d) ")
-            (ivy-mode 1)))
-
-
-;; This adds some nice info when choosing buffers
-
-(use-package lsp-ui
-  :ensure t)
-(use-package lsp-ivy
-  :ensure t
-  :after (ivy counsel lsp-mode))
-
-(use-package lsp-mode
-  :ensure t
-  :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  (setq lsp-keymap-prefix "C-c l")
-  :hook ((c++-mode . lsp))
-  :commands lsp)
-      (use-package ivy-rich
-        :after (ivy counsel)
-        :disabled t
-        :straight (:host github :repo "Yevgnen/ivy-rich")
-        :config
-        (progn
-          (plist-put ivy-rich-display-transformers-list 'ivy-switch-buffer
-                     (plist-put
-                      (plist-get  ivy-rich-display-transformers-list 'ivy-switch-buffer)
-                      ':columns '((ivy-rich-candidate (:width 0.40))
-                                  (ivy-rich-switch-buffer-size (:width 7))
-                                  (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
-                                  (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
-                                  (ivy-rich-switch-buffer-project (:width 15 :face success))
-                                  (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))))
-          (ivy-rich-mode 1)))
-
-;; counsel
-;;     ~counsel~ builds on completion for ivy but adds
-;;     searches across files.
-
-(use-package counsel
-  :after ivy
-  :straight t
-  :delight counsel-mode
-  :bind (("C-c g" .  'counsel-git)
-	 ("C-c j" .  'counsel-file-jump)
-	 ("C-c k" .  'counsel-ag)
-	 ;("C-x b" .  'counsel-switch-buffer)
-	 ;("C-c s" .  'counsel-switch-to-shell-buffer)
-	 )
-  :config 
-  (progn (counsel-mode -1)
-	 (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
-
-
-
-;; And I have some hacks to be a little smarter when switching
-
-
-(use-package counsel-shell-switch
-  :after counsel
-  :disabled t
-  :bind (("C-c s" . 'pw/counsel-switch-to-shell-buffer)))
-
-;; swiper
-;;     This changes incremental search to use ivy style completion
-;;     but displays all the matching lines in the completion buffer.
-
-(use-package swiper
-  :after ivy
-  :disabled t
-  :straight t
-  :bind (("M-s" . 'swiper)
-         ("C-s" . 'swiper-isearch)
-         ("C-r" . 'swiper-isearch-backward)))
 
 ;; scratch-ext
 ;;     Make *scratch* buffers get saved
@@ -560,15 +660,6 @@ with tmux and state is lost"
   :config
   (progn
     (setq compilation-scroll-output 'first-error)))
-
-;; compile-plus
-;;     This makes compile create separate buffers for directory and command.
-
-;;     Disabled as it prompted for wrong directory all the time
-
-(use-package emacs-compile-plus
-  :disabled t
-  :straight (emacs-compile-plus :type git :host github :repo "ibizaman/emacs-compile-plus" :branch "master"))
 
 ;; clang-format+
 ;;     Runs clang-format.  This is not enabled by default.  You can enable this
@@ -978,7 +1069,7 @@ with tmux and state is lost"
 
 
 (use-package modus-themes
-  :straight t
+  ;:straight t
   :init
   ;; Add all your customizations prior to loading the themes
   (setq modus-themes-italic-constructs nil
@@ -986,11 +1077,7 @@ with tmux and state is lost"
         modus-themes-links '(no-underline)
         modus-themes-syntax '(faint alt-syntax green-strings yellow-comments))
 
-  ;; Load the theme files before enabling a theme
-  (modus-themes-load-themes)
-  :config
-  ;; Load the theme of your choice:
-  (modus-themes-load-vivendi))
+  (load-theme 'modus-vivendi t))
 
 ;; nord theme
 ;;     I've been trying to find a theme that works well
