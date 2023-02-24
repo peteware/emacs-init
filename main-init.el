@@ -138,7 +138,7 @@
 
 (use-package bind-key
   :bind (
-         ("C-c G" . 'goto-line)
+         ;("C-c G" . 'goto-line)
          ("C-c o" . 'other-frame)
          ("<wheel-left>" . 'ignore)
          ("<wheel-right>" . 'ignore)
@@ -393,6 +393,7 @@ with tmux and state is lost"
          ("C-c k" . consult-grep)
          ;("C-c k" . consult-kmacro)
          ("C-c g" . consult-find)
+         ("C-c G" . consult-goto-line)
          ;("C-c m" . consult-man)
          ("C-c i" . consult-info)
          ([remap Info-search] . consult-info)
@@ -408,7 +409,7 @@ with tmux and state is lost"
          ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
          ("C-M-#" . consult-register)
          ;; Other custom bindings
-         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ;("M-y" . consult-yank-pop)                ;; orig. yank-pop
          ;; M-g bindings (goto-map)
          ("M-g e" . consult-compile-error)
          ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
