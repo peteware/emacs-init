@@ -978,6 +978,7 @@ with tmux and state is lost"
 ;;     and have whatever you do affect each item
 
 (use-package multiple-cursors
+  :disabled t
   :bind (("C-. e" . mc/edit-lines)
          ("C-. >" . mc/mark-next-like-this)
          ("C-. <" . mc/mark=previous-like-this)))
