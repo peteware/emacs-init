@@ -13,7 +13,8 @@
       nil
       (or (eq 'shell-mode (buffer-local-value 'major-mode buffer))
           (eq 'term-mode (buffer-local-value 'major-mode buffer))
-          (eq 'vterm-mode (buffer-local-value 'major-mode buffer)))))
+          (eq 'vterm-mode (buffer-local-value 'major-mode buffer))
+          (eq 'eat-mode (buffer-local-value 'major-mode buffer)))))
 
 (defun pw/shell-scomplete--buffers ()
   (seq-filter 'pw/shell-scomplete--shell-p (buffer-list)))

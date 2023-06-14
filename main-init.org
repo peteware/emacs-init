@@ -119,6 +119,7 @@
 *** Install the straight.el package manager
     #+BEGIN_SRC emacs-lisp
       (defvar bootstrap-version)
+      (setq straight-repository-branch "develop")
       (let ((bootstrap-file
              (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
             (bootstrap-version 5))
@@ -443,7 +444,7 @@
         :bind (;; C-c bindings (mode-specific-map)
                ("C-c M-x" . consult-mode-command)
                ("C-c h" . consult-history)
-               ("C-c k" . consult-grep)
+               ("C-c k" . consult-ripgrep)
                ;("C-c k" . consult-kmacro)
                ("C-c g" . consult-find)
                ("C-c G" . consult-goto-line)
@@ -1003,6 +1004,7 @@
 
     #+begin_src emacs-lisp
       (use-package docker-tramp
+        :disabled t
         :straight t)
     #+end_src
 *** markdown-mode
@@ -1033,8 +1035,8 @@
         :bind (("C-c m" . magit-status)
                ("C-c C-m" . magit-dispatch-popup))
         :config (progn
-                  ;(add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
-                  ;(add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
+                  (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
+                  (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
                   (remove-hook 'magit-status-headers-hook 'magit-insert-tags-header)
                   (setq magit-commit-show-diff nil)
                   (setq magit-refresh-verbose t)
@@ -1145,7 +1147,7 @@
       (use-package tree-sitter-langs
         :straight t)
       (use-package ts-fold
-        :straight (ts-fold :type git :host github :repo "jcs090218/ts-fold")
+        :straight (ts-fold :type git :host github :repo "emacs-tree-sitter/ts-fold")
         :bind ("C-c @ t" . ts-fold-toggle)
       )
     #+end_src
@@ -1213,6 +1215,12 @@
       (use-package tramp
         :config
         (progn
+          (connection-local-set-profile-variables
+           'remote-bb-zsh
+           '((explicit-shell-file-name . "/opt/bb/bin/zsh")))
+          (connection-local-set-profiles
+           '(:application tramp :machine "folxdi-ob-963.bloomberg.com")
+           'remote-bb-zsh)
           (setq tramp-default-remote-shell "/opt/bb/bin/bash")
           (setq tramp-remote-path  (cons "/home/pware/usr/bin" (cons "/opt/bb/bin" tramp-remote-path)))
           (setq tramp-use-ssh-controlmaster-options nil)))
@@ -1306,8 +1314,11 @@
    #+END_SRC
 *** Clean startup
 
-    Do not display message in the scratch buffer or the startup message
-    or the message in the echo area
+    Do not display message in the scratch buffer or the startup
+    message or the message in the echo area.  You'll need to change
+    =inhibit-startup-echo-area-message= to your login to disable start
+    message in echo area.
+    
     #+BEGIN_SRC emacs-lisp
     (setq initial-scratch-message "")
     (setq inhibit-startup-screen t)
@@ -1333,9 +1344,11 @@
 *** Legacy (or I've been using emacs for too long)
 
     If at beginning of line, the Ctl-K kills including the newline
-    (I'm hardwired to type Ctl-K twice)
+    (I'm hardwired to type Ctl-K twice so I keep it as =nil=.
 
+    #+BEGIN_SRC emacs-lisp
     ;(setq kill-whole-line t)
+    #+END_SRC
 
 
     Latest Emacs can wrap lines at word boundaries and will move the cursor
