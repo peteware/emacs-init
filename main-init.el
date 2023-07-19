@@ -367,6 +367,28 @@ with tmux and state is lost"
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
+(defun consult--fd-builder (input)
+  (let ((fd-command
+         (if (eq 0 (process-file-shell-command "fdfind"))
+             "fdfind"
+           "fd")))
+    (pcase-let* ((`(,arg . ,opts) (consult--command-split input))
+                 (`(,re . ,hl) (funcall consult--regexp-compiler
+                                        arg 'extended t)))
+      (when re
+        (cons (append
+               (list fd-command
+                     "--color=never" "--full-path"
+                     (consult--join-regexps re 'extended))
+               opts)
+              hl)))))
+
+(defun consult-fd (&optional dir initial)
+  (interactive "P")
+  (pcase-let* ((`(,prompt ,paths ,dir) (consult--directory-prompt "Fd" dir))
+               (default-directory dir))
+    (find-file (consult--find prompt #'consult--fd-builder initial))))
+
 ;; Example configuration for Consult
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -376,7 +398,8 @@ with tmux and state is lost"
          ("C-c h" . consult-history)
          ("C-c k" . consult-ripgrep)
          ;("C-c k" . consult-kmacro)
-         ("C-c g" . consult-find)
+         ("C-c g" . consult-fd)
+         ;("C-c g" . consult-find)
          ("C-c G" . consult-goto-line)
          ;("C-c m" . consult-man)
          ("C-c i" . consult-info)
