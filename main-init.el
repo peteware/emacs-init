@@ -85,14 +85,13 @@
                '(alpha . (100 . 100))))
 
 (defvar bootstrap-version)
-(setq straight-repository-branch "develop")
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
+      (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
          'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
@@ -141,6 +140,18 @@
          ("<triple-wheel-left>" . 'ignore)
          ("<triple-wheel-right>" . 'ignore)
          ))
+
+;; (use-package treesit-auto
+;;   :straight t
+;;   :disabled t
+;;   :config
+;;   (progn
+;;     (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
+;;     (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
+;;     (add-to-list 'major-mode-remap-alist
+;;                  '(c-or-c++-mode . c-or-c++-ts-mode))
+;;     (setq treesit-auto-install t)
+;;     (global-treesit-auto-mode)))
 
 
 ;; Configure to put .h in c++-mode
@@ -349,13 +360,37 @@ with tmux and state is lost"
   (menu-bar-mode (if (display-graphic-p) 1 -1)))
 
 
-;; This is the base package
+;; This is the base package.
 
 
 (use-package vertico
   :straight t
+  :bind (:map vertico-map
+              ("C-i" . vertico-quick-insert)
+              ("C-o" . vertico-quick-exit)
+              ("M-B" . vertico-buffer)
+              ("M-G" . vertico-multiform-grid)
+              ("M-F" . vertico-multiform-flat)
+              ("M-R" . vertico-multiform-reverse)
+              ("M-U" . vertico-multiform-unobtrusive))
   :init
-  (vertico-mode))
+  (progn
+   ;; Configure the display per command.
+   ;; Use a buffer with indices for imenu
+   ;; and a flat (Ido-like) menu for M-x.
+   (setq vertico-multiform-commands
+         '((consult-imenu buffer indexed)
+           (execute-extended-command grid)))
+
+   ;; Configure the display per completion category.
+   ;; Use the grid display for files and a buffer
+   ;; for the consult-grep commands.
+   (setq vertico-multiform-categories
+         '((file grid)
+           (consult-grep buffer)))
+
+   (vertico-mode)
+   (vertico-multiform-mode)))
 
 (use-package orderless
   :straight t
@@ -366,6 +401,10 @@ with tmux and state is lost"
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
+
+
+;; =consult= has replacements for many built-in commands that offer more features.
+
 
 (defun consult--fd-builder (input)
   (let ((fd-command
@@ -397,11 +436,11 @@ with tmux and state is lost"
          ("C-c M-x" . consult-mode-command)
          ("C-c h" . consult-history)
          ("C-c k" . consult-ripgrep)
-         ;("C-c k" . consult-kmacro)
+                                        ;("C-c k" . consult-kmacro)
          ("C-c g" . consult-fd)
-         ;("C-c g" . consult-find)
+                                        ;("C-c g" . consult-find)
          ("C-c G" . consult-goto-line)
-         ;("C-c m" . consult-man)
+                                        ;("C-c m" . consult-man)
          ("C-c i" . consult-info)
          ([remap Info-search] . consult-info)
          ;; C-x bindings (ctl-x-map)
@@ -416,7 +455,7 @@ with tmux and state is lost"
          ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
          ("C-M-#" . consult-register)
          ;; Other custom bindings
-         ;("M-y" . consult-yank-pop)                ;; orig. yank-pop
+                                        ;("M-y" . consult-yank-pop)                ;; orig. yank-pop
          ;; M-g bindings (goto-map)
          ("M-g e" . consult-compile-error)
          ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
@@ -428,7 +467,7 @@ with tmux and state is lost"
          ("M-g i" . consult-imenu)
          ("M-g I" . consult-imenu-multi)
          ;; M-s bindings (search-map)
-         ;("M-s d" . consult-find)
+                                        ;("M-s d" . consult-find)
          ("M-s D" . consult-locate)
          ("M-s g" . consult-grep)
          ("M-s G" . consult-git-grep)
@@ -452,28 +491,22 @@ with tmux and state is lost"
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
-
   ;; The :init configuration is always executed (Not lazy)
   :init
-
   ;; Optionally configure the register formatting. This improves the register
   ;; preview for `consult-register', `consult-register-load',
   ;; `consult-register-store' and the Emacs built-ins.
   (setq register-preview-delay 0.5
         register-preview-function #'consult-register-format)
-
   ;; Optionally tweak the register preview window.
   ;; This adds thin lines, sorting and hides the mode line of the window.
   (advice-add #'register-preview :override #'consult-register-window)
-
   ;; Use Consult to select xref locations with preview
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
-
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
   :config
-
   ;; Optionally configure preview. The default value
   ;; is 'any, such that any key triggers the preview.
   ;; (setq consult-preview-key 'any)
@@ -511,39 +544,49 @@ with tmux and state is lost"
   ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
   ;;;; 5. No project support
   ;; (setq consult-project-function nil)
-)
+  (setq completion-in-region-function
+        (lambda (&rest args)
+          (apply (if vertico-mode
+                     #'consult-completion-in-region
+                   #'completion--in-region)
+                 args)))
+
+  )
 
 (use-package embark
   :straight t
-
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-
   :init
-
   ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
-
   ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
   ;; strategy, if you want to see the documentation from multiple providers.
   (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
   ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-
   :config
-
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
                  (window-parameters (mode-line-format . none)))))
-
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
   :straight t
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
+
+
+;; company-mode adds asynchronous prompts.  It's particularly useful
+;; when using eglot (emacs's language server protocol interface).
+
+
+(use-package company
+  :straight t
+  :hook ((prog-mode . company-mode)
+         (LaTeX-mode . company-mode)))
 
 (use-package consult-ag
   :disabled t
@@ -555,6 +598,17 @@ with tmux and state is lost"
   :bind (("M-A" . marginalia-cycle))
   :init
   (marginalia-mode))
+
+
+
+;; # $ python3.11 -m pip install python-lsp-server
+
+
+(use-package eglot
+  :hook ((python-mode . eglot-ensure)
+         (python-ts-mode . eglot-ensure)
+         (c++-mode . eglot-ensure)
+         (c++-ts-mode . eglot-ensre)))
 
 
 ;; Provides better sorting of selections
@@ -594,15 +648,15 @@ with tmux and state is lost"
 ;; This adds some nice info when choosing buffers
 
 (use-package lsp-ui
-  :ensure t)
+  :straight t)
 (use-package lsp-ivy
   :disabled t
-  :ensure t
+  :straight t
   :after (ivy counsel lsp-mode))
 
 (use-package lsp-mode
   :disabled t
-  :ensure t
+  :straight t
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
@@ -855,7 +909,10 @@ with tmux and state is lost"
 
 
 (use-package python-black
-  :straight t            
+  :straight t
+  :init
+  (progn
+    (setq python-black-extra-args '("--line-length" "79")))
   :hook (python-mode . python-black-on-save-mode))
 
 
@@ -1038,10 +1095,14 @@ with tmux and state is lost"
 (use-package tree-sitter
   :straight t
   :config
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  (progn
+    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+    (global-tree-sitter-mode))
+
 (use-package tree-sitter-langs
   :straight t)
 (use-package ts-fold
+  :disabled t
   :straight (ts-fold :type git :host github :repo "emacs-tree-sitter/ts-fold")
   :bind ("C-c @ t" . ts-fold-toggle)
 )
@@ -1056,7 +1117,8 @@ with tmux and state is lost"
      'remote-bb-zsh
      '((explicit-shell-file-name . "/opt/bb/bin/zsh")))
     (connection-local-set-profiles
-     '(:application tramp :machine "folxdi-ob-963.bloomberg.com")
+     '((:application tramp :machine "folxdi-ob-963.bloomberg.com")
+       (:application tramp :machine "xlnxdv-ob-490.bloomberg.com"))
      'remote-bb-zsh)
     (setq tramp-default-remote-shell "/opt/bb/bin/bash")
     (setq tramp-remote-path  (cons "/home/pware/usr/bin" (cons "/opt/bb/bin" tramp-remote-path)))
