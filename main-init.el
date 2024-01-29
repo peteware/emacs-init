@@ -1,15 +1,15 @@
-
-;; This is at the beginning of main-init.el:
+;; Preamble
+;;     This is at the beginning of main-init.el:
 
 ;; This file is generated from main-init.org
 ;; using (org-babel-tangle).  Do not
 ;; make changes in this file; they'll be lost!
 (provide 'main-init)
 
+;; Profile startup times
+;;     This is from a good [[https://github.com/raxod502/straight.el][article]] about speeding up emacs startup.
 
-;; This is from a good [[https://github.com/raxod502/straight.el][article]] about speeding up emacs startup.
-
-;; Use a hook so the message doesn't get clobbered by other messages.
+;;     Use a hook so the message doesn't get clobbered by other messages.
 
 (add-hook 'emacs-startup-hook
           (lambda ()
@@ -19,19 +19,19 @@
                               (time-subtract after-init-time before-init-time)))
                      gcs-done)))
 
-
-;; Temporarily increase GC threshold to 100MB then reduce to 8MB
-;; (was 800KB) after startup.
+;; GC threshold
+;;     Temporarily increase GC threshold to 100MB then reduce to 8MB
+;;     (was 800KB) after startup.
 
 (setq gc-cons-threshold (* 100 1000 1000))
 (add-hook 'after-init-hook (lambda ()
                              (setq gc-cons-threshold (* 8 1000 1000))))
 
+;; Setup proxies, certificates for package installation
+;;     To get =package-install= or =straight.el= to work you may need to setup
+;;     proxies and SSL certificates for those proxies
 
-;; To get =package-install= or =straight.el= to work you may need to setup
-;; proxies and SSL certificates for those proxies
-
-;; Add certificate for corp proxies.  No problem if file doesn't exist.
+;;     Add certificate for corp proxies.  No problem if file doesn't exist.
 
 
 (require 'gnutls)
@@ -58,9 +58,14 @@
 ;;   (setq url-proxy-services '(("http" . "localhost:8888")
 ;;                              ("https" . "localhost:8888"))))
 
+;; Do some weird Mac OS X stuff for my environment
+
 (when (eq system-type 'darwin)
     (setenv "PATH" "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_10:/Applications/Emacs.app/Contents/MacOS/libexec-x86_64-10_10")
     (setq exec-path (cons "/usr/local/bin" exec-path)))
+
+;; Configure frame geometry, fonts, transparency,
+
 
 (scroll-bar-mode -1)
 (setq-default cursor-type 'box)
@@ -84,6 +89,8 @@
   (add-to-list 'default-frame-alist
                '(alpha . (100 . 100))))
 
+;; Install the straight.el package manager
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -97,8 +104,8 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-
-;; Use the emacs packaging system to automatically install some packages
+;; package
+;;     Use the emacs packaging system to automatically install some packages
 
 
 (unless (boundp 'bootstrap-version)
@@ -108,16 +115,16 @@
   ;;              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
   (package-initialize))
 
+;; Setup use-package
+;;    You may need to =M-x package-install use-package= before
+;;    any of this works
+   
+;;    If a package is not available then ~use-package~ ignores it.
+;;    You can also not use a package by adding =:disabled t= to use-package
 
-;; You may need to =M-x package-install use-package= before
-;; any of this works
-
-;; If a package is not available then ~use-package~ ignores it.
-;; You can also not use a package by adding =:disabled t= to use-package
-
-;; I also like having ~use-package~ collect some info about
-;; the loaded packages and how long they take to load.  You
-;; can see the results with =M-x use-package-report=.
+;;    I also like having ~use-package~ collect some info about
+;;    the loaded packages and how long they take to load.  You
+;;    can see the results with =M-x use-package-report=.
 
 
 (setq use-package-verbose t)
@@ -125,9 +132,9 @@
 (setq use-package-compute-statistics t)
 (require 'use-package)
 
-
-;; Using bind-key lets you run =M-x describe-personal-keybindings=
-;; which is a nice way of keep track of what you've changed.
+;; bind-key
+;;     Using bind-key lets you run =M-x describe-personal-keybindings=
+;;     which is a nice way of keep track of what you've changed.
 
 (use-package bind-key
   :bind (
@@ -141,6 +148,9 @@
          ("<triple-wheel-right>" . 'ignore)
          ))
 
+;; treesit-auto
+
+
 ;; (use-package treesit-auto
 ;;   :straight t
 ;;   :disabled t
@@ -153,8 +163,8 @@
 ;;     (setq treesit-auto-install t)
 ;;     (global-treesit-auto-mode)))
 
-
-;; Configure to put .h in c++-mode
+;; cc-mode
+;;     Configure to put .h in c++-mode
 
 (use-package cc-mode
   :commands (c-mode c++-mode)
@@ -162,17 +172,17 @@
   :config
   (setq c-tab-always-indent nil))
 
-
-;; I can't handle the active region getting deleted
+;; delsel
+;;     I can't handle the active region getting deleted
 
 
 (use-package delsel
   :config
   (delete-selection-mode -1))
 
-
-;; This causes the set of files being visited to be restored
-;; on startup.
+;; desktop
+;;     This causes the set of files being visited to be restored
+;;     on startup.
 
 (use-package desktop
   :config
@@ -192,31 +202,31 @@
     (add-to-list 'desktop-modes-not-to-save 'dired-mode)
     ))
 
-
-;; This is the built-in line numbers added with Emacs 26.1
+;; display line numbers
+;;     This is the built-in line numbers added with Emacs 26.1
 
 (use-package display-line-numbers
   :hook (prog-mode . display-line-numbers-mode))
 
-
-;; This makes saving shell scripts automatically make
-;; them executable.  It's considered a shell script if
-;; it starts with #!
+;; executable
+;;     This makes saving shell scripts automatically make
+;;     them executable.  It's considered a shell script if
+;;     it starts with #!
 
 
 (use-package executable
   :hook (after-save . executable-make-buffer-file-executable-if-script-p))
 
-
-;; Change the font size in the current buffer (not the window)
+;; face-remap
+;;     Change the font size in the current buffer (not the window)
 
 
 (use-package face-remap
   :bind* (("C-c -" . text-scale-adjust)
           ("C-c +" . text-scale-adjust)))
 
-
-;; Setup lazy font locking
+;; jit-lock
+;;     Setup lazy font locking
 
 
 (use-package jit-lock
@@ -225,8 +235,8 @@
     (setq jit-lock-defer-time 0.1)
     (jit-lock-mode t)))
 
-
-;; Make visiting a *.gz automatically uncompress file
+;; jka-cmpr-hook
+;;     Make visiting a *.gz automatically uncompress file
 
 
 (use-package jka-cmpr-hook
@@ -234,8 +244,8 @@
   :config
   (auto-compression-mode 1))
 
-
-;; Make sure the mouse wheel scrolls
+;; mwheel
+;;     Make sure the mouse wheel scrolls
 
 
 (use-package mwheel
@@ -245,11 +255,14 @@
     (setq mouse-wheel-progressive-speed nil)
     (mwheel-install)))
 
+;; outline
+
+
 (use-package outline
   :hook (prog-mode . outline-minor-mode))
 
-
-;; Highlight matching paren
+;; paren
+;;     Highlight matching paren
 
 
 (use-package paren
@@ -257,6 +270,8 @@
   (progn
     (setq show-paren-when-point-in-periphery nil)
     (show-paren-mode 1)))
+
+;; savehist
 
 (use-package savehist
   ;;
@@ -272,10 +287,10 @@
             grep-files-history))
     (savehist-mode 1)))
 
-
-;; This records the location of every file you visit and
-;; restores when you vist a file, goes to that location.  I also save
-;; the file every couple hours because I don't always quit emacs 
+;; saveplace
+;;     This records the location of every file you visit and
+;;     restores when you vist a file, goes to that location.  I also save
+;;     the file every couple hours because I don't always quit emacs 
 
 
 (use-package saveplace
@@ -285,8 +300,8 @@
     (setq save-place-limit nil)
     (run-at-time 3600  3600 'save-place-alist-to-file)))
 
-
-;; Make it so $EDITOR can popup in this emacs
+;; server
+;;     Make it so $EDITOR can popup in this emacs
 
 
 (use-package server
@@ -297,20 +312,20 @@
     (message "server-start")
     (server-start)))
 
+;; tool-bar
+;;     Turn the toolbar off.  I also turn it off in my .Xdefaults with:
+    
+;;     Emacs.toolBar:            0
 
-;; Turn the toolbar off.  I also turn it off in my .Xdefaults with:
-
-;; Emacs.toolBar:            0
-
-;; which keeps it from displaying on startup
+;;     which keeps it from displaying on startup
 
 (use-package tool-bar
   :config
   (tool-bar-mode -1))
 
-
-;; Make it so buffers with the same name are are made unique by added
-;; directory path and killing a buffer renames all of them.
+;; uniquify
+;;     Make it so buffers with the same name are are made unique by added
+;;     directory path and killing a buffer renames all of them.
 
 (use-package uniquify
   :config
@@ -318,9 +333,9 @@
     (setq uniquify-buffer-name-style 'post-forward)
     (setq uniquify-after-kill-buffer-p t)))
 
-
-;; Makes the mouse work when running in an xterm/iterm or other
-;; terminal emulator.  Only enabled when no graphics
+;; xterm-mouse-mode
+;;     Makes the mouse work when running in an xterm/iterm or other
+;;     terminal emulator.  Only enabled when no graphics
 
 (use-package xt-mouse
   :unless (display-graphic-p)
@@ -351,16 +366,16 @@ with tmux and state is lost"
 (unless (display-graphic-p)
   (setq interprogram-cut-function 'iterm-cut-base64))
 
-
-;; Turn the menubar off on terminal windows
-
+;; menu-bar (disabled)
+;;     Turn the menubar off on terminal windows
+    
 
 (use-package menu-bar
   :config
   (menu-bar-mode (if (display-graphic-p) 1 -1)))
 
-
-;; This is the base package.
+;; vertico
+;;    This is the base package.
 
 
 (use-package vertico
@@ -372,7 +387,8 @@ with tmux and state is lost"
               ("M-G" . vertico-multiform-grid)
               ("M-F" . vertico-multiform-flat)
               ("M-R" . vertico-multiform-reverse)
-              ("M-U" . vertico-multiform-unobtrusive))
+              ("M-U" . vertico-multiform-unobtrusive)
+              ("TAB" . minibuffer-complete))
   :init
   (progn
    ;; Configure the display per command.
@@ -392,18 +408,21 @@ with tmux and state is lost"
    (vertico-mode)
    (vertico-multiform-mode)))
 
+;; orderless
+
+
 (use-package orderless
   :straight t
   :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq completion-styles '(orderless basic)
+  (setq completion-styles '(basic substring orderless)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
-
-;; =consult= has replacements for many built-in commands that offer more features.
+;; consult
+;;     =consult= has replacements for many built-in commands that offer more features.
 
 
 (defun consult--fd-builder (input)
@@ -553,6 +572,8 @@ with tmux and state is lost"
 
   )
 
+;; embark
+
 (use-package embark
   :straight t
   :bind
@@ -578,9 +599,9 @@ with tmux and state is lost"
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-
-;; company-mode adds asynchronous prompts.  It's particularly useful
-;; when using eglot (emacs's language server protocol interface).
+;; company
+;;     company-mode adds asynchronous prompts.  It's particularly useful
+;;     when using eglot (emacs's language server protocol interface).
 
 
 (use-package company
@@ -588,10 +609,16 @@ with tmux and state is lost"
   :hook ((prog-mode . company-mode)
          (LaTeX-mode . company-mode)))
 
+;; Consult search with silver searcher
+
+
 (use-package consult-ag
   :disabled t
   :straight t
   :bind ("C-c k" . consult-ag))
+
+;; marginalia adds decorations to completions
+
 
 (use-package marginalia
   :straight t
@@ -599,9 +626,9 @@ with tmux and state is lost"
   :init
   (marginalia-mode))
 
+;; eglot
 
-
-;; # $ python3.11 -m pip install python-lsp-server
+;;     # $ python3.11 -m pip install python-lsp-server
 
 
 (use-package eglot
@@ -610,8 +637,8 @@ with tmux and state is lost"
          (c++-mode . eglot-ensure)
          (c++-ts-mode . eglot-ensre)))
 
-
-;; Provides better sorting of selections
+;; prescient
+;;     Provides better sorting of selections
 
 (use-package prescient
   :straight t
@@ -627,11 +654,11 @@ with tmux and state is lost"
   :config
   (progn (ivy-prescient-mode +1)))
 
-
-;; ~ivy~ changes completion so that matches are
-;; found via regular expressions and matches are
-;; navigable by moving up and down lines.  Replaces
-;; ~ido~ and ~iswitchb~.
+;; ivy
+;;     ~ivy~ changes completion so that matches are
+;;     found via regular expressions and matches are
+;;     navigable by moving up and down lines.  Replaces
+;;     ~ido~ and ~iswitchb~.
 
 (use-package ivy
   :straight t
@@ -663,9 +690,9 @@ with tmux and state is lost"
   :hook ((c++-mode . lsp))
   :commands lsp)
 
-
-;; ~counsel~ builds on completion for ivy but adds
-;; searches across files.
+;; counsel
+;;     ~counsel~ builds on completion for ivy but adds
+;;     searches across files.
 
 (use-package counsel
   :disabled t
@@ -682,22 +709,22 @@ with tmux and state is lost"
   (progn (counsel-mode -1)
 	 (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
 
-
-;; Bloomberg C++ coding style
+;; bb-style
+;;     Bloomberg C++ coding style
 
 (use-package bb-style
   :hook (c-mode-common . bb-c-mode))
 
+;; delight
 
-
-;; This package makes it easy to hide minor
-;; modes in the modeline.  Uses for :diminish
+;;     This package makes it easy to hide minor
+;;     modes in the modeline.  Uses for :diminish
 
 (use-package delight
   :straight t)
 
-
-;; This replaces =swiper= and built in incremental search
+;; ctrlf
+;;     This replaces =swiper= and built in incremental search
 
 (use-package ctrlf
   :straight t
@@ -711,9 +738,9 @@ with tmux and state is lost"
             ([remap isearch-forward-regexp ] . ctrlf-forward-regexp)))
     (ctrlf-mode +1)))
 
-
-;; ~git-link~ makes it easy to get the url link directly to a
-;; github repo.  The following adds setup for bbgithub.
+;; git-link
+;;     ~git-link~ makes it easy to get the url link directly to a
+;;     github repo.  The following adds setup for bbgithub.
 
 (use-package git-link
   :straight t
@@ -726,8 +753,8 @@ with tmux and state is lost"
     (add-to-list 'git-link-commit-remote-alist
                  '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
 
-
-;; Make *scratch* buffers get saved
+;; scratch-ext
+;;     Make *scratch* buffers get saved
 
 
 (use-package scratch-ext
@@ -742,8 +769,8 @@ with tmux and state is lost"
     (set-buffer "*scratch*")
     (scratch-ext-restore-last-scratch)))
 
-
-;; Setup compilation buffers
+;; compile
+;;     Setup compilation buffers
 
 
 (use-package compile
@@ -752,19 +779,21 @@ with tmux and state is lost"
   (progn
     (setq compilation-scroll-output 'first-error)))
 
-
-;; Runs clang-format.  This is not enabled by default.  You can enable this
-;; on a per-directory tree basis by adding the file `.dir-locals.el` that looks like this:
-;; #+BEGIN_EXAMPLE
-;;   ((c++-mode . ((mode . clang-format+))))
-;; #+END_EXAMPLE
-;; or as a shell script
-;; #+BEGIN_EXAMPLE
-;;   echo '((c++-mode . ((mode . clang-format+))))' > .dir-locals.el
-;; #+END_EXAMPLE
+;; clang-format+
+;;     Runs clang-format.  This is not enabled by default.  You can enable this
+;;     on a per-directory tree basis by adding the file `.dir-locals.el` that looks like this:
+;;     #+BEGIN_EXAMPLE
+;;       ((c++-mode . ((mode . clang-format+))))
+;;     #+END_EXAMPLE
+;;     or as a shell script
+;;     #+BEGIN_EXAMPLE
+;;       echo '((c++-mode . ((mode . clang-format+))))' > .dir-locals.el
+;;     #+END_EXAMPLE
 
 (use-package clang-format+
   :straight t)
+
+;; ansi-color
 
 (use-package ansi-color
   :after compile
@@ -779,9 +808,9 @@ with tmux and state is lost"
 	   "#8be9fd" "magenta4" "cyan4" "white"])
     (setq ansi-color-map (ansi-color-make-color-map))))
 
-
-;; A nice graphical diff Make sure that ediff ignores all whitespace
-;; differences and highlights the individual differences
+;; ediff
+;;     A nice graphical diff Make sure that ediff ignores all whitespace
+;;     differences and highlights the individual differences
 
 
 (use-package ediff
@@ -805,20 +834,20 @@ with tmux and state is lost"
          (intern (format "ediff-%S-internal" ediff-version-control-package))
          rev "" nil)))))
 
-
-;; This makes a single file wrap around between two windows.
-;; Try ^X-3 and then move to the top or bottom of the window
-;; and the other window scrolls.  I bound F7 to do get
-;; rid of the other windows and split.
+;; follow
+;;     This makes a single file wrap around between two windows.
+;;     Try ^X-3 and then move to the top or bottom of the window
+;;     and the other window scrolls.  I bound F7 to do get
+;;     rid of the other windows and split.
 
 
 (use-package follow
   :bind ("<f7>" . follow-delete-other-windows-and-split))
 
-
-;; ~rgrep~ recursively greps for a pattern.  It uses a key to specify
-;; filenames and ignores directories like CVS.  "cchh" is all C++
-;; files and headers.
+;; grep
+;;     ~rgrep~ recursively greps for a pattern.  It uses a key to specify
+;;     filenames and ignores directories like CVS.  "cchh" is all C++
+;;     files and headers.
 
 
 (use-package grep
@@ -842,8 +871,8 @@ with tmux and state is lost"
             ("asm" . "*.[sS]")
             ("code" . "*.c *.C *.h *.cpp *.cc *.f *.py")))))
 
-
-;; Setup commands and menus to hide/show blocks of code
+;; hideshow
+;;     Setup commands and menus to hide/show blocks of code
 
 (use-package hideshow
   :commands hs-minor-mode
@@ -852,8 +881,8 @@ with tmux and state is lost"
     (add-hook 'c++-mode-hook 'hs-minor-mode)
     (add-hook 'c-mode-hook 'hs-minor-mode)))
 
-
-;; org-mode provides an outline, todo, diary, calendar like interface.
+;; org
+;;     org-mode provides an outline, todo, diary, calendar like interface.
 
 (use-package org
   :mode ("\\.org\\'" . org-mode)
@@ -873,12 +902,12 @@ with tmux and state is lost"
 (use-package org-prefs
   :after org)
 
-
-;; Make "bad" whitespace be visible.  This causes tabs, and whitespace
-;; at beginning and end of the buffer as well as at the end of the
-;; line to highlight
-
-;; Use =M-x whitespace-cleanup= to fix all problems
+;; whitespace
+;;     Make "bad" whitespace be visible.  This causes tabs, and whitespace
+;;     at beginning and end of the buffer as well as at the end of the
+;;     line to highlight
+    
+;;     Use =M-x whitespace-cleanup= to fix all problems
 
 
 (use-package whitespace
@@ -888,23 +917,23 @@ with tmux and state is lost"
     (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
     (setq whitespace-line-column nil)))
 
+;; anyins
+;;     Freaky way to insert text
+;;     1. Enter anyins-mode
+;;     2. Move around; mark spots you want to insert text with RET
+;;     3. To insert text
 
-;; Freaky way to insert text
-;; 1. Enter anyins-mode
-;; 2. Move around; mark spots you want to insert text with RET
-;; 3. To insert text
-
-;;    a. =y= inserts each line from kill ring at each marked spot, or
-;;    b.  =!= runs a shell command line 'seq -s ". \n" 1 3' generates
-;;        numbers "1. "  "2. " "3. " and inserts it at each markets tpot
+;;        a. =y= inserts each line from kill ring at each marked spot, or
+;;        b.  =!= runs a shell command line 'seq -s ". \n" 1 3' generates
+;;            numbers "1. "  "2. " "3. " and inserts it at each markets tpot
 
 (use-package anyins
   :straight t
   :bind ("C-c i" . anyins-mode))
 
-
-;; This enables the python code formater =black= to run when
-;; a python file is saved.
+;; black
+;;     This enables the python code formater =black= to run when
+;;     a python file is saved.
 
 
 
@@ -915,9 +944,9 @@ with tmux and state is lost"
     (setq python-black-extra-args '("--line-length" "79")))
   :hook (python-mode . python-black-on-save-mode))
 
-
-
-;; Setup preferences for shell, compile and other comint based commands
+;; comint-prefs
+    
+;;     Setup preferences for shell, compile and other comint based commands
 
 
 (use-package comint-prefs
@@ -931,14 +960,14 @@ with tmux and state is lost"
     (add-hook 'dbx-mode-hook 'dbx-for-pete)
     (add-hook 'compilation-mode-hook 'pw/turn-off-fontlock)))
 
-
-;; Bloomberg database schema
+;; csc-mode
+;;     Bloomberg database schema
 
 (use-package csc-mode
   :mode ("\\.csc2$" . csc-mode))
 
-
-;; This integrates with =dash= to lookup documentation.
+;; dash-at-point
+;;     This integrates with =dash= to lookup documentation.
 
 (use-package dash-at-point
   :straight t
@@ -948,8 +977,8 @@ with tmux and state is lost"
   :config (progn
             (add-to-list 'dash-at-point-mode-alist '(c++-mode . "bde,cpp"))))
 
-
-;; Replaces the docker ui with an emacs interface
+;; docker
+;;     Replaces the docker ui with an emacs interface
 
 
 (use-package docker
@@ -967,8 +996,8 @@ with tmux and state is lost"
   :disabled t
   :straight t)
 
-
-;; Highlighting for markdown
+;; markdown-mode
+;;     Highlighting for markdown
 
 (use-package markdown-mode
   :straight t
@@ -978,17 +1007,17 @@ with tmux and state is lost"
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 
-
-;; Bloomberg database params
+;; lrl-mode
+;;     Bloomberg database params
 
 (use-package lrl-mode
   :mode ("\\.lrl\\'" . lrl-mode))
 
-
-
-;; Provide a way of interacting with a Git repository.
-
-;; Download package if not installed!
+;; magit
+    
+;;     Provide a way of interacting with a Git repository.
+    
+;;     Download package if not installed!
 
 (use-package magit
   :straight t
@@ -1004,12 +1033,12 @@ with tmux and state is lost"
             (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
             (setq magit-view-git-manual-method 'man)
             (setq magit-auto-revert-tracked-only t)
-            (setq vc-handled-backends nil)
+            (setq vc-handled-backends '(Git))
             (magit-auto-revert-mode 1)))
 
+;; magit-todo
 
-
-;; Include TODO, etc in the magit buffer
+;;     Include TODO, etc in the magit buffer
 
 
 (use-package magit-todos
@@ -1018,19 +1047,19 @@ with tmux and state is lost"
   :straight t
   :config (magit-todos-mode))
 
-
-;; This implements an interface to github that
-;; integrates with magit
+;; forge
+;;     This implements an interface to github that
+;;     integrates with magit
 
 
 (use-package forge
   :disabled t
   :after magit)
 
-
-
-;; You can place multiple cursors in a buffer
-;; and have whatever you do affect each item
+;; multiple-cursors
+    
+;;     You can place multiple cursors in a buffer
+;;     and have whatever you do affect each item
 
 (use-package multiple-cursors
   :disabled t
@@ -1038,10 +1067,10 @@ with tmux and state is lost"
          ("C-. >" . mc/mark-next-like-this)
          ("C-. <" . mc/mark=previous-like-this)))
 
-
-;; A fast search across lots of files.  Relies
-;; on package silver searcher for the executable
-;; to be installed.
+;; ag
+;;     A fast search across lots of files.  Relies
+;;     on package silver searcher for the executable
+;;     to be installed.
 
 
 (use-package ag
@@ -1049,10 +1078,10 @@ with tmux and state is lost"
   :bind (("C-c f" . ag))
   :config (setq ag-reuse-buffers t))
 
-
-
-;; Some commands I find useful
-
+;; pw-misc
+    
+;;     Some commands I find useful
+    
 
 (use-package pw-misc
   :after compile
@@ -1061,21 +1090,23 @@ with tmux and state is lost"
          ("C-c e" . pw/eval-region-or-defun))
   :hook (compilation-mode-hook . pw/no-line-column-number))
 
-
-
-;; Toggle truncation of long lines
+;; pw-trunc-lines
+    
+;;     Toggle truncation of long lines
 
 (use-package pw-trunc-lines
   :commands pw/trunc-lines
   :bind ("C-c $" . pw/trunc-lines)
   :hook ((c-mode-common makefile-gmake-mode compilation-mode shell-mode) . pw/trunc-lines))
 
-
-;; Use the existing completion framework to switch shell buffers.  This way it
-;; integrates smoothly with selectrum and prescient
+;; pw-shell-scomplete
+;;     Use the existing completion framework to switch shell buffers.  This way it
+;;     integrates smoothly with selectrum and prescient
 
 (use-package pw-shell-scomplete
   :bind (("C-c s" . 'pw/shell-scomplete-to-shell-buffer)))
+
+;; treemacs
 
 (use-package treemacs
   :straight t
@@ -1088,9 +1119,9 @@ with tmux and state is lost"
     (setq treemacs-show-hidden-files nil)
     (setq treemacs-collapse-dirs 2)))
 
-
-;; This is an experiment system for fast, incremental parsing
-;; of programming languages.  This uses highlighting and folding
+;; tree-sitter
+;;     This is an experiment system for fast, incremental parsing
+;;     of programming languages.  This uses highlighting and folding
 
 (use-package tree-sitter
   :straight t
@@ -1107,8 +1138,8 @@ with tmux and state is lost"
   :bind ("C-c @ t" . ts-fold-toggle)
 )
 
-
-;; And the actual elisp part of things:
+;; tramp config
+;;     And the actual elisp part of things:
 
 (use-package tramp
   :config
@@ -1124,19 +1155,19 @@ with tmux and state is lost"
     (setq tramp-remote-path  (cons "/home/pware/usr/bin" (cons "/opt/bb/bin" tramp-remote-path)))
     (setq tramp-use-ssh-controlmaster-options nil)))
 
-
-;; This lets you save the results from grep, edit those results and then
-;; saving the changes applies them to each file.
+;; wgrep
+;;     This lets you save the results from grep, edit those results and then
+;;     saving the changes applies them to each file.
 
 (use-package wgrep
   :defer 5
   :straight t)
 
-
-
-;; Much like face-remap that adds test-scale-increase and
-;; text-scale-decrease I use this to change the entire window
-;; instead of the buffer
+;; zoom-frm
+    
+;;     Much like face-remap that adds test-scale-increase and
+;;     text-scale-decrease I use this to change the entire window
+;;     instead of the buffer
 
 (use-package zoom-frm
   :straight t
@@ -1144,16 +1175,16 @@ with tmux and state is lost"
           ("C-c ]" . zoom-frm-in)
           ("C-c 0" . zoom-frm-unzoom)))
 
+;; powerline
+    
+;;     Make the modeline have lots of pretty graphics.
 
+;;     For `iterm2` I had to install some extra fonts
+;;     for these to look good:
 
-;; Make the modeline have lots of pretty graphics.
+;;          https://github.com/powerline/fonts
 
-;; For `iterm2` I had to install some extra fonts
-;; for these to look good:
-
-;;      https://github.com/powerline/fonts
-
-
+    
 
 (use-package powerline
   :straight (:host github :repo "milkypostman/powerline")
@@ -1161,14 +1192,14 @@ with tmux and state is lost"
   (progn
     (powerline-default-theme)))
 
+;; modus theme
+;;     Previously, I liked the "nord" theme but recently
+;;     the higher visibility offered by modus has been better.
 
-;; Previously, I liked the "nord" theme but recently
-;; the higher visibility offered by modus has been better.
+;;     I've chosen the darker theme, modus-vivendi with a few
+;;     customizations.  It's well documented at:
 
-;; I've chosen the darker theme, modus-vivendi with a few
-;; customizations.  It's well documented at:
-
-;; https://github.com/protesilaos/modus-themes
+;;     https://github.com/protesilaos/modus-themes
 
 
 (use-package modus-themes
@@ -1182,14 +1213,14 @@ with tmux and state is lost"
 
   (load-theme 'modus-vivendi t))
 
+;; nord theme
+;;     I've been trying to find a theme that works well
+;;     with iterm2, emacs-25 and emacs-26.
 
-;; I've been trying to find a theme that works well
-;; with iterm2, emacs-25 and emacs-26.
+;;     If using iterm, you should change it to use following
+;;     color scheme:
 
-;; If using iterm, you should change it to use following
-;; color scheme:
-
-;; https://github.com/arcticicestudio/nord-iterm2
+;;     https://github.com/arcticicestudio/nord-iterm2
 
 
 (use-package nord-theme
@@ -1202,30 +1233,30 @@ with tmux and state is lost"
     (setq nord-comment-brightness 20)
     (load-theme 'nord t)))
 
+;; Various preferences
 
-
-;; Allow narrow to region (e.g. =C-X n n=)
+;;    Allow narrow to region (e.g. =C-X n n=)
 
 (put 'narrow-to-region 'disabled nil)
 
+;; Clean startup
 
-
-;; Do not display message in the scratch buffer or the startup
-;; message or the message in the echo area.  You'll need to change
-;; =inhibit-startup-echo-area-message= to your login to disable start
-;; message in echo area.
-
+;;     Do not display message in the scratch buffer or the startup
+;;     message or the message in the echo area.  You'll need to change
+;;     =inhibit-startup-echo-area-message= to your login to disable start
+;;     message in echo area.
+    
 
 (setq initial-scratch-message "")
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-echo-area-message "pware")
 
+;; Configure the mode line
 
-
-;; Turn on displaying the date and time in the mode line.
-;; Enable displaying the line and column numbers in the mode line
-;; But don't do that if the buffer is >250k
-;; Do not blink the cursor
+;;     Turn on displaying the date and time in the mode line.
+;;     Enable displaying the line and column numbers in the mode line
+;;     But don't do that if the buffer is >250k
+;;     Do not blink the cursor
 
 (setq display-time-day-and-date t)
 (setq line-number-display-limit 250000)
@@ -1235,10 +1266,10 @@ with tmux and state is lost"
 (size-indication-mode 1)
 (blink-cursor-mode -1)
 
+;; Legacy (or I've been using emacs for too long)
 
-
-;; If at beginning of line, the Ctl-K kills including the newline
-;; (I'm hardwired to type Ctl-K twice so I keep it as =nil=.
+;;     If at beginning of line, the Ctl-K kills including the newline
+;;     (I'm hardwired to type Ctl-K twice so I keep it as =nil=.
 
 
 ;(setq kill-whole-line t)
@@ -1253,19 +1284,19 @@ with tmux and state is lost"
 (setq line-move-visual nil)
 (setq visual-line-mode nil)
 
+;; Tune scrolling behaviour
 
+;;     Make it so moving up or down does it one line at a time.
 
-;; Make it so moving up or down does it one line at a time.
-
-;; - ~scroll-step~ 0 works better with Emacs which now supports
-;;   ~scroll-conservatively~.
-;; - ~scroll-conservatively~ when > 100 then Emacs scrolls just
-;;   enough to make point visible.  This actuall works well 
-;;   for shell buffers but I also like it other places.
-;; - ~scroll-margin~ says to keep this many lines
-;;    above or below so you get some context.
-;; - ~scroll-preserve-screen-position~ says when scrolling pages, keep
-;;   point at same physical spot on screen.
+;;     - ~scroll-step~ 0 works better with Emacs which now supports
+;;       ~scroll-conservatively~.
+;;     - ~scroll-conservatively~ when > 100 then Emacs scrolls just
+;;       enough to make point visible.  This actuall works well 
+;;       for shell buffers but I also like it other places.
+;;     - ~scroll-margin~ says to keep this many lines
+;;        above or below so you get some context.
+;;     - ~scroll-preserve-screen-position~ says when scrolling pages, keep
+;;       point at same physical spot on screen.
 
 (setq scroll-step 0)
 (setq scroll-conservatively 101)
@@ -1286,25 +1317,25 @@ with tmux and state is lost"
 (setq hscroll-margin 1)
 (setq hscroll-step 5)
 
-
-;; Incremental search settings
+;; Incremental search highlighting
+;;     Incremental search settings
 
 (setq lazy-highlight-max-at-a-time 10)
 (setq lazy-highlight-initial-delay .25)
 (setq lazy-highlight-interval 0)
 
-
-;; Emacs has serious performace problems with
-;; long lines.  One thing that seems to help is
-;; hardcoding the bi-directional settings.  This
-;; will break right-to-left languages
+;; Speed up long lines; no bidi
+;;     Emacs has serious performace problems with
+;;     long lines.  One thing that seems to help is
+;;     hardcoding the bi-directional settings.  This
+;;     will break right-to-left languages
 
 (setq-default bidi-display-reordering nil)
 (setq-default bidi-paragraph-direction 'left-to-right)
 
-
-;; Cause the gutter to display little arrows and
-;; boxes if there is more to a file
+;; Misc settings
+;;     Cause the gutter to display little arrows and
+;;     boxes if there is more to a file
 
 (setq-default indicate-buffer-boundaries 'left)
 (setq-default indicate-empty-lines t)
@@ -1338,21 +1369,21 @@ with tmux and state is lost"
 
 (setq-default indent-tabs-mode nil)
 
+;; Cut and Paste
+;;     Weird X11 stuff with the cut-and-paste.  I think these settings
+;;     provide the best compromise.
 
-;; Weird X11 stuff with the cut-and-paste.  I think these settings
-;; provide the best compromise.
+;;     The world uses what is called a clipboard for copy-and-paste.  X11
+;;     had a more flexible arrangement with a primary cut buffer that some
+;;     X11 older clients still use.  Older clients typically means xterm
+;;     and mrxvt.
 
-;; The world uses what is called a clipboard for copy-and-paste.  X11
-;; had a more flexible arrangement with a primary cut buffer that some
-;; X11 older clients still use.  Older clients typically means xterm
-;; and mrxvt.
+;;     In Exceed, you need to set the config so that the "X Selection" tab
+;;     has the "X Selection Associated with Edit Operations:" be
+;;     "CLIPBOARD".
 
-;; In Exceed, you need to set the config so that the "X Selection" tab
-;; has the "X Selection Associated with Edit Operations:" be
-;; "CLIPBOARD".
-
-;; The following puts killed text into the clipboard which makes it
-;; avaiable for all Windows clients given the above Exceed setting.
+;;     The following puts killed text into the clipboard which makes it
+;;     avaiable for all Windows clients given the above Exceed setting.
 
 (setq x-select-enable-clipboard t)
 

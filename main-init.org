@@ -431,34 +431,35 @@
    This is the base package.
 
    #+begin_src emacs-lisp
-     (use-package vertico
-       :straight t
-       :bind (:map vertico-map
-                   ("C-i" . vertico-quick-insert)
-                   ("C-o" . vertico-quick-exit)
-                   ("M-B" . vertico-buffer)
-                   ("M-G" . vertico-multiform-grid)
-                   ("M-F" . vertico-multiform-flat)
-                   ("M-R" . vertico-multiform-reverse)
-                   ("M-U" . vertico-multiform-unobtrusive))
-       :init
-       (progn
-        ;; Configure the display per command.
-        ;; Use a buffer with indices for imenu
-        ;; and a flat (Ido-like) menu for M-x.
-        (setq vertico-multiform-commands
-              '((consult-imenu buffer indexed)
-                (execute-extended-command grid)))
+          (use-package vertico
+            :straight t
+            :bind (:map vertico-map
+                        ("C-i" . vertico-quick-insert)
+                        ("C-o" . vertico-quick-exit)
+                        ("M-B" . vertico-buffer)
+                        ("M-G" . vertico-multiform-grid)
+                        ("M-F" . vertico-multiform-flat)
+                        ("M-R" . vertico-multiform-reverse)
+                        ("M-U" . vertico-multiform-unobtrusive)
+                        ("TAB" . minibuffer-complete))
+            :init
+            (progn
+             ;; Configure the display per command.
+             ;; Use a buffer with indices for imenu
+             ;; and a flat (Ido-like) menu for M-x.
+             (setq vertico-multiform-commands
+                   '((consult-imenu buffer indexed)
+                     (execute-extended-command grid)))
 
-        ;; Configure the display per completion category.
-        ;; Use the grid display for files and a buffer
-        ;; for the consult-grep commands.
-        (setq vertico-multiform-categories
-              '((file grid)
-                (consult-grep buffer)))
+             ;; Configure the display per completion category.
+             ;; Use the grid display for files and a buffer
+             ;; for the consult-grep commands.
+             (setq vertico-multiform-categories
+                   '((file grid)
+                     (consult-grep buffer)))
 
-        (vertico-mode)
-        (vertico-multiform-mode)))
+             (vertico-mode)
+             (vertico-multiform-mode)))
    #+end_src
 
 *** orderless
@@ -470,7 +471,7 @@
         ;; Configure a custom style dispatcher (see the Consult wiki)
         ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
         ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-        (setq completion-styles '(orderless basic)
+        (setq completion-styles '(basic substring orderless)
               completion-category-defaults nil
               completion-category-overrides '((file (styles partial-completion)))))
     #+end_src
@@ -1132,7 +1133,7 @@
                   (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
                   (setq magit-view-git-manual-method 'man)
                   (setq magit-auto-revert-tracked-only t)
-                  (setq vc-handled-backends nil)
+                  (setq vc-handled-backends '(Git))
                   (magit-auto-revert-mode 1)))
     #+END_SRC
 *** magit-todo
