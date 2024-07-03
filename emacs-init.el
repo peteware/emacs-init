@@ -26,7 +26,6 @@
  '(display-time-mode t)
  '(fci-rule-color "#383838")
  '(initial-frame-alist '((menu-bar-lines . 1)))
- '(show-paren-mode t)
  '(size-indication-mode t)
  '(tool-bar-mode nil)
  '(vc-annotate-background "#2B2B2B")
@@ -63,4 +62,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:height 160 :family "SF Mono")))))
+ '(default ((t (:height 180 :family "SF Mono" :foundry "nil" :slant normal :weight regular :width normal)))))

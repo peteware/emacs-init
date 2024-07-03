@@ -103,6 +103,7 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+;(setq straight-use-package-by-default t)
 
 ;; package
 ;;     Use the emacs packaging system to automatically install some packages
@@ -171,6 +172,13 @@
   :mode ("\\.h$" . c++-mode)
   :config
   (setq c-tab-always-indent nil))
+
+;; go-mode
+;;     Load `go-mode' and enable it in 'lsp-deferred-mode'
+
+(use-package go-mode
+  :straight t
+  :hook eglot-ensure)
 
 ;; delsel
 ;;     I can't handle the active region getting deleted
@@ -585,8 +593,8 @@ with tmux and state is lost"
   (setq prefix-help-command #'embark-prefix-help-command)
   ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
   ;; strategy, if you want to see the documentation from multiple providers.
-  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+  ;(add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;(setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
   :config
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
@@ -632,10 +640,22 @@ with tmux and state is lost"
 
 
 (use-package eglot
+  :bind (:map eglot-mode-map
+              ("C-c r" . eglot-rename)
+              ("C-c o" . eglot-code-action-organize-imports)
+              ("C-c h" . eldoc))
   :hook ((python-mode . eglot-ensure)
          (python-ts-mode . eglot-ensure)
          (c++-mode . eglot-ensure)
-         (c++-ts-mode . eglot-ensre)))
+         (c++-ts-mode . eglot-ensure)
+         (eglot-managed-mode .
+                             (lambda () (setq eldoc-documentation-functions
+                                              (cons #'flymake-eldoc-function
+                                                    (remove #'flymake-eldoc-function eldoc-documentation-functions)))))))
+
+(use-package eldoc-box
+  :straight t
+  :hook (eglot-managed-mode . eldoc-box-hover-mode))
 
 ;; prescient
 ;;     Provides better sorting of selections
@@ -931,13 +951,31 @@ with tmux and state is lost"
   :straight t
   :bind ("C-c i" . anyins-mode))
 
+;; python
+
+
+(use-package python
+  :init (setq python-flymake-command '("ruff" "--quiet" "--stdin-filename=stdin" "-")))
+
+;; ruff
+;;     This enabled the python code formatter =ruff= to run when
+;;     a python file is saved.
+
+
+(use-package ruff-format
+  :straight t
+  :hook (python-mode . ruff-format-on-save-mode))
+
 ;; black
 ;;     This enables the python code formater =black= to run when
 ;;     a python file is saved.
 
+;;     I disabled this on 2024-05-31 to use ruff-mode to format
+
 
 
 (use-package python-black
+  :disabled t
   :straight t
   :init
   (progn
@@ -1098,6 +1136,23 @@ with tmux and state is lost"
   :commands pw/trunc-lines
   :bind ("C-c $" . pw/trunc-lines)
   :hook ((c-mode-common makefile-gmake-mode compilation-mode shell-mode) . pw/trunc-lines))
+
+;; rust
+;;     Configure rust mode so it has syntax highlighting via treesitter and completion via
+;;     eglot.  Assumes that rust rust-analyzer and rustfmt are installed.  I used homebrew.
+
+(use-package rust-mode
+  :straight t
+  :hook eglot-ensure
+  :config
+  (setq rust-format-on-save t)
+  :init
+  (setq rust-mode-treesitter-derive t)
+  )
+(use-package cargo-mode
+  :straight t
+  :hook
+  (rust-mode . cargo-minor-mode))
 
 ;; pw-shell-scomplete
 ;;     Use the existing completion framework to switch shell buffers.  This way it
@@ -1361,7 +1416,7 @@ with tmux and state is lost"
 ;; I found visiting a file to be really slow and realized
 ;; it was from figuring out the version control
 
-(setq vc-handled-backends nil)
+(setq vc-handled-backends '(Git))
 
 
 

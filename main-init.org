@@ -130,6 +130,7 @@
             (goto-char (point-max))
             (eval-print-last-sexp)))
         (load bootstrap-file nil 'nomessage))
+      ;(setq straight-use-package-by-default t)
     #+END_SRC
 *** package
     Use the emacs packaging system to automatically install some packages
@@ -206,6 +207,14 @@
         :config
         (setq c-tab-always-indent nil))
     #+END_SRC
+*** go-mode
+    Load `go-mode' and enable it in 'lsp-deferred-mode'
+    #+BEGIN_SRC emacs-lisp
+      (use-package go-mode
+        :straight t
+        :hook eglot-ensure)
+    #+END_SRC
+
 *** delsel
     I can't handle the active region getting deleted
 
@@ -639,8 +648,8 @@
         (setq prefix-help-command #'embark-prefix-help-command)
         ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
         ;; strategy, if you want to see the documentation from multiple providers.
-        (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-        ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+        ;(add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+        ;(setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
         :config
         ;; Hide the mode line of the Embark live/completions buffers
         (add-to-list 'display-buffer-alist
@@ -688,14 +697,29 @@
 
 *** eglot
 
-    # $ python3.11 -m pip install python-lsp-server
+    # Update PATH
+    # $ python3.12 -m pip install 'python-lsp-server[all]'
+    # $ python3.12 -m pip install --break-system-packages --user pylsp-rope
+    # $ python3.12 -m pip install --break-system-packages --user rope
 
     #+begin_src emacs-lisp
-    (use-package eglot
-      :hook ((python-mode . eglot-ensure)
-             (python-ts-mode . eglot-ensure)
-             (c++-mode . eglot-ensure)
-             (c++-ts-mode . eglot-ensre)))
+      (use-package eglot
+        :bind (:map eglot-mode-map
+                    ("C-c r" . eglot-rename)
+                    ("C-c o" . eglot-code-action-organize-imports)
+                    ("C-c h" . eldoc))
+        :hook ((python-mode . eglot-ensure)
+               (python-ts-mode . eglot-ensure)
+               (c++-mode . eglot-ensure)
+               (c++-ts-mode . eglot-ensure)
+               (eglot-managed-mode .
+                                   (lambda () (setq eldoc-documentation-functions
+                                                    (cons #'flymake-eldoc-function
+                                                          (remove #'flymake-eldoc-function eldoc-documentation-functions)))))))
+
+      (use-package eldoc-box
+        :straight t
+        :hook (eglot-managed-mode . eldoc-box-hover-mode))
     #+end_src
          
 # $ python3.11 -m pip install python-lsp-server
@@ -1024,13 +1048,34 @@
       :bind ("C-c i" . anyins-mode))
     #+END_SRC
 
+*** python
+
+    #+begin_src emacs-lisp
+      (use-package python
+        :init (setq python-flymake-command '("ruff" "--quiet" "--stdin-filename=stdin" "-")))
+  
+    #+end_src
+
+*** ruff
+    This enabled the python code formatter =ruff= to run when
+    a python file is saved.
+
+    #+begin_src emacs-lisp
+      (use-package ruff-format
+        :straight t
+        :hook (python-mode . ruff-format-on-save-mode))
+    #+end_src
+
 *** black
     This enables the python code formater =black= to run when
     a python file is saved.
 
+    I disabled this on 2024-05-31 to use ruff-mode to format
+
 
     #+begin_src emacs-lisp
       (use-package python-black
+        :disabled t
         :straight t
         :init
         (progn
@@ -1202,6 +1247,24 @@
         :bind ("C-c $" . pw/trunc-lines)
         :hook ((c-mode-common makefile-gmake-mode compilation-mode shell-mode) . pw/trunc-lines))
     #+END_SRC
+
+*** rust
+    Configure rust mode so it has syntax highlighting via treesitter and completion via
+    eglot.  Assumes that rust rust-analyzer and rustfmt are installed.  I used homebrew.
+    #+begin_src emacs-lisp
+      (use-package rust-mode
+        :straight t
+        :hook eglot-ensure
+        :config
+        (setq rust-format-on-save t)
+        :init
+        (setq rust-mode-treesitter-derive t)
+        )
+      (use-package cargo-mode
+        :straight t
+        :hook
+        (rust-mode . cargo-minor-mode))
+    #+end_src
 
 *** pw-shell-scomplete
     Use the existing completion framework to switch shell buffers.  This way it
@@ -1528,7 +1591,7 @@
     I found visiting a file to be really slow and realized
     it was from figuring out the version control
     #+BEGIN_SRC emacs-lisp
-    (setq vc-handled-backends nil)
+    (setq vc-handled-backends '(Git))
     #+END_SRC
 
     I don't like actual tabs being inserted
