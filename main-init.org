@@ -659,6 +659,7 @@
       ;; Consult users will also want the embark-consult package.
       (use-package embark-consult
         :straight t
+        :after embark
         :hook
         (embark-collect-mode . consult-preview-at-point-mode))
     #+end_src
@@ -701,12 +702,13 @@
     # $ python3.12 -m pip install 'python-lsp-server[all]'
     # $ python3.12 -m pip install --break-system-packages --user pylsp-rope
     # $ python3.12 -m pip install --break-system-packages --user rope
+    # $ python3.12 -m pip install --break-system-packages --user python-lsp-ruff
 
     #+begin_src emacs-lisp
       (use-package eglot
         :bind (:map eglot-mode-map
                     ("C-c r" . eglot-rename)
-                    ("C-c o" . eglot-code-action-organize-imports)
+                    ("C-c i" . eglot-code-action-organize-imports)
                     ("C-c h" . eldoc))
         :hook ((python-mode . eglot-ensure)
                (python-ts-mode . eglot-ensure)
@@ -722,8 +724,6 @@
         :hook (eglot-managed-mode . eldoc-box-hover-mode))
     #+end_src
          
-# $ python3.11 -m pip install python-lsp-server
-
 ** IVY completion
 
    This section implements my preferences for using IVY to do
@@ -1043,9 +1043,10 @@
        b.  =!= runs a shell command line 'seq -s ". \n" 1 3' generates
            numbers "1. "  "2. " "3. " and inserts it at each markets tpot
     #+BEGIN_SRC emacs-lisp
-    (use-package anyins
-      :straight t
-      :bind ("C-c i" . anyins-mode))
+      (use-package anyins
+        :disabled t
+        :straight t
+        :bind ("C-c i" . anyins-mode))
     #+END_SRC
 
 *** python

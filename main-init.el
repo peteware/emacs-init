@@ -604,6 +604,7 @@ with tmux and state is lost"
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
   :straight t
+  :after embark
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -636,13 +637,17 @@ with tmux and state is lost"
 
 ;; eglot
 
-;;     # $ python3.11 -m pip install python-lsp-server
+;;     # Update PATH
+;;     # $ python3.12 -m pip install 'python-lsp-server[all]'
+;;     # $ python3.12 -m pip install --break-system-packages --user pylsp-rope
+;;     # $ python3.12 -m pip install --break-system-packages --user rope
+;;     # $ python3.12 -m pip install --break-system-packages --user python-lsp-ruff
 
 
 (use-package eglot
   :bind (:map eglot-mode-map
               ("C-c r" . eglot-rename)
-              ("C-c o" . eglot-code-action-organize-imports)
+              ("C-c i" . eglot-code-action-organize-imports)
               ("C-c h" . eldoc))
   :hook ((python-mode . eglot-ensure)
          (python-ts-mode . eglot-ensure)
@@ -948,6 +953,7 @@ with tmux and state is lost"
 ;;            numbers "1. "  "2. " "3. " and inserts it at each markets tpot
 
 (use-package anyins
+  :disabled t
   :straight t
   :bind ("C-c i" . anyins-mode))
 
