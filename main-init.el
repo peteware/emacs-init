@@ -653,6 +653,8 @@ with tmux and state is lost"
          (python-ts-mode . eglot-ensure)
          (c++-mode . eglot-ensure)
          (c++-ts-mode . eglot-ensure)
+         (typescript-ts-mode . eglot-ensure)
+         (tsx-ts-mode . eglot-ensure)
          (eglot-managed-mode .
                              (lambda () (setq eldoc-documentation-functions
                                               (cons #'flymake-eldoc-function
