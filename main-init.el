@@ -425,9 +425,9 @@ with tmux and state is lost"
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq completion-styles '(basic substring orderless)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+  (setq completion-styles '(substring orderless basic))
+  ;(setq completion-category-defaults nil)
+  (setq completion-category-overrides '((file (styles partial-completion)))))
 
 ;; consult
 ;;     =consult= has replacements for many built-in commands that offer more features.
