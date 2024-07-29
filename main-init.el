@@ -1312,6 +1312,17 @@ with tmux and state is lost"
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-echo-area-message "pware")
 
+;; Add typescript and tsx modes
+
+;;     I also installed the grammers with
+;;     =treesit-install-language-grammer=.  The grammars are in
+;;     https://github.com/tree-sitter/tree-sitter-typescript but the
+;;     directory is =typescript/src= and =tsx/src=.
+
+
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+
 ;; Configure the mode line
 
 ;;     Turn on displaying the date and time in the mode line.
