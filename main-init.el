@@ -267,6 +267,7 @@
 
 
 (use-package outline
+  :delight
   :hook (prog-mode . outline-minor-mode))
 
 ;; paren
@@ -381,6 +382,15 @@ with tmux and state is lost"
 (use-package menu-bar
   :config
   (menu-bar-mode (if (display-graphic-p) 1 -1)))
+
+;; auto-revert
+;;     "This section exists to turn off the string in the modeline"
+    
+
+(use-package autorevert
+  :delight auto-revert-mode)
+(use-package outline
+  :delight outline-minor-mode)
 
 ;; vertico
 ;;    This is the base package.
@@ -615,6 +625,7 @@ with tmux and state is lost"
 
 (use-package company
   :straight t
+  :delight
   :hook ((prog-mode . company-mode)
          (LaTeX-mode . company-mode)))
 
@@ -635,34 +646,49 @@ with tmux and state is lost"
   :init
   (marginalia-mode))
 
+;; Python environments
+
+;;     This allows one to manually switch the python
+;;     venv being used by specifying the directory
+;;     with the venv.
+
+
+(use-package pyvenv
+  :straight t)
+
 ;; eglot
 
 ;;     # Update PATH
-;;     # $ python3.12 -m pip install 'python-lsp-server[all]'
-;;     # $ python3.12 -m pip install --break-system-packages --user pylsp-rope
-;;     # $ python3.12 -m pip install --break-system-packages --user rope
-;;     # $ python3.12 -m pip install --break-system-packages --user python-lsp-ruff
+;;     # pip install 'python-lsp-server[all]' pylsp-rope rope python-lsp-ruff ruff
 
 
 (use-package eglot
   :bind (:map eglot-mode-map
               ("C-c r" . eglot-rename)
-              ("C-c i" . eglot-code-action-organize-imports)
-              ("C-c h" . eldoc))
+              ("C-c i" . eglot-code-action-organize-imports))
+  :delight eglot--managed-mode
   :hook ((python-mode . eglot-ensure)
          (python-ts-mode . eglot-ensure)
          (c++-mode . eglot-ensure)
          (c++-ts-mode . eglot-ensure)
          (typescript-ts-mode . eglot-ensure)
          (tsx-ts-mode . eglot-ensure)
+         (after-save . eglot-format)
          (eglot-managed-mode .
                              (lambda () (setq eldoc-documentation-functions
                                               (cons #'flymake-eldoc-function
                                                     (remove #'flymake-eldoc-function eldoc-documentation-functions)))))))
 
+(use-package eldoc
+  :delight)
+
 (use-package eldoc-box
   :straight t
-  :hook (eglot-managed-mode . eldoc-box-hover-mode))
+  :delight eldoc-box-hover-mode
+  :bind (:map eglot-mode-map
+              ("C-c h" . eldoc-box-help-at-point))
+  ;:hook (eglot-managed-mode . eldoc-box-hover-mode)
+  )
 
 ;; prescient
 ;;     Provides better sorting of selections
@@ -748,7 +774,10 @@ with tmux and state is lost"
 ;;     modes in the modeline.  Uses for :diminish
 
 (use-package delight
-  :straight t)
+  :straight t
+  :config
+  (delight auto-revert-mode)
+  (delight eldoc-mode))
 
 ;; ctrlf
 ;;     This replaces =swiper= and built in incremental search
@@ -971,6 +1000,7 @@ with tmux and state is lost"
 
 
 (use-package ruff-format
+  :disabled t
   :straight t
   :hook (python-mode . ruff-format-on-save-mode))
 
@@ -1082,6 +1112,23 @@ with tmux and state is lost"
             (setq vc-handled-backends '(Git))
             (magit-auto-revert-mode 1)))
 
+;; forge
+;;     This implements an interface to github that
+;;     integrates with magit.  It's accessible with
+;;     =N= in magit. 
+
+
+(use-package forge
+  :straight t
+  :after magit
+  :config
+  (push '("bbgithub.dev.bloomberg.com"         ; GITHOST
+        "bbgithub.dev.bloomberg.com/api/v3"  ; APIHOST
+        "bbgithub.dev.bloomberg.com"         ; WEBHOST and INSTANCE-ID
+        forge-github-repository)             ; CLASS
+      forge-alist))
+)
+
 ;; magit-todo
 
 ;;     Include TODO, etc in the magit buffer
@@ -1092,15 +1139,6 @@ with tmux and state is lost"
   :disabled t
   :straight t
   :config (magit-todos-mode))
-
-;; forge
-;;     This implements an interface to github that
-;;     integrates with magit
-
-
-(use-package forge
-  :disabled t
-  :after magit)
 
 ;; multiple-cursors
     
@@ -1167,7 +1205,8 @@ with tmux and state is lost"
 ;;     integrates smoothly with selectrum and prescient
 
 (use-package pw-shell-scomplete
-  :bind (("C-c s" . 'pw/shell-scomplete-to-shell-buffer)))
+  :bind (("C-c s" . 'pw/shell-scomplete-to-shell-buffer)
+         ("C-c 4 s" . 'pw/shell-scomplete-to-shell-other)))
 
 ;; treemacs
 
@@ -1188,6 +1227,7 @@ with tmux and state is lost"
 
 (use-package tree-sitter
   :straight t
+  :delight
   :config
   (progn
     (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
@@ -1408,8 +1448,16 @@ with tmux and state is lost"
 (setq-default bidi-paragraph-direction 'left-to-right)
 
 ;; Misc settings
-;;     Cause the gutter to display little arrows and
-;;     boxes if there is more to a file
+;;     Make the mark-ring allow =C-SPC= repeatedly
+;;     pop the mark.  =C-X C-<SPC>= pops the global mark-ring
+;;     and then =C-SPC= immediately after pops next item.
+
+(setq set-mark-command-repeat-pop t)
+
+
+
+;; Cause the gutter to display little arrows and
+;; boxes if there is more to a file
 
 (setq-default indicate-buffer-boundaries 'left)
 (setq-default indicate-empty-lines t)

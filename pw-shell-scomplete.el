@@ -5,7 +5,16 @@
   (interactive)
   (pw/shell-scomplete--to-shell
    (completing-read "Shell buffer: " (mapcar 'buffer-name (pw/shell-scomplete--buffers))
-			nil nil nil 'shell-hist nil)))
+		    nil nil nil 'shell-hist nil)
+   '(display-buffer-same-window)))
+
+(defun pw/shell-scomplete-to-shell-other ()
+  "Scomplete to a shell buffer, or create one."
+  (interactive)
+  (pw/shell-scomplete--to-shell
+   (completing-read "Shell buffer: " (mapcar 'buffer-name (pw/shell-scomplete--buffers))
+		    nil nil nil 'shell-hist nil)
+   '(display-buffer-use-some-window)))
 
 (defun pw/shell-scomplete--shell-p (buffer)
   "Return if buffer is in shell mode."
@@ -19,13 +28,13 @@
 (defun pw/shell-scomplete--buffers ()
   (seq-filter 'pw/shell-scomplete--shell-p (buffer-list)))
 
-(defun pw/shell-scomplete--to-shell (name)
+(defun pw/shell-scomplete--to-shell (name where)
   "Display shell buffer with NAME and select its window.
 Reuse any existing window already displaying the named buffer.
 If there is no such buffer, start a new `shell' with NAME."
   (if (get-buffer name)
       (let ((start-buffer (buffer-name)))
-        (display-buffer name '(display-buffer-same-window))
+        (display-buffer name where)
         (if (equal name start-buffer)
             (goto-char (point-max))))
     (shell name)))
