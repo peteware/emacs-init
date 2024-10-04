@@ -626,6 +626,7 @@ with tmux and state is lost"
 (use-package company
   :straight t
   :delight
+  :bind (("C-c ." . company-complete))
   :hook ((prog-mode . company-mode)
          (LaTeX-mode . company-mode)))
 
@@ -753,14 +754,14 @@ with tmux and state is lost"
   :straight t
   :delight counsel-mode
   :bind (("C-c g" .  'counsel-git)
-	 ("C-c j" .  'counsel-file-jump)
-	 ("C-c k" .  'counsel-ag)
-	 ;("C-x b" .  'counsel-switch-buffer)
-	 ;("C-c s" .  'counsel-switch-to-shell-buffer)
-	 )
+         ("C-c j" .  'counsel-file-jump)
+         ("C-c k" .  'counsel-ag)
+         ;("C-x b" .  'counsel-switch-buffer)
+         ;("C-c s" .  'counsel-switch-to-shell-buffer)
+         )
   :config 
   (progn (counsel-mode -1)
-	 (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
+         (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
 
 ;; bb-style
 ;;     Bloomberg C++ coding style
@@ -857,11 +858,11 @@ with tmux and state is lost"
   (progn
     (defun pw/colorize-compilation-buffer ()
       (let ((inhibit-read-only t))
-	(ansi-color-apply-on-region compilation-filter-start (point-max))))
+        (ansi-color-apply-on-region compilation-filter-start (point-max))))
     (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer)
     (setq ansi-color-names-vector ; better contrast colors
-	  ["black" "red4" "green4" "yellow4"
-	   "#8be9fd" "magenta4" "cyan4" "white"])
+  	["black" "red4" "green4" "yellow4"
+  	 "#8be9fd" "magenta4" "cyan4" "white"])
     (setq ansi-color-map (ansi-color-make-color-map))))
 
 ;; ediff

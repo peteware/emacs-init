@@ -682,6 +682,7 @@
       (use-package company
         :straight t
         :delight
+        :bind (("C-c ." . company-complete))
         :hook ((prog-mode . company-mode)
                (LaTeX-mode . company-mode)))
     #+end_src
