@@ -439,9 +439,7 @@ with tmux and state is lost"
   ;(setq completion-category-defaults nil)
   (setq completion-category-overrides '((file (styles partial-completion)))))
 
-;; consult
-;;     =consult= has replacements for many built-in commands that offer more features.
-
+;; Use =fd= to find files
 
 (defun consult--fd-builder (input)
   (let ((fd-command
@@ -464,6 +462,8 @@ with tmux and state is lost"
   (pcase-let* ((`(,prompt ,paths ,dir) (consult--directory-prompt "Fd" dir))
                (default-directory dir))
     (find-file (consult--find prompt #'consult--fd-builder initial))))
+
+;; Consult setup
 
 ;; Example configuration for Consult
 (use-package consult
@@ -589,6 +589,35 @@ with tmux and state is lost"
                  args)))
 
   )
+
+;; Add =consult-dir= for visiting files
+
+
+(use-package consult-dir
+  :straight t
+  :bind (("C-x C-d" . consult-dir)
+         :map vertico-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
+
+;; popper
+;;     This makes it easy to make temporary (aka popup) buffers
+;;     take less space and quickly disappear
+
+(use-package popper
+  :straight t
+  :bind (("C-`"   . popper-toggle)
+         ("M-`"   . popper-cycle)
+         ("C-M-`" . popper-toggle-type))
+  :init
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          help-mode
+          compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1))
 
 ;; embark
 
@@ -1128,7 +1157,6 @@ with tmux and state is lost"
         "bbgithub.dev.bloomberg.com"         ; WEBHOST and INSTANCE-ID
         forge-github-repository)             ; CLASS
       forge-alist))
-)
 
 ;; magit-todo
 
