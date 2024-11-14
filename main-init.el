@@ -94,7 +94,7 @@
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
+      (bootstrap-version 7))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
@@ -263,6 +263,20 @@
     (setq mouse-wheel-progressive-speed nil)
     (mwheel-install)))
 
+;; delight
+
+;;     This package makes it easy to hide minor modes in the modeline.
+;;     This needs to be loaded fairly early as otherwise the =:delight=
+;;     won't work in with =use-package=.
+
+(use-package delight
+  :straight t)
+
+;; flymake
+
+(use-package flymake
+  :delight " FM")
+
 ;; outline
 
 
@@ -341,6 +355,18 @@
   (progn
     (setq uniquify-buffer-name-style 'post-forward)
     (setq uniquify-after-kill-buffer-p t)))
+
+;; vc
+;;     Configure version control
+
+;;     I found visiting a file to be really slow and realized
+;;     it was from figuring out the version control
+
+
+(use-package vc
+  :config
+  (setq vc-display-status nil)
+  (setq vc-handled-backends '(Git)))
 
 ;; xterm-mouse-mode
 ;;     Makes the mouse work when running in an xterm/iterm or other
@@ -611,9 +637,13 @@ with tmux and state is lost"
          ("C-M-`" . popper-toggle-type))
   :init
   (setq popper-reference-buffers
-        '("\\*Messages\\*"
-          "Output\\*$"
+        '("\*Messages\*"
+          "Output\*$"
           "\\*Async Shell Command\\*"
+          "\\*Flymake Diagnostic\\*"
+          occur-mode
+          flymake-mode
+          flymake-diagnostics-buffer-mode
           help-mode
           compilation-mode))
   (popper-mode +1)
@@ -696,7 +726,6 @@ with tmux and state is lost"
   :bind (:map eglot-mode-map
               ("C-c r" . eglot-rename)
               ("C-c i" . eglot-code-action-organize-imports))
-  :delight eglot--managed-mode
   :hook ((python-mode . eglot-ensure)
          (python-ts-mode . eglot-ensure)
          (c++-mode . eglot-ensure)
@@ -797,17 +826,6 @@ with tmux and state is lost"
 
 (use-package bb-style
   :hook (c-mode-common . bb-c-mode))
-
-;; delight
-
-;;     This package makes it easy to hide minor
-;;     modes in the modeline.  Uses for :diminish
-
-(use-package delight
-  :straight t
-  :config
-  (delight auto-revert-mode)
-  (delight eldoc-mode))
 
 ;; ctrlf
 ;;     This replaces =swiper= and built in incremental search
@@ -1139,7 +1157,6 @@ with tmux and state is lost"
             (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
             (setq magit-view-git-manual-method 'man)
             (setq magit-auto-revert-tracked-only t)
-            (setq vc-handled-backends '(Git))
             (magit-auto-revert-mode 1)))
 
 ;; forge
@@ -1229,6 +1246,17 @@ with tmux and state is lost"
   :hook
   (rust-mode . cargo-minor-mode))
 
+;; typescript and tsx modes
+
+;;     I also installed the grammers with
+;;     =treesit-install-language-grammer=.  The grammars are in
+;;     https://github.com/tree-sitter/tree-sitter-typescript but the
+;;     directory is =typescript/src= and =tsx/src=.
+
+
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+
 ;; pw-shell-scomplete
 ;;     Use the existing completion framework to switch shell buffers.  This way it
 ;;     integrates smoothly with selectrum and prescient
@@ -1316,17 +1344,35 @@ with tmux and state is lost"
 
 ;;          https://github.com/powerline/fonts
 
+;;     Disabled 2024-11-07 as I liked the basic timu-caribbean-theme
     
 
 (use-package powerline
+  :disabled t
   :straight (:host github :repo "milkypostman/powerline")
   :config
   (progn
     (powerline-default-theme)))
 
+;; timu-caribbean-theme
+;;     I've liked these themes:
+
+;;     - modus theme
+;;     - nord theme
+;;     - timu-caribbean-theme
+
+;;     Currently, liking timu-carbbean-theme
+
+(use-package timu-caribbean-theme
+  :straight t
+  :config
+  (setq timu-caribbean-mode-line-border t)
+  (load-theme 'timu-caribbean t))
+
 ;; modus theme
 ;;     Previously, I liked the "nord" theme but recently
 ;;     the higher visibility offered by modus has been better.
+;;     On 2024-10-31 I switched to timu-caribbean-theme
 
 ;;     I've chosen the darker theme, modus-vivendi with a few
 ;;     customizations.  It's well documented at:
@@ -1335,6 +1381,7 @@ with tmux and state is lost"
 
 
 (use-package modus-themes
+  :disabled t
   ;:straight t
   :init
   ;; Add all your customizations prior to loading the themes
@@ -1383,17 +1430,6 @@ with tmux and state is lost"
 (setq inhibit-startup-screen t)
 (setq inhibit-startup-echo-area-message "pware")
 
-;; Add typescript and tsx modes
-
-;;     I also installed the grammers with
-;;     =treesit-install-language-grammer=.  The grammars are in
-;;     https://github.com/tree-sitter/tree-sitter-typescript but the
-;;     directory is =typescript/src= and =tsx/src=.
-
-
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-
 ;; Configure the mode line
 
 ;;     Turn on displaying the date and time in the mode line.
@@ -1401,7 +1437,7 @@ with tmux and state is lost"
 ;;     But don't do that if the buffer is >250k
 ;;     Do not blink the cursor
 
-(setq display-time-day-and-date t)
+(setq display-time-day-and-date nil)
 (setq line-number-display-limit 250000)
 (display-time-mode)
 (line-number-mode 1)
@@ -1506,13 +1542,6 @@ with tmux and state is lost"
 ;; default is prior to emacs-24 is nil
 
 (setq redisplay-dont-pause t)
-
-
-
-;; I found visiting a file to be really slow and realized
-;; it was from figuring out the version control
-
-(setq vc-handled-backends '(Git))
 
 
 

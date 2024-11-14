@@ -121,7 +121,7 @@
       (defvar bootstrap-version)
       (let ((bootstrap-file
              (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-            (bootstrap-version 6))
+            (bootstrap-version 7))
         (unless (file-exists-p bootstrap-file)
           (with-current-buffer
               (url-retrieve-synchronously
@@ -303,6 +303,23 @@
         (mwheel-install)))
     #+END_SRC
 
+*** delight
+
+    This package makes it easy to hide minor modes in the modeline.
+    This needs to be loaded fairly early as otherwise the =:delight=
+    won't work in with =use-package=.
+    #+BEGIN_SRC emacs-lisp
+            (use-package delight
+              :straight t)
+    #+END_SRC
+
+*** flymake
+#+begin_src emacs-lisp
+  (use-package flymake
+    :delight " FM")
+#+end_src
+
+
 *** outline
 
     #+BEGIN_SRC emacs-lisp
@@ -389,6 +406,18 @@
         (setq uniquify-after-kill-buffer-p t)))
     #+END_SRC
 
+*** vc
+    Configure version control
+
+    I found visiting a file to be really slow and realized
+    it was from figuring out the version control
+
+    #+begin_src emacs-lisp
+      (use-package vc
+        :config
+        (setq vc-display-status nil)
+        (setq vc-handled-backends '(Git)))
+    #+end_src
 *** xterm-mouse-mode
     Makes the mouse work when running in an xterm/iterm or other
     terminal emulator.  Only enabled when no graphics
@@ -672,9 +701,13 @@
                ("C-M-`" . popper-toggle-type))
         :init
         (setq popper-reference-buffers
-              '("\\*Messages\\*"
-                "Output\\*$"
+              '("\*Messages\*"
+                "Output\*$"
                 "\\*Async Shell Command\\*"
+                "\\*Flymake Diagnostic\\*"
+                occur-mode
+                flymake-mode
+                flymake-diagnostics-buffer-mode
                 help-mode
                 compilation-mode))
         (popper-mode +1)
@@ -764,7 +797,6 @@
         :bind (:map eglot-mode-map
                     ("C-c r" . eglot-rename)
                     ("C-c i" . eglot-code-action-organize-imports))
-        :delight eglot--managed-mode
         :hook ((python-mode . eglot-ensure)
                (python-ts-mode . eglot-ensure)
                (c++-mode . eglot-ensure)
@@ -879,17 +911,6 @@
         :hook (c-mode-common . bb-c-mode))
     #+END_SRC
 
-*** delight
-
-    This package makes it easy to hide minor
-    modes in the modeline.  Uses for :diminish
-    #+BEGIN_SRC emacs-lisp
-            (use-package delight
-              :straight t
-              :config
-              (delight auto-revert-mode)
-              (delight eldoc-mode))
-    #+END_SRC
 *** ctrlf
     This replaces =swiper= and built in incremental search
     #+begin_src emacs-lisp
@@ -1248,7 +1269,6 @@
                   (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
                   (setq magit-view-git-manual-method 'man)
                   (setq magit-auto-revert-tracked-only t)
-                  (setq vc-handled-backends '(Git))
                   (magit-auto-revert-mode 1)))
     #+END_SRC
 
@@ -1344,6 +1364,18 @@
         :hook
         (rust-mode . cargo-minor-mode))
     #+end_src
+
+*** typescript and tsx modes
+
+    I also installed the grammers with
+    =treesit-install-language-grammer=.  The grammars are in
+    https://github.com/tree-sitter/tree-sitter-typescript but the
+    directory is =typescript/src= and =tsx/src=.
+
+    #+BEGIN_SRC emacs-lisp
+      (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+      (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+    #+END_SRC
 
 *** pw-shell-scomplete
     Use the existing completion framework to switch shell buffers.  This way it
@@ -1494,18 +1526,37 @@
 
          https://github.com/powerline/fonts
 
+    Disabled 2024-11-07 as I liked the basic timu-caribbean-theme
     
     #+BEGIN_SRC emacs-lisp
       (use-package powerline
+        :disabled t
         :straight (:host github :repo "milkypostman/powerline")
         :config
         (progn
           (powerline-default-theme)))
     #+END_SRC
 
+*** timu-caribbean-theme
+    I've liked these themes:
+
+    - modus theme
+    - nord theme
+    - timu-caribbean-theme
+
+    Currently, liking timu-carbbean-theme
+    #+begin_src emacs-lisp
+      (use-package timu-caribbean-theme
+        :straight t
+        :config
+        (setq timu-caribbean-mode-line-border t)
+        (load-theme 'timu-caribbean t))
+    #+end_src
+
 *** modus theme
     Previously, I liked the "nord" theme but recently
     the higher visibility offered by modus has been better.
+    On 2024-10-31 I switched to timu-caribbean-theme
 
     I've chosen the darker theme, modus-vivendi with a few
     customizations.  It's well documented at:
@@ -1514,6 +1565,7 @@
 
     #+begin_src emacs-lisp
       (use-package modus-themes
+        :disabled t
         ;:straight t
         :init
         ;; Add all your customizations prior to loading the themes
@@ -1563,18 +1615,6 @@
     (setq inhibit-startup-echo-area-message "pware")
     #+END_SRC
 
-*** Add typescript and tsx modes
-
-    I also installed the grammers with
-    =treesit-install-language-grammer=.  The grammars are in
-    https://github.com/tree-sitter/tree-sitter-typescript but the
-    directory is =typescript/src= and =tsx/src=.
-
-    #+BEGIN_SRC emacs-lisp
-      (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-      (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
-    #+END_SRC
-
 *** Configure the mode line
 
     Turn on displaying the date and time in the mode line.
@@ -1582,7 +1622,7 @@
     But don't do that if the buffer is >250k
     Do not blink the cursor
     #+BEGIN_SRC emacs-lisp
-    (setq display-time-day-and-date t)
+    (setq display-time-day-and-date nil)
     (setq line-number-display-limit 250000)
     (display-time-mode)
     (line-number-mode 1)
@@ -1686,12 +1726,6 @@
     default is prior to emacs-24 is nil
     #+BEGIN_SRC emacs-lisp
     (setq redisplay-dont-pause t)
-    #+END_SRC
-
-    I found visiting a file to be really slow and realized
-    it was from figuring out the version control
-    #+BEGIN_SRC emacs-lisp
-    (setq vc-handled-backends '(Git))
     #+END_SRC
 
     I don't like actual tabs being inserted
