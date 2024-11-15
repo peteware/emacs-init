@@ -238,16 +238,18 @@
 
 
 (use-package jit-lock
+  :straight nil
   :config
-  (progn
-    (setq jit-lock-defer-time 0.1)
-    (jit-lock-mode t)))
+  (setq jit-lock-defer-time 0.1)
+  (setq jit-lock-stealth-time 3)
+  (jit-lock-mode t))
 
 ;; jka-cmpr-hook
 ;;     Make visiting a *.gz automatically uncompress file
 
 
 (use-package jka-cmpr-hook
+  :straight nil
   :defer 5
   :config
   (auto-compression-mode 1))
@@ -497,7 +499,7 @@ with tmux and state is lost"
   :straight t
   :bind (;; C-c bindings (mode-specific-map)
          ("C-c M-x" . consult-mode-command)
-         ("C-c h" . consult-history)
+         ;("C-c h" . consult-history)
          ("C-c k" . consult-ripgrep)
                                         ;("C-c k" . consult-kmacro)
          ("C-c g" . consult-fd)
@@ -738,15 +740,23 @@ with tmux and state is lost"
                                               (cons #'flymake-eldoc-function
                                                     (remove #'flymake-eldoc-function eldoc-documentation-functions)))))))
 
+;; eldoc
+;;     Configure so documentation is displayed on a single
+;;     line in the mini-buffer.  Use `C-c h' to get the
+;;     full help in a box.
+
+
 (use-package eldoc
-  :delight)
+  :delight
+  :init
+  (setq eldoc-echo-area-use-multiline-p nil))
 
 (use-package eldoc-box
   :straight t
   :delight eldoc-box-hover-mode
   :bind (:map eglot-mode-map
               ("C-c h" . eldoc-box-help-at-point))
-  ;:hook (eglot-managed-mode . eldoc-box-hover-mode)
+                                        ;:hook (eglot-managed-mode . eldoc-box-hover-mode)
   )
 
 ;; prescient
