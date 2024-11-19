@@ -1364,6 +1364,16 @@ with tmux and state is lost"
   (progn
     (powerline-default-theme)))
 
+;; deeper-blue theme
+;;     I like the darker background of this theme and the colors are a
+;;     little brighter.  Swiched to this from =timu-caribbean-theme= on
+;;     2024-11-19.
+
+
+(use-package deeper-blue-theme
+  :config
+  (load-theme 'deeper-blue))
+
 ;; timu-caribbean-theme
 ;;     I've liked these themes:
 
@@ -1371,9 +1381,11 @@ with tmux and state is lost"
 ;;     - nord theme
 ;;     - timu-caribbean-theme
 
-;;     Currently, liking timu-carbbean-theme
+;;     Currently, liking timu-carbbean-theme.  Ugg, switched
+;;     to =deeper-blue= on 2024-11-19
 
 (use-package timu-caribbean-theme
+  :disabled t
   :straight t
   :config
   (setq timu-caribbean-mode-line-border t)

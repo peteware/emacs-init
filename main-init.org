@@ -1548,6 +1548,16 @@
           (powerline-default-theme)))
     #+END_SRC
 
+*** deeper-blue theme
+    I like the darker background of this theme and the colors are a
+    little brighter.  Swiched to this from =timu-caribbean-theme= on
+    2024-11-19.
+
+    #+begin_src emacs-lisp
+      (use-package deeper-blue-theme
+        :config
+        (load-theme 'deeper-blue))
+    #+end_src
 *** timu-caribbean-theme
     I've liked these themes:
 
@@ -1555,9 +1565,11 @@
     - nord theme
     - timu-caribbean-theme
 
-    Currently, liking timu-carbbean-theme
+    Currently, liking timu-carbbean-theme.  Ugg, switched
+    to =deeper-blue= on 2024-11-19
     #+begin_src emacs-lisp
       (use-package timu-caribbean-theme
+        :disabled t
         :straight t
         :config
         (setq timu-caribbean-mode-line-border t)
