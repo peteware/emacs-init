@@ -724,6 +724,10 @@ with tmux and state is lost"
 ;;     # pip install 'python-lsp-server[all]' pylsp-rope rope python-lsp-ruff ruff
 
 
+(defun pw/eglot-format-safe()
+  (interactive)
+  (if eglot--managed-mode
+      (eglot-format-buffer)))
 (use-package eglot
   :bind (:map eglot-mode-map
               ("C-c r" . eglot-rename)
@@ -734,7 +738,7 @@ with tmux and state is lost"
          (c++-ts-mode . eglot-ensure)
          (typescript-ts-mode . eglot-ensure)
          (tsx-ts-mode . eglot-ensure)
-         (after-save . eglot-format)
+         (after-save . pw/eglot-format-safe)
          (eglot-managed-mode .
                              (lambda () (setq eldoc-documentation-functions
                                               (cons #'flymake-eldoc-function
@@ -1370,9 +1374,7 @@ with tmux and state is lost"
 ;;     2024-11-19.
 
 
-(use-package deeper-blue-theme
-  :config
-  (load-theme 'deeper-blue))
+(load-theme 'deeper-blue)
 
 ;; timu-caribbean-theme
 ;;     I've liked these themes:
