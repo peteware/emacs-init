@@ -30,8 +30,6 @@
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "~/notes/todo.org" "Bloomberg Current")
          "** TODO %?%i \n   :PROPERTIES:\n   :Added:    %U\n   :END:\n")
-        ("c" "Code" entry (file+headline "~/notes/code.org" "Recent Code Reviews")
-         "** TODO %?%i \n   :PROPERTIES:\n   :Added:    %U\n   :END:\n")
         ("n" "Notes" entry (file+datetree "~/notes/notes.org")
          "** %?\n" :unnarrowed t)
         ("d" "Drqs" entry (file+headline "~/notes/drqs.org" "Active DRQS")

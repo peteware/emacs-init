@@ -370,6 +370,16 @@
   (setq vc-display-status nil)
   (setq vc-handled-backends '(Git)))
 
+;; which-function
+;;     This displays the name of the current function
+;;     in the modeline.  Requires major-mode support
+;;     which most languages have.
+
+
+(use-package which-func
+  :config
+  (which-function-mode +1))
+
 ;; xterm-mouse-mode
 ;;     Makes the mouse work when running in an xterm/iterm or other
 ;;     terminal emulator.  Only enabled when no graphics
@@ -639,10 +649,11 @@ with tmux and state is lost"
          ("C-M-`" . popper-toggle-type))
   :init
   (setq popper-reference-buffers
-        '("\*Messages\*"
-          "Output\*$"
+        '("\\*Messages\\*"
+          "Output\\*$"
           "\\*Async Shell Command\\*"
           "\\*Flymake Diagnostic\\*"
+          "\\*eldoc\\*"
           occur-mode
           flymake-mode
           flymake-diagnostics-buffer-mode
