@@ -380,6 +380,15 @@
   :config
   (which-function-mode +1))
 
+;; which-key
+;;     When you've only partially entered part of a keymap
+;;     this prompts you with possible completions.
+
+
+(use-package which-key
+  :init
+  (setopt which-key-sort-order 'which-key-description-order))
+
 ;; xterm-mouse-mode
 ;;     Makes the mouse work when running in an xterm/iterm or other
 ;;     terminal emulator.  Only enabled when no graphics
@@ -728,6 +737,20 @@ with tmux and state is lost"
 
 (use-package pyvenv
   :straight t)
+
+;; copilot
+;;     This sets up completion using copilot.  copilot-chat is not
+;;     allowed (yet)
+
+
+(use-package copilot
+  :vc (:url "https://github.com/copilot-emacs/copilot.el"
+            :rev :newest
+            :branch "main")
+  :bind (:map copilot-completion-map ("\t" . copilot-accept-completion))
+  :hook (prog-mode . copilot-mode))
+;(use-package copilot-chat
+;  :straight t)
 
 ;; eglot
 

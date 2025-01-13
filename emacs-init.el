@@ -107,6 +107,9 @@
  '(display-time-mode t)
  '(fci-rule-color "#383838")
  '(initial-frame-alist '((menu-bar-lines . 1)))
+ '(package-vc-selected-packages
+   '((copilot :url "https://github.com/copilot-emacs/copilot.el" :branch
+              "main")))
  '(size-indication-mode t)
  '(tool-bar-mode nil)
  '(viper-case-fold-search t)

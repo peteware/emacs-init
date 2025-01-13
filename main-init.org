@@ -321,7 +321,6 @@
     :delight " FM")
 #+end_src
 
-
 *** outline
 
     #+BEGIN_SRC emacs-lisp
@@ -430,7 +429,15 @@
         :config
         (which-function-mode +1))
     #+end_src
+*** which-key
+    When you've only partially entered part of a keymap
+    this prompts you with possible completions.
 
+    #+begin_src emacs-lisp
+      (use-package which-key
+        :init
+        (setopt which-key-sort-order 'which-key-description-order))
+    #+end_src
 *** xterm-mouse-mode
     Makes the mouse work when running in an xterm/iterm or other
     terminal emulator.  Only enabled when no graphics
@@ -800,7 +807,20 @@
     #+end_src
 
 ** Language server protocol
+*** copilot
+    This sets up completion using copilot.  copilot-chat is not
+    allowed (yet)
 
+    #+begin_src emacs-lisp
+      (use-package copilot
+        :vc (:url "https://github.com/copilot-emacs/copilot.el"
+                  :rev :newest
+                  :branch "main")
+        :bind (:map copilot-completion-map ("\t" . copilot-accept-completion))
+        :hook (prog-mode . copilot-mode))
+      ;(use-package copilot-chat
+      ;  :straight t)
+    #+end_src
 *** eglot
 
     # Update PATH
