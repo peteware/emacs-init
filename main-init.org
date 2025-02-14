@@ -546,31 +546,6 @@
 *** consult
     =consult= has replacements for many built-in commands that offer more features.
 
-**** Use =fd= to find files
-     #+begin_src emacs-lisp
-      (defun consult--fd-builder (input)
-        (let ((fd-command
-               (if (eq 0 (process-file-shell-command "fdfind"))
-                   "fdfind"
-                 "fd")))
-          (pcase-let* ((`(,arg . ,opts) (consult--command-split input))
-                       (`(,re . ,hl) (funcall consult--regexp-compiler
-                                              arg 'extended t)))
-            (when re
-              (cons (append
-                     (list fd-command
-                           "--color=never" "--full-path"
-                           (consult--join-regexps re 'extended))
-                     opts)
-                    hl)))))
-
-      (defun consult-fd (&optional dir initial)
-        (interactive "P")
-        (pcase-let* ((`(,prompt ,paths ,dir) (consult--directory-prompt "Fd" dir))
-                     (default-directory dir))
-          (find-file (consult--find prompt #'consult--fd-builder initial))))
-     #+end_src
-
 **** Consult setup
      #+begin_src emacs-lisp
        ;; Example configuration for Consult
@@ -735,6 +710,14 @@
         (popper-echo-mode +1))
     #+end_src
 *** embark
+    This adds a new interaction model with Emacs.  The usual Emacs
+    interaction is to select an =action= (like =find-file=) and then
+    the object (the actual file).  Embark enables the paradigm where
+    you first select the object and then the action.
+
+    - Read this [[https://github.com/peteware/emacs-init/blob/master/main-init.org?plain=1#L718][fifteen ways to use embark]] for a good overview.
+    - Here's the actual [[https://github.com/oantolin/embark?tab=readme-ov-file][documentation]]
+    
     #+begin_src emacs-lisp
       (use-package embark
         :straight t
@@ -755,6 +738,11 @@
                      '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                        nil
                        (window-parameters (mode-line-format . none)))))
+    #+end_src
+
+
+    Since I also use =consult= this integrates Embark with =consult=.
+    #+begin_src emacs-lisp
       ;; Consult users will also want the embark-consult package.
       (use-package embark-consult
         :straight t
@@ -813,18 +801,22 @@
 
     #+begin_src emacs-lisp
       (use-package copilot
+        :disabled t
         :vc (:url "https://github.com/copilot-emacs/copilot.el"
                   :rev :newest
                   :branch "main")
-        :bind (:map copilot-completion-map ("\t" . copilot-accept-completion))
+        :bind (:map copilot-completion-map ("<tab>" . copilot-accept-completion))
         :hook (prog-mode . copilot-mode))
       ;(use-package copilot-chat
       ;  :straight t)
     #+end_src
 *** eglot
+    This enables using language server process (LSP).
 
-    # Update PATH
-    # pip install 'python-lsp-server[all]' pylsp-rope rope python-lsp-ruff ruff
+    You may need to use =pyvenv-activate=
+    #+begin_src shell
+    pip install 'python-lsp-server[all]' pylsp-rope rope python-lsp-ruff ruff
+    #+end_src
 
     #+begin_src emacs-lisp
       (defun pw/eglot-format-safe()
@@ -1757,6 +1749,12 @@
       (setq-default bidi-paragraph-direction 'left-to-right)
     #+END_SRC
 *** Misc settings
+
+    I don't care if there are running processes, just
+    exit emacs
+    #+begin_src emacs-lisp
+      (setq confirm-kill-processes nil)
+    #+end_src
     Make the mark-ring allow =C-SPC= repeatedly
     pop the mark.  =C-X C-<SPC>= pops the global mark-ring
     and then =C-SPC= immediately after pops next item.

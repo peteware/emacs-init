@@ -486,30 +486,6 @@ with tmux and state is lost"
   ;(setq completion-category-defaults nil)
   (setq completion-category-overrides '((file (styles partial-completion)))))
 
-;; Use =fd= to find files
-
-(defun consult--fd-builder (input)
-  (let ((fd-command
-         (if (eq 0 (process-file-shell-command "fdfind"))
-             "fdfind"
-           "fd")))
-    (pcase-let* ((`(,arg . ,opts) (consult--command-split input))
-                 (`(,re . ,hl) (funcall consult--regexp-compiler
-                                        arg 'extended t)))
-      (when re
-        (cons (append
-               (list fd-command
-                     "--color=never" "--full-path"
-                     (consult--join-regexps re 'extended))
-               opts)
-              hl)))))
-
-(defun consult-fd (&optional dir initial)
-  (interactive "P")
-  (pcase-let* ((`(,prompt ,paths ,dir) (consult--directory-prompt "Fd" dir))
-               (default-directory dir))
-    (find-file (consult--find prompt #'consult--fd-builder initial))))
-
 ;; Consult setup
 
 ;; Example configuration for Consult
@@ -672,6 +648,14 @@ with tmux and state is lost"
   (popper-echo-mode +1))
 
 ;; embark
+;;     This adds a new interaction model with Emacs.  The usual Emacs
+;;     interaction is to select an =action= (like =find-file=) and then
+;;     the object (the actual file).  Embark enables the paradigm where
+;;     you first select the object and then the action.
+
+;;     - Read this [[https://github.com/peteware/emacs-init/blob/master/main-init.org?plain=1#L718][fifteen ways to use embark]] for a good overview.
+;;     - Here's the actual [[https://github.com/oantolin/embark?tab=readme-ov-file][documentation]]
+    
 
 (use-package embark
   :straight t
@@ -692,6 +676,12 @@ with tmux and state is lost"
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
                  (window-parameters (mode-line-format . none)))))
+
+
+
+
+;; Since I also use =consult= this integrates Embark with =consult=.
+
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
   :straight t
@@ -744,19 +734,14 @@ with tmux and state is lost"
 
 
 (use-package copilot
+  :disabled t
   :vc (:url "https://github.com/copilot-emacs/copilot.el"
             :rev :newest
             :branch "main")
-  :bind (:map copilot-completion-map ("\t" . copilot-accept-completion))
+  :bind (:map copilot-completion-map ("<tab>" . copilot-accept-completion))
   :hook (prog-mode . copilot-mode))
 ;(use-package copilot-chat
 ;  :straight t)
-
-;; eglot
-
-;;     # Update PATH
-;;     # pip install 'python-lsp-server[all]' pylsp-rope rope python-lsp-ruff ruff
-
 
 (defun pw/eglot-format-safe()
   (interactive)
@@ -1571,9 +1556,16 @@ with tmux and state is lost"
 (setq-default bidi-paragraph-direction 'left-to-right)
 
 ;; Misc settings
-;;     Make the mark-ring allow =C-SPC= repeatedly
-;;     pop the mark.  =C-X C-<SPC>= pops the global mark-ring
-;;     and then =C-SPC= immediately after pops next item.
+
+;;     I don't care if there are running processes, just
+;;     exit emacs
+
+(setq confirm-kill-processes nil)
+
+
+;; Make the mark-ring allow =C-SPC= repeatedly
+;; pop the mark.  =C-X C-<SPC>= pops the global mark-ring
+;; and then =C-SPC= immediately after pops next item.
 
 (setq set-mark-command-repeat-pop t)
 
