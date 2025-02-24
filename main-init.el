@@ -743,6 +743,15 @@ with tmux and state is lost"
 ;(use-package copilot-chat
 ;  :straight t)
 
+;; eglot
+;;     This enables using language server process (LSP).
+
+;;     You may need to use =pyvenv-activate=
+;;     #+begin_example
+;;     pip install 'python-lsp-server[all]' pylsp-rope rope python-lsp-ruff ruff
+;;     #+end_example
+
+
 (defun pw/eglot-format-safe()
   (interactive)
   (if eglot--managed-mode
@@ -1389,21 +1398,11 @@ with tmux and state is lost"
 
 ;; deeper-blue theme
 ;;     I like the darker background of this theme and the colors are a
-;;     little brighter.  Swiched to this from =timu-caribbean-theme= on
-;;     2024-11-19.
+;;     little brighter.
 
-
-(load-theme 'deeper-blue)
+;(load-theme 'deeper-blue)
 
 ;; timu-caribbean-theme
-;;     I've liked these themes:
-
-;;     - modus theme
-;;     - nord theme
-;;     - timu-caribbean-theme
-
-;;     Currently, liking timu-carbbean-theme.  Ugg, switched
-;;     to =deeper-blue= on 2024-11-19
 
 (use-package timu-caribbean-theme
   :disabled t
@@ -1413,9 +1412,7 @@ with tmux and state is lost"
   (load-theme 'timu-caribbean t))
 
 ;; modus theme
-;;     Previously, I liked the "nord" theme but recently
-;;     the higher visibility offered by modus has been better.
-;;     On 2024-10-31 I switched to timu-caribbean-theme
+;;     The higher visibility offered by modus is nice
 
 ;;     I've chosen the darker theme, modus-vivendi with a few
 ;;     customizations.  It's well documented at:
@@ -1424,8 +1421,8 @@ with tmux and state is lost"
 
 
 (use-package modus-themes
-  :disabled t
-  ;:straight t
+  ;:disabled t
+  :straight t
   :init
   ;; Add all your customizations prior to loading the themes
   (setq modus-themes-italic-constructs nil
@@ -1436,8 +1433,7 @@ with tmux and state is lost"
   (load-theme 'modus-vivendi t))
 
 ;; nord theme
-;;     I've been trying to find a theme that works well
-;;     with iterm2, emacs-25 and emacs-26.
+;;     This theme works well with with iterm2, emacs-25 and emacs-26.
 
 ;;     If using iterm, you should change it to use following
 ;;     color scheme:

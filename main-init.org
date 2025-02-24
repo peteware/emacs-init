@@ -814,9 +814,9 @@
     This enables using language server process (LSP).
 
     You may need to use =pyvenv-activate=
-    #+begin_src shell
+    #+begin_example
     pip install 'python-lsp-server[all]' pylsp-rope rope python-lsp-ruff ruff
-    #+end_src
+    #+end_example
 
     #+begin_src emacs-lisp
       (defun pw/eglot-format-safe()
@@ -1576,23 +1576,25 @@
           (powerline-default-theme)))
     #+END_SRC
 
+** Themes
+
+Here's my history of using themes.
+
+| Name                 |    Started |      Ended |
+|----------------------+------------+------------|
+| modus-vivendi        | 2025-02-14 |            |
+| deeper-blue          | 2024-11-19 | 2025-02-14 |
+| timu-caribbean-theme | 2024-10-31 | 2024-11-19 |
+| nord                 |            | 2024-10-31 |
+- 
+
 *** deeper-blue theme
     I like the darker background of this theme and the colors are a
-    little brighter.  Swiched to this from =timu-caribbean-theme= on
-    2024-11-19.
-
+    little brighter.
     #+begin_src emacs-lisp
-      (load-theme 'deeper-blue)
+      ;(load-theme 'deeper-blue)
     #+end_src
 *** timu-caribbean-theme
-    I've liked these themes:
-
-    - modus theme
-    - nord theme
-    - timu-caribbean-theme
-
-    Currently, liking timu-carbbean-theme.  Ugg, switched
-    to =deeper-blue= on 2024-11-19
     #+begin_src emacs-lisp
       (use-package timu-caribbean-theme
         :disabled t
@@ -1601,11 +1603,8 @@
         (setq timu-caribbean-mode-line-border t)
         (load-theme 'timu-caribbean t))
     #+end_src
-
 *** modus theme
-    Previously, I liked the "nord" theme but recently
-    the higher visibility offered by modus has been better.
-    On 2024-10-31 I switched to timu-caribbean-theme
+    The higher visibility offered by modus is nice
 
     I've chosen the darker theme, modus-vivendi with a few
     customizations.  It's well documented at:
@@ -1614,8 +1613,8 @@
 
     #+begin_src emacs-lisp
       (use-package modus-themes
-        :disabled t
-        ;:straight t
+        ;:disabled t
+        :straight t
         :init
         ;; Add all your customizations prior to loading the themes
         (setq modus-themes-italic-constructs nil
@@ -1626,8 +1625,7 @@
         (load-theme 'modus-vivendi t))
     #+end_src
 *** nord theme
-    I've been trying to find a theme that works well
-    with iterm2, emacs-25 and emacs-26.
+    This theme works well with with iterm2, emacs-25 and emacs-26.
 
     If using iterm, you should change it to use following
     color scheme:
