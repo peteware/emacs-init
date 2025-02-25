@@ -735,9 +735,7 @@ with tmux and state is lost"
 
 (use-package copilot
   :disabled t
-  :vc (:url "https://github.com/copilot-emacs/copilot.el"
-            :rev :newest
-            :branch "main")
+  :straight (:host github :repo "copilot-emacs/copilot.el")
   :bind (:map copilot-completion-map ("<tab>" . copilot-accept-completion))
   :hook (prog-mode . copilot-mode))
 ;(use-package copilot-chat
