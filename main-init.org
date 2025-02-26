@@ -1,22 +1,21 @@
-
 #+STARTUP: showeverything
 #+PROPERTY: header-args  :tangle yes :comments org
 * Emacs setup
   My configurations are based on [[https://github.com/jwiegley/use-package][use-package.el]] which
   combines the loading of a package along with its configuration.
   I also rely on [[https://github.com/raxod502/straight.el][straight.el]] to download extra packages.
-  
-  This file is written with [[https://orgmode.org/][org-mode]] and then [[https://orgmode.org/manual/Extracting-source-code.html#Extracting-source-code][tangled]] to 
+
+  This file is written with [[https://orgmode.org/][org-mode]] and then [[https://orgmode.org/manual/Extracting-source-code.html#Extracting-source-code][tangled]] to
   produce the actual source.
 
-** A few setup things  
-  
+** A few setup things
+
    You need to do a few things to get emacs to load
    this file, =main-init.el=:
 
-** ~/.emacs: where it starts 
+** ~/.emacs: where it starts
    I have this in my =~/.emacs= and =~/.xemacs/init.el=:
-   
+
    #+BEGIN_EXAMPLE
    (add-to-list 'load-path "~/usr/emacs")
    (require 'main-init)
@@ -146,7 +145,7 @@
 *** Setup use-package
    You may need to =M-x package-install use-package= before
    any of this works
-   
+
    If a package is not available then ~use-package~ ignores it.
    You can also not use a package by adding =:disabled t= to use-package
 
@@ -371,7 +370,7 @@
 *** saveplace
     This records the location of every file you visit and
     restores when you vist a file, goes to that location.  I also save
-    the file every couple hours because I don't always quit emacs 
+    the file every couple hours because I don't always quit emacs
 
     #+BEGIN_SRC emacs-lisp
     (use-package saveplace
@@ -397,7 +396,7 @@
 
 *** tool-bar
     Turn the toolbar off.  I also turn it off in my .Xdefaults with:
-    
+
     Emacs.toolBar:            0
 
     which keeps it from displaying on startup
@@ -485,63 +484,94 @@
     #+END_SRC
 *** menu-bar (disabled)
     Turn the menubar off on terminal windows
-    
+
     #+BEGIN_SRC emacs-lisp
       (use-package menu-bar
-	:config
-	(menu-bar-mode (if (display-graphic-p) 1 -1)))
+        :config
+        (menu-bar-mode (if (display-graphic-p) 1 -1)))
     #+END_SRC
 
 *** auto-revert
     "This section exists to turn off the string in the modeline"
-    
+
     #+begin_src emacs-lisp
       (use-package autorevert
         :delight auto-revert-mode)
       (use-package outline
         :delight outline-minor-mode)
     #+end_src
-** Vertico Completion
+** Completion
 
-   vertico is a framework for doing completion.  By itself, needs to
-   load other packages.
-   
+   This section isn't entirely about completion and there are
+   some other packages that depend on this setup.
+
+   If you picture doing something like ="C-x C-f"= (~find-file~) then this section
+   configures how the list of choices are made, displayed, and actions taken.  The
+   packages to do this are:
+
+   - =vertico= displays the completions in a vertical list in the mini-buffer
+     or a grid in the mini-buffer or a long list in a new buffer.
+   - =orderless= controls how the items are completed.  For example
+     matching a substring or any word.
+   - =consult= isn't really about completion but instead changes
+     many built in commands so while doing completion it previews
+     what would happen.  For example, when doing "=C-x b=" the
+     buffer of the current selection in the completions is displayed.
+   - =embark= adds a new interaction mode to emacs.  It changes emacs
+     from mode of (1) choose command; (2) choose what it operates on
+     to an additional mode that instead (1) choose what to operate on;
+     (2) choose command.
+
 *** vertico
-   This is the base package.
+   This configures how the list of completions is displayed.  it's
+   essentially a vertical list with variations depending on the
+   command or command category.  annotations about each item
+   can be included depending on the format of the list.
+
+   see [[https://github.com/minad/vertico?tab=readme-ov-file][vertico]] for full details
 
    #+begin_src emacs-lisp
-          (use-package vertico
-            :straight t
-            :bind (:map vertico-map
-                        ("C-i" . vertico-quick-insert)
-                        ("C-o" . vertico-quick-exit)
-                        ("M-B" . vertico-buffer)
-                        ("M-G" . vertico-multiform-grid)
-                        ("M-F" . vertico-multiform-flat)
-                        ("M-R" . vertico-multiform-reverse)
-                        ("M-U" . vertico-multiform-unobtrusive)
-                        ("TAB" . minibuffer-complete))
-            :init
-            (progn
-             ;; Configure the display per command.
-             ;; Use a buffer with indices for imenu
-             ;; and a flat (Ido-like) menu for M-x.
-             (setq vertico-multiform-commands
-                   '((consult-imenu buffer indexed)
-                     (execute-extended-command grid)))
+     (use-package vertico
+       :straight t
+       :init
+       (progn
+        ;; configure the display per command.
+        ;; use a buffer with indices for imenu
+        ;; and a flat (ido-like) menu for m-x.
+        (setq vertico-multiform-commands
+              '((consult-imenu buffer indexed)
+                (execute-extended-command grid)))
 
-             ;; Configure the display per completion category.
-             ;; Use the grid display for files and a buffer
-             ;; for the consult-grep commands.
-             (setq vertico-multiform-categories
-                   '((file grid)
-                     (consult-grep buffer)))
+        ;; configure the display per completion category.
+        ;; use the grid display for files and a buffer
+        ;; for the consult-grep commands.
+        (setq vertico-multiform-categories
+              '((file grid)
+                (consult-grep grid)))
 
-             (vertico-mode)
-             (vertico-multiform-mode)))
+        (vertico-mode)
+        (vertico-multiform-mode)))
    #+end_src
 
+*** marginalia
+    This adds annotations to the completions.
+
+    See [[https://github.com/minad/marginalia][marginalia]] for more details
+
+    #+begin_src emacs-lisp
+      (use-package marginalia
+        :straight t
+        :bind (("M-A" . marginalia-cycle))
+        :init
+        (marginalia-mode))
+    #+end_src
+
+
 *** orderless
+    This configures so completion does partial word matches
+    on the list of completions.
+
+    See [[https://github.com/oantolin/orderless][orderless]] for more details
 
     #+begin_src emacs-lisp
             (use-package orderless
@@ -555,7 +585,14 @@
               (setq completion-category-overrides '((file (styles partial-completion)))))
     #+end_src
 *** consult
-    =consult= has replacements for many built-in commands that offer more features.
+    This configures many built-in commands give a preview of the current
+    item in the selection list.  For example, when choosing a buffer the
+    current selections buffer is displayed.
+
+    - =embark-consult= integrates =embark= with =consult=
+    - =consult-ag= integrates =silver searcher= (=ag=) with =consult=
+
+    See [[https://github.com/minad/consult][consult]] for more details
 
 **** Consult setup
      #+begin_src emacs-lisp
@@ -595,7 +632,6 @@
                 ("M-g i" . consult-imenu)
                 ("M-g I" . consult-imenu-multi)
                 ;; M-s bindings (search-map)
-                                               ;("M-s d" . consult-find)
                 ("M-s D" . consult-locate)
                 ("M-s g" . consult-grep)
                 ("M-s G" . consult-git-grep)
@@ -693,30 +729,6 @@
 
 #+end_src
 
-*** popper
-    This makes it easy to make temporary (aka popup) buffers
-    take less space and quickly disappear
-    #+begin_src emacs-lisp
-      (use-package popper
-        :straight t
-        :bind (("C-`"   . popper-toggle)
-               ("M-`"   . popper-cycle)
-               ("C-M-`" . popper-toggle-type))
-        :init
-        (setq popper-reference-buffers
-              '("\\*Messages\\*"
-                "Output\\*$"
-                "\\*Async Shell Command\\*"
-                "\\*Flymake Diagnostic\\*"
-                "\\*eldoc\\*"
-                occur-mode
-                flymake-mode
-                flymake-diagnostics-buffer-mode
-                help-mode
-                compilation-mode))
-        (popper-mode +1)
-        (popper-echo-mode +1))
-    #+end_src
 *** embark
     This adds a new interaction model with Emacs.  The usual Emacs
     interaction is to select an =action= (like =find-file=) and then
@@ -725,7 +737,7 @@
 
     - Read this [[https://github.com/peteware/emacs-init/blob/master/main-init.org?plain=1#L718][fifteen ways to use embark]] for a good overview.
     - Here's the actual [[https://github.com/oantolin/embark?tab=readme-ov-file][documentation]]
-    
+
     #+begin_src emacs-lisp
       (use-package embark
         :straight t
@@ -758,20 +770,6 @@
         :hook
         (embark-collect-mode . consult-preview-at-point-mode))
     #+end_src
-
-*** company
-    company-mode adds asynchronous prompts.  It's particularly useful
-    when using eglot (emacs's language server protocol interface).
-
-    #+begin_src emacs-lisp
-      (use-package company
-        :straight t
-        :delight
-        :bind (("C-c ." . company-complete))
-        :hook ((prog-mode . company-mode)
-               (LaTeX-mode . company-mode)))
-    #+end_src
-
 *** Consult search with silver searcher
 
     #+begin_src emacs-lisp
@@ -781,16 +779,31 @@
         :bind ("C-c k" . consult-ag))
     #+end_src
 
-*** marginalia adds decorations to completions
 
+*** popper
+    This makes it easy to make temporary (aka popup) buffers
+    take less space and quickly disappear
     #+begin_src emacs-lisp
-      (use-package marginalia
+      (use-package popper
         :straight t
-        :bind (("M-A" . marginalia-cycle))
+        :bind (("C-`"   . popper-toggle)
+               ("M-`"   . popper-cycle)
+               ("C-M-`" . popper-toggle-type))
         :init
-        (marginalia-mode))
+        (setq popper-reference-buffers
+              '("\\*Messages\\*"
+                "Output\\*$"
+                "\\*Async Shell Command\\*"
+                "\\*Flymake Diagnostic\\*"
+                "\\*eldoc\\*"
+                occur-mode
+                flymake-mode
+                flymake-diagnostics-buffer-mode
+                help-mode
+                compilation-mode))
+        (popper-mode +1)
+        (popper-echo-mode +1))
     #+end_src
-
 *** Python environments
 
     This allows one to manually switch the python
@@ -803,6 +816,10 @@
     #+end_src
 
 ** Language server protocol
+   Setting up Language Server Protocol (LSP) is rather involved.
+
+   - =copilot= Is not approved for use.
+   - =company=
 *** copilot
     This sets up completion using copilot.  copilot-chat is not
     allowed (yet)
@@ -816,6 +833,22 @@
       ;(use-package copilot-chat
       ;  :straight t)
     #+end_src
+*** company
+    =company-mode= adds inline completion based on contents in a file.  It supports many
+    backends such as =eglot= (emacs's language server protocol interface).
+
+    See [[https://company-mode.github.io][company-mode]] for more details
+
+    #+begin_src emacs-lisp
+      (use-package company
+        :straight t
+        :delight
+        :bind (("C-c ." . company-complete))
+        :config (setq company-selection-wrap-around t)
+        :hook ((prog-mode . company-mode)
+               (LaTeX-mode . company-mode)))
+    #+end_src
+
 *** eglot
     This enables using language server process (LSP).
 
@@ -858,6 +891,7 @@
         (setq eldoc-echo-area-use-multiline-p nil))
 
       (use-package eldoc-box
+        :after eglot
         :straight t
         :delight eldoc-box-hover-mode
         :bind (:map eglot-mode-map
@@ -865,13 +899,13 @@
                                               ;:hook (eglot-managed-mode . eldoc-box-hover-mode)
         )
     #+end_src
-         
+
 ** IVY completion
 
    This section implements my preferences for using IVY to do
    completion.  2023-02-21 switched to using vertico and
    disabled all of these.
-   
+
 *** prescient
     Provides better sorting of selections
     #+begin_src emacs-lisp
@@ -930,18 +964,18 @@
     #+BEGIN_SRC emacs-lisp
       (use-package counsel
         :disabled t
-	:after ivy
-	:straight t
-	:delight counsel-mode
-	:bind (("C-c g" .  'counsel-git)
-	       ("C-c j" .  'counsel-file-jump)
-	       ("C-c k" .  'counsel-ag)
-	       ;("C-x b" .  'counsel-switch-buffer)
-	       ;("C-c s" .  'counsel-switch-to-shell-buffer)
-	       )
-	:config 
-	(progn (counsel-mode -1)
-	       (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
+        :after ivy
+        :straight t
+        :delight counsel-mode
+        :bind (("C-c g" .  'counsel-git)
+               ("C-c j" .  'counsel-file-jump)
+               ("C-c k" .  'counsel-ag)
+               ;("C-x b" .  'counsel-switch-buffer)
+               ;("C-c s" .  'counsel-switch-to-shell-buffer)
+               )
+        :config
+        (progn (counsel-mode -1)
+               (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
     #+END_SRC
 
 ** Non-standard packages loaded immediately
@@ -1031,22 +1065,22 @@
     #+END_EXAMPLE
     #+BEGIN_SRC emacs-lisp
       (use-package clang-format+
-	:straight t)
+        :straight t)
     #+END_SRC
 *** ansi-color
     #+BEGIN_SRC emacs-lisp
       (use-package ansi-color
-	:after compile
-	:config
-	(progn
-	  (defun pw/colorize-compilation-buffer ()
-	    (let ((inhibit-read-only t))
-	      (ansi-color-apply-on-region compilation-filter-start (point-max))))
-	  (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer)
-	  (setq ansi-color-names-vector ; better contrast colors
-		["black" "red4" "green4" "yellow4"
-		 "#8be9fd" "magenta4" "cyan4" "white"])
-	  (setq ansi-color-map (ansi-color-make-color-map))))
+        :after compile
+        :config
+        (progn
+          (defun pw/colorize-compilation-buffer ()
+            (let ((inhibit-read-only t))
+              (ansi-color-apply-on-region compilation-filter-start (point-max))))
+          (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer)
+          (setq ansi-color-names-vector ; better contrast colors
+                ["black" "red4" "green4" "yellow4"
+                 "#8be9fd" "magenta4" "cyan4" "white"])
+          (setq ansi-color-map (ansi-color-make-color-map))))
     #+END_SRC
 
 *** ediff
@@ -1143,14 +1177,14 @@
 
     #+BEGIN_SRC emacs-lisp
       (use-package org-prefs
-	:after org)
+        :after org)
     #+END_SRC
 
 *** whitespace
     Make "bad" whitespace be visible.  This causes tabs, and whitespace
     at beginning and end of the buffer as well as at the end of the
     line to highlight
-    
+
     Use =M-x whitespace-cleanup= to fix all problems
 
     #+BEGIN_SRC emacs-lisp
@@ -1162,7 +1196,7 @@
         (setq whitespace-line-column nil)))
     #+END_SRC
 
-** Non-standard packages that defer loading 
+** Non-standard packages that defer loading
 
    These packages are not loaded until used (e.g. minimal cost on
    startup)
@@ -1188,7 +1222,7 @@
     #+begin_src emacs-lisp
       (use-package python
         :init (setq python-flymake-command '("ruff" "--quiet" "--stdin-filename=stdin" "-")))
-  
+
     #+end_src
 
 *** ruff
@@ -1220,7 +1254,7 @@
     #+end_src
 
 *** comint-prefs
-    
+
     Setup preferences for shell, compile and other comint based commands
 
     #+BEGIN_SRC emacs-lisp
@@ -1295,9 +1329,9 @@
       :mode ("\\.lrl\\'" . lrl-mode))
     #+END_SRC
 *** magit
-    
+
     Provide a way of interacting with a Git repository.
-    
+
     Download package if not installed!
     #+BEGIN_SRC emacs-lisp
       (use-package magit
@@ -1320,7 +1354,7 @@
 *** forge
     This implements an interface to github that
     integrates with magit.  It's accessible with
-    =N= in magit. 
+    =N= in magit.
 
     #+BEGIN_SRC emacs-lisp
       (use-package forge
@@ -1346,7 +1380,7 @@
         :config (magit-todos-mode))
     #+END_SRC
 *** multiple-cursors
-    
+
     You can place multiple cursors in a buffer
     and have whatever you do affect each item
     #+BEGIN_SRC emacs-lisp
@@ -1368,11 +1402,11 @@
       :bind (("C-c f" . ag))
       :config (setq ag-reuse-buffers t))
     #+END_SRC
-  
+
 *** pw-misc
-    
+
     Some commands I find useful
-    
+
     #+BEGIN_SRC emacs-lisp
       (use-package pw-misc
         :after compile
@@ -1383,7 +1417,7 @@
 
     #+END_SRC
 *** pw-trunc-lines
-    
+
     Toggle truncation of long lines
     #+BEGIN_SRC emacs-lisp
       (use-package pw-trunc-lines
@@ -1430,7 +1464,7 @@
         :bind (("C-c s" . 'pw/shell-scomplete-to-shell-buffer)
                ("C-c 4 s" . 'pw/shell-scomplete-to-shell-other)))
     #+END_SRC
-    
+
 *** treemacs
     #+BEGIN_SRC emacs-lisp
       (use-package treemacs
@@ -1550,7 +1584,7 @@
     #+END_SRC
 
 *** zoom-frm
-    
+
     Much like face-remap that adds test-scale-increase and
     text-scale-decrease I use this to change the entire window
     instead of the buffer
@@ -1563,7 +1597,7 @@
     #+END_SRC
 
 *** powerline
-    
+
     Make the modeline have lots of pretty graphics.
 
     For `iterm2` I had to install some extra fonts
@@ -1572,7 +1606,7 @@
          https://github.com/powerline/fonts
 
     Disabled 2024-11-07 as I liked the basic timu-caribbean-theme
-    
+
     #+BEGIN_SRC emacs-lisp
       (use-package powerline
         :disabled t
@@ -1592,7 +1626,7 @@ Here's my history of using themes.
 | deeper-blue          | 2024-11-19 | 2025-02-14 |
 | timu-caribbean-theme | 2024-10-31 | 2024-11-19 |
 | nord                 |            | 2024-10-31 |
-- 
+-
 
 *** deeper-blue theme
     I like the darker background of this theme and the colors are a
@@ -1661,7 +1695,7 @@ Here's my history of using themes.
     message or the message in the echo area.  You'll need to change
     =inhibit-startup-echo-area-message= to your login to disable start
     message in echo area.
-    
+
     #+BEGIN_SRC emacs-lisp
     (setq initial-scratch-message "")
     (setq inhibit-startup-screen t)
@@ -1709,7 +1743,7 @@ Here's my history of using themes.
     - ~scroll-step~ 0 works better with Emacs which now supports
       ~scroll-conservatively~.
     - ~scroll-conservatively~ when > 100 then Emacs scrolls just
-      enough to make point visible.  This actuall works well 
+      enough to make point visible.  This actuall works well
       for shell buffers but I also like it other places.
     - ~scroll-margin~ says to keep this many lines
        above or below so you get some context.
@@ -1721,11 +1755,11 @@ Here's my history of using themes.
     (setq scroll-margin 0)
     (setq scroll-preserve-screen-position 'keep)
     #+END_SRC
-    
+
     I set horizontal scrolling because I'd have trouble with
     long lines in shell output.  This seemed to get
     them to display faster by actually slowing things down
-    
+
     - ~hscroll-margin~ is how close cursor gets before
       doing horizontal scrolling
     - ~hscroll-step~ is how far to scroll when marg is reached.
@@ -1795,7 +1829,7 @@ Here's my history of using themes.
 ** X11 configuration
 
 *** ~/.Xdefaults: Configuring X11 (optional)
-   
+
    In my ~/.Xdefaults I have these lines
    #+BEGIN_EXAMPLE
 Emacs*background: grey15
@@ -1849,14 +1883,14 @@ Emacs.font: Bitstream Vera Sans Mono-16
     (setq x-select-enable-primary t)
     #+END_SRC
 
-    
+
     Alternatively, in Exceed, set the "X Selection Associated with
     Edit Operations:" to be "PRIMARY" and use these settings.  This lets
     older xterm/mrxvt co-exist with Windows applications.
-    
+
     To copy to an xterm use left-mouse to select the text in emacs and
     then usual paste with middle-mouse to paste to the xterm.
-    
+
     #+BEGIN_SRC emacs-lisp
     ;(setq x-select-enable-clipboard nil)
     ;(setq x-select-enable-primary t)

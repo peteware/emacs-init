@@ -119,7 +119,7 @@
 ;; Setup use-package
 ;;    You may need to =M-x package-install use-package= before
 ;;    any of this works
-   
+
 ;;    If a package is not available then ~use-package~ ignores it.
 ;;    You can also not use a package by adding =:disabled t= to use-package
 
@@ -326,7 +326,7 @@
 ;; saveplace
 ;;     This records the location of every file you visit and
 ;;     restores when you vist a file, goes to that location.  I also save
-;;     the file every couple hours because I don't always quit emacs 
+;;     the file every couple hours because I don't always quit emacs
 
 
 (use-package saveplace
@@ -350,7 +350,7 @@
 
 ;; tool-bar
 ;;     Turn the toolbar off.  I also turn it off in my .Xdefaults with:
-    
+
 ;;     Emacs.toolBar:            0
 
 ;;     which keeps it from displaying on startup
@@ -435,7 +435,7 @@ with tmux and state is lost"
 
 ;; menu-bar (disabled)
 ;;     Turn the menubar off on terminal windows
-    
+
 
 (use-package menu-bar
   :config
@@ -443,7 +443,7 @@ with tmux and state is lost"
 
 ;; auto-revert
 ;;     "This section exists to turn off the string in the modeline"
-    
+
 
 (use-package autorevert
   :delight auto-revert-mode)
@@ -451,40 +451,52 @@ with tmux and state is lost"
   :delight outline-minor-mode)
 
 ;; vertico
-;;    This is the base package.
+;;    This configures how the list of completions is displayed.  it's
+;;    essentially a vertical list with variations depending on the
+;;    command or command category.  annotations about each item
+;;    can be included depending on the format of the list.
+
+;;    see [[https://github.com/minad/vertico?tab=readme-ov-file][vertico]] for full details
 
 
 (use-package vertico
   :straight t
-  :bind (:map vertico-map
-              ("C-i" . vertico-quick-insert)
-              ("C-o" . vertico-quick-exit)
-              ("M-B" . vertico-buffer)
-              ("M-G" . vertico-multiform-grid)
-              ("M-F" . vertico-multiform-flat)
-              ("M-R" . vertico-multiform-reverse)
-              ("M-U" . vertico-multiform-unobtrusive)
-              ("TAB" . minibuffer-complete))
   :init
   (progn
-   ;; Configure the display per command.
-   ;; Use a buffer with indices for imenu
-   ;; and a flat (Ido-like) menu for M-x.
+   ;; configure the display per command.
+   ;; use a buffer with indices for imenu
+   ;; and a flat (ido-like) menu for m-x.
    (setq vertico-multiform-commands
          '((consult-imenu buffer indexed)
            (execute-extended-command grid)))
 
-   ;; Configure the display per completion category.
-   ;; Use the grid display for files and a buffer
+   ;; configure the display per completion category.
+   ;; use the grid display for files and a buffer
    ;; for the consult-grep commands.
    (setq vertico-multiform-categories
          '((file grid)
-           (consult-grep buffer)))
+           (consult-grep grid)))
 
    (vertico-mode)
    (vertico-multiform-mode)))
 
+;; marginalia
+;;     This adds annotations to the completions.
+
+;;     See [[https://github.com/minad/marginalia][marginalia]] for more details
+
+
+(use-package marginalia
+  :straight t
+  :bind (("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+
 ;; orderless
+;;     This configures so completion does partial word matches
+;;     on the list of completions.
+
+;;     See [[https://github.com/oantolin/orderless][orderless]] for more details
 
 
 (use-package orderless
@@ -535,7 +547,6 @@ with tmux and state is lost"
          ("M-g i" . consult-imenu)
          ("M-g I" . consult-imenu-multi)
          ;; M-s bindings (search-map)
-                                        ;("M-s d" . consult-find)
          ("M-s D" . consult-locate)
          ("M-s g" . consult-grep)
          ("M-s G" . consult-git-grep)
@@ -631,30 +642,6 @@ with tmux and state is lost"
          ("C-x C-d" . consult-dir)
          ("C-x C-j" . consult-dir-jump-file)))
 
-;; popper
-;;     This makes it easy to make temporary (aka popup) buffers
-;;     take less space and quickly disappear
-
-(use-package popper
-  :straight t
-  :bind (("C-`"   . popper-toggle)
-         ("M-`"   . popper-cycle)
-         ("C-M-`" . popper-toggle-type))
-  :init
-  (setq popper-reference-buffers
-        '("\\*Messages\\*"
-          "Output\\*$"
-          "\\*Async Shell Command\\*"
-          "\\*Flymake Diagnostic\\*"
-          "\\*eldoc\\*"
-          occur-mode
-          flymake-mode
-          flymake-diagnostics-buffer-mode
-          help-mode
-          compilation-mode))
-  (popper-mode +1)
-  (popper-echo-mode +1))
-
 ;; embark
 ;;     This adds a new interaction model with Emacs.  The usual Emacs
 ;;     interaction is to select an =action= (like =find-file=) and then
@@ -663,7 +650,7 @@ with tmux and state is lost"
 
 ;;     - Read this [[https://github.com/peteware/emacs-init/blob/master/main-init.org?plain=1#L718][fifteen ways to use embark]] for a good overview.
 ;;     - Here's the actual [[https://github.com/oantolin/embark?tab=readme-ov-file][documentation]]
-    
+
 
 (use-package embark
   :straight t
@@ -697,18 +684,6 @@ with tmux and state is lost"
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
-;; company
-;;     company-mode adds asynchronous prompts.  It's particularly useful
-;;     when using eglot (emacs's language server protocol interface).
-
-
-(use-package company
-  :straight t
-  :delight
-  :bind (("C-c ." . company-complete))
-  :hook ((prog-mode . company-mode)
-         (LaTeX-mode . company-mode)))
-
 ;; Consult search with silver searcher
 
 
@@ -717,14 +692,29 @@ with tmux and state is lost"
   :straight t
   :bind ("C-c k" . consult-ag))
 
-;; marginalia adds decorations to completions
+;; popper
+;;     This makes it easy to make temporary (aka popup) buffers
+;;     take less space and quickly disappear
 
-
-(use-package marginalia
+(use-package popper
   :straight t
-  :bind (("M-A" . marginalia-cycle))
+  :bind (("C-`"   . popper-toggle)
+         ("M-`"   . popper-cycle)
+         ("C-M-`" . popper-toggle-type))
   :init
-  (marginalia-mode))
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          "\\*Flymake Diagnostic\\*"
+          "\\*eldoc\\*"
+          occur-mode
+          flymake-mode
+          flymake-diagnostics-buffer-mode
+          help-mode
+          compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1))
 
 ;; Python environments
 
@@ -748,6 +738,21 @@ with tmux and state is lost"
   :hook (prog-mode . copilot-mode))
 ;(use-package copilot-chat
 ;  :straight t)
+
+;; company
+;;     =company-mode= adds inline completion based on contents in a file.  It supports many
+;;     backends such as =eglot= (emacs's language server protocol interface).
+
+;;     See [[https://company-mode.github.io][company-mode]] for more details
+
+
+(use-package company
+  :straight t
+  :delight
+  :bind (("C-c ." . company-complete))
+  :config (setq company-selection-wrap-around t)
+  :hook ((prog-mode . company-mode)
+         (LaTeX-mode . company-mode)))
 
 ;; eglot
 ;;     This enables using language server process (LSP).
@@ -790,6 +795,7 @@ with tmux and state is lost"
   (setq eldoc-echo-area-use-multiline-p nil))
 
 (use-package eldoc-box
+  :after eglot
   :straight t
   :delight eldoc-box-hover-mode
   :bind (:map eglot-mode-map
@@ -865,7 +871,7 @@ with tmux and state is lost"
          ;("C-x b" .  'counsel-switch-buffer)
          ;("C-c s" .  'counsel-switch-to-shell-buffer)
          )
-  :config 
+  :config
   (progn (counsel-mode -1)
          (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
 
@@ -956,8 +962,8 @@ with tmux and state is lost"
         (ansi-color-apply-on-region compilation-filter-start (point-max))))
     (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer)
     (setq ansi-color-names-vector ; better contrast colors
-  	["black" "red4" "green4" "yellow4"
-  	 "#8be9fd" "magenta4" "cyan4" "white"])
+          ["black" "red4" "green4" "yellow4"
+           "#8be9fd" "magenta4" "cyan4" "white"])
     (setq ansi-color-map (ansi-color-make-color-map))))
 
 ;; ediff
@@ -1058,7 +1064,7 @@ with tmux and state is lost"
 ;;     Make "bad" whitespace be visible.  This causes tabs, and whitespace
 ;;     at beginning and end of the buffer as well as at the end of the
 ;;     line to highlight
-    
+
 ;;     Use =M-x whitespace-cleanup= to fix all problems
 
 
@@ -1117,7 +1123,7 @@ with tmux and state is lost"
   :hook (python-mode . python-black-on-save-mode))
 
 ;; comint-prefs
-    
+
 ;;     Setup preferences for shell, compile and other comint based commands
 
 
@@ -1186,9 +1192,9 @@ with tmux and state is lost"
   :mode ("\\.lrl\\'" . lrl-mode))
 
 ;; magit
-    
+
 ;;     Provide a way of interacting with a Git repository.
-    
+
 ;;     Download package if not installed!
 
 (use-package magit
@@ -1210,7 +1216,7 @@ with tmux and state is lost"
 ;; forge
 ;;     This implements an interface to github that
 ;;     integrates with magit.  It's accessible with
-;;     =N= in magit. 
+;;     =N= in magit.
 
 
 (use-package forge
@@ -1235,7 +1241,7 @@ with tmux and state is lost"
   :config (magit-todos-mode))
 
 ;; multiple-cursors
-    
+
 ;;     You can place multiple cursors in a buffer
 ;;     and have whatever you do affect each item
 
@@ -1257,9 +1263,9 @@ with tmux and state is lost"
   :config (setq ag-reuse-buffers t))
 
 ;; pw-misc
-    
+
 ;;     Some commands I find useful
-    
+
 
 (use-package pw-misc
   :after compile
@@ -1269,7 +1275,7 @@ with tmux and state is lost"
   :hook (compilation-mode-hook . pw/no-line-column-number))
 
 ;; pw-trunc-lines
-    
+
 ;;     Toggle truncation of long lines
 
 (use-package pw-trunc-lines
@@ -1372,7 +1378,7 @@ with tmux and state is lost"
   :straight t)
 
 ;; zoom-frm
-    
+
 ;;     Much like face-remap that adds test-scale-increase and
 ;;     text-scale-decrease I use this to change the entire window
 ;;     instead of the buffer
@@ -1384,7 +1390,7 @@ with tmux and state is lost"
           ("C-c 0" . zoom-frm-unzoom)))
 
 ;; powerline
-    
+
 ;;     Make the modeline have lots of pretty graphics.
 
 ;;     For `iterm2` I had to install some extra fonts
@@ -1393,7 +1399,7 @@ with tmux and state is lost"
 ;;          https://github.com/powerline/fonts
 
 ;;     Disabled 2024-11-07 as I liked the basic timu-caribbean-theme
-    
+
 
 (use-package powerline
   :disabled t
@@ -1469,7 +1475,7 @@ with tmux and state is lost"
 ;;     message or the message in the echo area.  You'll need to change
 ;;     =inhibit-startup-echo-area-message= to your login to disable start
 ;;     message in echo area.
-    
+
 
 (setq initial-scratch-message "")
 (setq inhibit-startup-screen t)
@@ -1515,7 +1521,7 @@ with tmux and state is lost"
 ;;     - ~scroll-step~ 0 works better with Emacs which now supports
 ;;       ~scroll-conservatively~.
 ;;     - ~scroll-conservatively~ when > 100 then Emacs scrolls just
-;;       enough to make point visible.  This actuall works well 
+;;       enough to make point visible.  This actuall works well
 ;;       for shell buffers but I also like it other places.
 ;;     - ~scroll-margin~ says to keep this many lines
 ;;        above or below so you get some context.
