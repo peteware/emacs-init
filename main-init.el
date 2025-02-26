@@ -296,6 +296,17 @@
     (setq show-paren-when-point-in-periphery nil)
     (show-paren-mode 1)))
 
+;; recentf
+;;     Save the list of recent files.  Also enables some functionality
+;;     in =consult= to filter to only files in buffer completion.
+
+
+(use-package recentf
+  :init
+  (setq recentf-max-saved-items 100)
+  :config
+  (recentf-mode 1))
+
 ;; savehist
 
 (use-package savehist
@@ -496,11 +507,8 @@ with tmux and state is lost"
          ("C-c M-x" . consult-mode-command)
          ;("C-c h" . consult-history)
          ("C-c k" . consult-ripgrep)
-                                        ;("C-c k" . consult-kmacro)
          ("C-c g" . consult-fd)
-                                        ;("C-c g" . consult-find)
          ("C-c G" . consult-goto-line)
-                                        ;("C-c m" . consult-man)
          ("C-c i" . consult-info)
          ([remap Info-search] . consult-info)
          ;; C-x bindings (ctl-x-map)

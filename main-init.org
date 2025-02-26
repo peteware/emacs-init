@@ -340,6 +340,17 @@
           (show-paren-mode 1)))
     #+END_SRC
 
+*** recentf
+    Save the list of recent files.  Also enables some functionality
+    in =consult= to filter to only files in buffer completion.
+
+    #+begin_src emacs-lisp
+      (use-package recentf
+        :init
+        (setq recentf-max-saved-items 100)
+        :config
+        (recentf-mode 1))
+    #+end_src
 *** savehist
     #+BEGIN_SRC emacs-lisp
     (use-package savehist
@@ -556,11 +567,8 @@
                 ("C-c M-x" . consult-mode-command)
                 ;("C-c h" . consult-history)
                 ("C-c k" . consult-ripgrep)
-                                               ;("C-c k" . consult-kmacro)
                 ("C-c g" . consult-fd)
-                                               ;("C-c g" . consult-find)
                 ("C-c G" . consult-goto-line)
-                                               ;("C-c m" . consult-man)
                 ("C-c i" . consult-info)
                 ([remap Info-search] . consult-info)
                 ;; C-x bindings (ctl-x-map)
