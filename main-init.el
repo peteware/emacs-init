@@ -151,18 +151,20 @@
 
 ;; treesit-auto
 
+;;     I set ~treesit-auto-langs~ to the list of languages I use.  I then ran ~treesit-auto-install-all~
+;;     to get them all compiled and added.  I also did some extra work to support
+;;     - =rust=
+;;     - =typescript-mode= and =tsx-mode=
+;;     - =yaml-mode=
+;;     - =cmake-mode= via package =cmake-ts-mode=
+      
 
-;; (use-package treesit-auto
-;;   :straight t
-;;   :disabled t
-;;   :config
-;;   (progn
-;;     (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
-;;     (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
-;;     (add-to-list 'major-mode-remap-alist
-;;                  '(c-or-c++-mode . c-or-c++-ts-mode))
-;;     (setq treesit-auto-install t)
-;;     (global-treesit-auto-mode)))
+(use-package treesit-auto
+  :straight t
+  :config
+  (setq treesit-auto-langs '(awk bash c cmake cpp css dockerfile go gomod html java javascript json make markdown org perl python rust sql toml tsx typescript typst yaml))
+  (treesit-auto-add-to-auto-mode-alist)
+  (global-treesit-auto-mode))
 
 ;; cc-mode
 ;;     Configure to put .h in c++-mode
@@ -198,7 +200,7 @@
     (setq desktop-save t)
     (setq desktop-dirname "~/.emacs.d/")
     (setq desktop-restore-frames nil)
-    (setq desktop-restore-eager 0)
+    (setq desktop-restore-eager 10)
     (setq desktop-restore-in-current-display t)
     (setq desktop-lazy-verbose nil)
     (setq desktop-lazy-idle-delay 20)
@@ -1284,7 +1286,7 @@ with tmux and state is lost"
   :hook ((c-mode-common makefile-gmake-mode compilation-mode shell-mode) . pw/trunc-lines))
 
 ;; rust
-;;     Configure rust mode so it has syntax highlighting via treesitter and completion via
+;;     Configure rust mode so it has syntax highlighting via tree-sitter and completion via
 ;;     eglot.  Assumes that rust rust-analyzer and rustfmt are installed.  I used homebrew.
 
 (use-package rust-mode
@@ -1308,8 +1310,16 @@ with tmux and state is lost"
 ;;     directory is =typescript/src= and =tsx/src=.
 
 
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+;; (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+;; (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+
+;; yaml
+
+(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-mode))
+
+;; cmake
+
+(use-package cmake-ts-mode)
 
 ;; pw-shell-scomplete
 ;;     Use the existing completion framework to switch shell buffers.  This way it
@@ -1337,6 +1347,7 @@ with tmux and state is lost"
 ;;     of programming languages.  This uses highlighting and folding
 
 (use-package tree-sitter
+  :disabled t
   :straight t
   :delight
   :config
@@ -1345,6 +1356,7 @@ with tmux and state is lost"
     (global-tree-sitter-mode))
 
 (use-package tree-sitter-langs
+  :disabled t
   :straight t)
 (use-package ts-fold
   :disabled t
@@ -1365,6 +1377,7 @@ with tmux and state is lost"
      '((:application tramp :machine "folxdi-ob-963.bloomberg.com")
        (:application tramp :machine "xlnxdv-ob-490.bloomberg.com"))
      'remote-bb-zsh)
+    (setq remote-file-name-access-timeout 5)
     (setq tramp-default-remote-shell "/opt/bb/bin/bash")
     (setq tramp-remote-path  (cons "/home/pware/usr/bin" (cons "/opt/bb/bin" tramp-remote-path)))
     (setq tramp-use-ssh-controlmaster-options nil)))
@@ -1546,6 +1559,16 @@ with tmux and state is lost"
 
 (setq hscroll-margin 1)
 (setq hscroll-step 5)
+
+(use-package ultra-scroll
+  :straight (:host github
+             :repo "jdtsmith/ultra-scroll"
+             :branch "main")
+  :init
+  (setq scroll-conservatively 101 ; important!
+        scroll-margin 0) 
+  :config
+  (ultra-scroll-mode 1))
 
 ;; Incremental search highlighting
 ;;     Incremental search settings
