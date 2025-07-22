@@ -160,10 +160,7 @@
      (require 'use-package)
     #+END_SRC
 
-** Standard packages loaded immediately
-
-   This section is for standard packages that are loaded immediately
-
+** Standard packages
 *** bind-key
     Using bind-key lets you run =M-x describe-personal-keybindings=
     which is a nice way of keep track of what you've changed.
@@ -181,41 +178,6 @@
              ))
     #+END_SRC
 
-*** treesit-auto
-
-    I set ~treesit-auto-langs~ to the list of languages I use.  I then ran ~treesit-auto-install-all~
-    to get them all compiled and added.  I also did some extra work to support
-    - =rust=
-    - =typescript-mode= and =tsx-mode=
-    - =yaml-mode=
-    - =cmake-mode= via package =cmake-ts-mode=
-      
-    #+BEGIN_SRC emacs-lisp
-      (use-package treesit-auto
-        :straight t
-        :config
-        (setq treesit-auto-langs '(awk bash c cmake cpp css dockerfile go gomod html java javascript json make markdown org perl python rust sql toml tsx typescript typst yaml))
-        (treesit-auto-add-to-auto-mode-alist)
-        (global-treesit-auto-mode))
-    #+END_SRC
-
-*** cc-mode
-    Configure to put .h in c++-mode
-    #+BEGIN_SRC emacs-lisp
-      (use-package cc-mode
-        :commands (c-mode c++-mode)
-        :mode ("\\.h$" . c++-mode)
-        :config
-        (setq c-tab-always-indent nil))
-    #+END_SRC
-*** go-mode
-    Load `go-mode' and enable it in 'lsp-deferred-mode'
-    #+BEGIN_SRC emacs-lisp
-      (use-package go-mode
-        :straight t
-        :hook eglot-ensure)
-    #+END_SRC
-
 *** delsel
     I can't handle the active region getting deleted
 
@@ -225,9 +187,24 @@
       (delete-selection-mode -1))
     #+END_SRC
 
+*** saveplace
+    This records the location of every file you visit and
+    restores when you vist a file, goes to that location.  I also save
+    the file every couple hours because I don't always quit emacs
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package saveplace
+      :config
+      (progn
+        (setq-default save-place t)
+        (setq save-place-limit nil)
+        (run-at-time 3600  3600 'save-place-alist-to-file)))
+    #+END_SRC
+
 *** desktop
     This causes the set of files being visited to be restored
-    on startup.
+    on startup.  The =saveplace= makes files open be
+    restored to the last place so load this afte.
     #+BEGIN_SRC emacs-lisp
       (use-package desktop
         :config
@@ -263,7 +240,8 @@
         :hook (after-save . executable-make-buffer-file-executable-if-script-p))
     #+END_SRC
 *** face-remap
-    Change the font size in the current buffer (not the window)
+    Change the font size in the current buffer (not the window).
+    See =zoom-frm= for changing entire frame
 
     #+BEGIN_SRC emacs-lisp
     (use-package face-remap
@@ -312,8 +290,8 @@
     This needs to be loaded fairly early as otherwise the =:delight=
     won't work in with =use-package=.
     #+BEGIN_SRC emacs-lisp
-            (use-package delight
-              :straight t)
+      (use-package delight
+        :straight t)
     #+END_SRC
 
 *** flymake
@@ -367,20 +345,6 @@
                 grep-regexp-history
                 grep-files-history))
         (savehist-mode 1)))
-    #+END_SRC
-
-*** saveplace
-    This records the location of every file you visit and
-    restores when you vist a file, goes to that location.  I also save
-    the file every couple hours because I don't always quit emacs
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package saveplace
-      :config
-      (progn
-        (setq-default save-place t)
-        (setq save-place-limit nil)
-        (run-at-time 3600  3600 'save-place-alist-to-file)))
     #+END_SRC
 
 *** server
@@ -448,7 +412,9 @@
     #+begin_src emacs-lisp
       (use-package which-key
         :init
-        (setopt which-key-sort-order 'which-key-description-order))
+        (setopt which-key-sort-order 'which-key-description-order)
+        :config
+        (which-key-mode))
     #+end_src
 *** xterm-mouse-mode
     Makes the mouse work when running in an xterm/iterm or other
@@ -484,7 +450,7 @@
         (setq interprogram-cut-function 'iterm-cut-base64))
 
     #+END_SRC
-*** menu-bar (disabled)
+*** menu-bar
     Turn the menubar off on terminal windows
 
     #+BEGIN_SRC emacs-lisp
@@ -502,6 +468,436 @@
       (use-package outline
         :delight outline-minor-mode)
     #+end_src
+*** ansi-color
+    #+BEGIN_SRC emacs-lisp
+      (use-package ansi-color
+        :after compile
+        :config
+        (progn
+          (defun pw/colorize-compilation-buffer ()
+            (let ((inhibit-read-only t))
+              (ansi-color-apply-on-region compilation-filter-start (point-max))))
+          (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer)
+          (setq ansi-color-names-vector ; better contrast colors
+                ["black" "red4" "green4" "yellow4"
+                 "#8be9fd" "magenta4" "cyan4" "white"])
+          (setq ansi-color-map (ansi-color-make-color-map))))
+    #+END_SRC
+
+*** ediff
+    A nice graphical diff Make sure that ediff ignores all whitespace
+    differences and highlights the individual differences
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package ediff
+      :commands ediff-load-version-control
+      :bind (("C-c =" . pw/ediff-current))
+      :config
+      (progn
+        (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+        (setq ediff-split-window-function 'split-window-horizontally)
+        (setq ediff-diff-options "-w")
+        (setq-default ediff-auto-refine 'on))
+      :init
+      (progn
+        (defun pw/ediff-current (arg)
+          "Run ediff-vc-internal on the current file against it's latest revision.
+           If prefix arg, use it as the revision number"
+          (interactive "P")
+          (ediff-load-version-control t)
+          (let ((rev (if arg (format "%d" arg) "")))
+            (funcall
+             (intern (format "ediff-%S-internal" ediff-version-control-package))
+             rev "" nil)))))
+    #+END_SRC
+
+*** follow
+    This makes a single file wrap around between two windows.
+    Try ^X-3 and then move to the top or bottom of the window
+    and the other window scrolls.  I bound F7 to do get
+    rid of the other windows and split.
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package follow
+      :bind ("<f7>" . follow-delete-other-windows-and-split))
+    #+END_SRC
+
+*** grep
+    ~rgrep~ recursively greps for a pattern.  It uses a key to specify
+    filenames and ignores directories like CVS.  "cchh" is all C++
+    files and headers.
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package grep
+      ;:bind (("C-c g" . grep))
+      :defer 5
+      :config
+      (progn
+        (setq grep-files-aliases
+              '(("all" . "* .*")
+                ("el" . "*.el")
+                ("ch" . "*.[ch]")
+                ("c" . "*.c")
+                ("cc" . "*.cc *.cxx *.cpp *.C *.CC *.c++")
+                ("cchh" . "*.cc *.[ch]xx *.[ch]pp *.[CHh] *.CC *.HH *.[ch]++")
+                ("hh" . "*.hxx *.hpp *.[Hh] *.HH *.h++")
+                ("h" . "*.h")
+                ("l" . "[Cc]hange[Ll]og*")
+                ("m" . "[Mm]akefile* *.mk")
+                ("tex" . "*.tex")
+                ("texi" . "*.texi")
+                ("asm" . "*.[sS]")
+                ("code" . "*.c *.C *.h *.cpp *.cc *.f *.py")))))
+    #+END_SRC
+
+*** hideshow
+    Setup commands and menus to hide/show blocks of code
+    #+BEGIN_SRC emacs-lisp
+    (use-package hideshow
+      :commands hs-minor-mode
+      :init
+      (progn
+        (add-hook 'c++-mode-hook 'hs-minor-mode)
+        (add-hook 'c-mode-hook 'hs-minor-mode)))
+    #+END_SRC
+*** org
+    org-mode provides an outline, todo, diary, calendar like interface.
+
+    I load a bunch of other settings for myself in =org-prefs=
+    #+BEGIN_SRC emacs-lisp
+      (use-package org
+        :mode ("\\.org\\'" . org-mode)
+        :bind (;("C-c l" . org-store-link)
+               ("C-c a" . org-agenda)
+               ("C-c r" . org-capture))
+        :config (progn
+                  (setq org-export-backends '(ascii html icalendar latex md))
+                  (setq org-list-allow-alphabetical t)))
+    #+END_SRC
+*** whitespace
+    Make "bad" whitespace be visible.  This causes tabs, and whitespace
+    at beginning and end of the buffer as well as at the end of the
+    line to highlight
+
+    Use =M-x whitespace-cleanup= to fix all problems
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package whitespace
+      :bind ("C-c SPC" . whitespace-mode)
+      :config
+      (progn
+        (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
+        (setq whitespace-line-column nil)))
+    #+END_SRC
+
+*** ctrlf
+    This replaces =swiper= and built in incremental search
+    #+begin_src emacs-lisp
+      (use-package ctrlf
+        :straight t
+        :defer 5
+        :config
+        (progn
+          (setq ctrlf-auto-recenter nil) ; 't fails when multiple buffers open
+          (setq ctrlf-mode-bindings
+                '(([remap isearch-forward        ] . ctrlf-forward-fuzzy-regexp)
+                  ([remap isearch-backward       ] . ctrlf-backward-fuzzy-regexp)
+                  ([remap isearch-forward-regexp ] . ctrlf-forward-regexp)))
+          (ctrlf-mode +1)))
+    #+end_src
+*** scratch-ext
+    Make *scratch* buffers get saved
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package scratch-ext
+      :defer 5
+      :straight t
+      :config
+      (save-excursion
+        (setq scratch-ext-log-directory "~/.emacs.d/scratch")
+        (if (not (file-exists-p scratch-ext-log-directory))
+            (mkdir scratch-ext-log-directory t))
+        (scratch-ext-create-scratch-if-necessary)
+        (set-buffer "*scratch*")
+        (scratch-ext-restore-last-scratch)))
+    #+END_SRC
+
+*** popper
+    This makes it easy to make temporary (aka popup) buffers
+    take less space and quickly disappear
+    #+begin_src emacs-lisp
+      (use-package popper
+        :straight t
+        :bind (("C-`"   . popper-toggle)
+               ("M-`"   . popper-cycle)
+               ("C-M-`" . popper-toggle-type))
+        :init
+        (setq popper-reference-buffers
+              '("\\*Messages\\*"
+                "Output\\*$"
+                "\\*Async Shell Command\\*"
+                "\\*Flymake Diagnostic\\*"
+                "\\*eldoc\\*"
+                occur-mode
+                flymake-mode
+                flymake-diagnostics-buffer-mode
+                help-mode
+                compilation-mode))
+        (popper-mode +1)
+        (popper-echo-mode +1))
+    #+end_src
+
+*** dash-at-point
+    This integrates with =dash= to lookup documentation.
+    #+begin_src emacs-lisp
+      (use-package dash-at-point
+        :straight t
+        :bind (
+               ("C-c d" . 'dash-at-point)
+               ("C-c D" . 'dash-at-point-with-docset))
+        :config (progn
+                  (add-to-list 'dash-at-point-mode-alist '(c++-mode . "bde,cpp"))))
+    #+end_src
+*** docker
+    Replaces the docker ui with an emacs interface
+
+    #+begin_src emacs-lisp
+      (use-package docker
+        :straight t
+        :bind ("C-c d" . docker))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (use-package dockerfile-mode
+        :straight t
+        :mode
+        ("Dockerfile\\'" . dockerfile-mode)
+        :config
+        (setq-default docker-use-sudo nil))
+    #+end_src
+
+    #+begin_src emacs-lisp
+      (use-package docker-tramp
+        :disabled t
+        :straight t)
+    #+end_src
+*** markdown-mode
+    Highlighting for markdown
+    #+BEGIN_SRC emacs-lisp
+      (use-package markdown-mode
+        :straight t
+        :commands (markdown-mode gfm-mode)
+        :mode (("README\\.md\\'" . gfm-mode)
+               ("\\.md\\'" . markdown-mode)
+               ("\\.markdown\\'" . markdown-mode))
+        :init (setq markdown-command "multimarkdown"))
+    #+END_SRC
+*** multiple-cursors
+
+    You can place multiple cursors in a buffer
+    and have whatever you do affect each item
+    #+BEGIN_SRC emacs-lisp
+      (use-package multiple-cursors
+        :disabled t
+        :bind (("C-. e" . mc/edit-lines)
+               ("C-. >" . mc/mark-next-like-this)
+               ("C-. <" . mc/mark=previous-like-this)))
+    #+END_SRC
+
+*** ag
+    A fast search across lots of files.  Relies
+    on package silver searcher for the executable
+    to be installed.
+
+    #+BEGIN_SRC emacs-lisp
+    (use-package ag
+      :straight t
+      :bind (("C-c f" . ag))
+      :config (setq ag-reuse-buffers t))
+    #+END_SRC
+
+*** treemacs
+    #+BEGIN_SRC emacs-lisp
+      (use-package treemacs
+        :straight t
+        :bind (("C-c t" . treemacs))
+        :config
+        (progn
+          (defun pw/treemacs-ignore (file path)
+            (string-match-p "\\.pyc$\\|\\.sundev1\\.\\|\\.o$\\|\\.d$\\|__pycache__" file))
+          (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
+          (setq treemacs-show-hidden-files nil)
+          (setq treemacs-collapse-dirs 2)))
+    #+END_SRC
+
+*** tramp
+    Make connecting through our vpn easier.
+
+**** Setting up ssh/scp
+    I have my =~/.ssh/config= with the following (there's more, but this is what counts) and
+    I've configured my public/private keys.
+    #+begin_example
+      Host v5dev
+          Hostname v5devgateway.bdns.bloomberg.com
+
+      Host v5devgateway.bdns.bloomberg.com
+          RequestTTY force
+
+      Host *.bloomberg.com !bbgithub.dev.bloomberg.com !v5prqsgateway.bdns.bloomberg.com
+          ControlMaster auto
+          ControlPath ~/.ssh/sockets/%r@%h-%p
+          ControlPersist 24h
+          ProxyCommand   ssh -e none v5dev %h nc %h %p
+          ForwardX11      yes
+          ForwardAgent    yes
+    #+end_example
+
+    To confirm this is working you should be able to =ssh= to a dev machine.  For example:
+    #+begin_example
+      $ ssh xlnxdv-ob-490.dev.bloomberg.com
+    #+end_example
+**** How to visit a remote file
+    Finally, I connect using the =scp:= method.  Supposedly that is better for
+    large files but I haven't benchmarked it.  So I'll typically visit:
+    #+begin_example
+      /scp:pware@xlnxdv-ob-490.dev.bloomberg.com:.bashrc
+    #+end_example
+**** Debugging
+    If =ssh= is working from the command line then the most likely
+    issue is tramp is not able to find the prompt for your shell.
+    This is usually caused by having a fancy =PS1=.  Try enabling
+    debug output =(setq tramp-verbose 4)= and the output appears in a
+    buffer =*debug tramp...=.  Succesful output looks like:
+    #+begin_example
+      13:03:26.038202 tramp-maybe-open-connection (3) # Opening connection for pware@xlnxdv-ob-490.dev.bloomberg.com using scp...
+      13:03:26.068906 tramp-maybe-open-connection (3) # Sending command ‘exec ssh -l pware   -e none xlnxdv-ob-490.dev.bloomberg.com’
+      13:03:26.069096 tramp-process-actions (3) # Waiting for prompts from remote shell...
+      13:03:26.596117 tramp-process-actions (3) # Waiting for prompts from remote shell...done
+      13:03:26.596185 tramp-maybe-open-connection (3) # Found remote shell prompt on ‘xlnxdv-ob-490.dev.bloomberg.com’
+    #+end_example
+    If there are problems, you'll need to increase the debug level
+    =(setq tramp-verbose 6)= and now you'll start getting 1000s of
+    lines like:
+    #+begin_example
+      10:38:12.778374 tramp-process-one-action (5) # Looking for regexp ...
+    #+end_example
+    I looked for =Last login= as that is printed out but the actual
+    output may vary.  If you don't see a very recognizable prompt then
+    that is the problem.
+
+    You can use =M-x tramp-cleanup-all-connections= to test your connections.
+
+    Good luck!
+**** tramp config
+    And the actual elisp part of things:
+    #+begin_src emacs-lisp
+      (use-package tramp
+        :config
+        (progn
+          (connection-local-set-profile-variables
+           'remote-bb-zsh
+           '((explicit-shell-file-name . "/opt/bb/bin/zsh")))
+          (connection-local-set-profiles
+           '((:application tramp :machine "folxdi-ob-963.bloomberg.com")
+             (:application tramp :machine "xlnxdv-ob-490.bloomberg.com"))
+           'remote-bb-zsh)
+          (setq remote-file-name-access-timeout 5)
+          (setq tramp-default-remote-shell "/opt/bb/bin/bash")
+          (setq tramp-remote-path  (cons "/home/pware/usr/bin" (cons "/opt/bb/bin" tramp-remote-path)))
+          (setq tramp-use-ssh-controlmaster-options nil)))
+    #+end_src
+*** wgrep
+    This lets you save the results from grep, edit those results and then
+    saving the changes applies them to each file.
+    #+BEGIN_SRC emacs-lisp
+    (use-package wgrep
+      :defer 5
+      :straight t)
+    #+END_SRC
+
+*** zoom-frm
+
+    Much like face-remap that adds test-scale-increase and
+    text-scale-decrease I use this to change the entire window
+    instead of the buffer
+    #+BEGIN_SRC emacs-lisp
+      (use-package zoom-frm
+        :straight t
+        :bind* (("C-c [" . zoom-frm-out)
+                ("C-c ]" . zoom-frm-in)
+                ("C-c 0" . zoom-frm-unzoom)))
+    #+END_SRC
+
+** Magit and Git
+*** magit
+
+    Provide a way of interacting with a Git repository.
+
+    Download package if not installed!
+    #+BEGIN_SRC emacs-lisp
+      (use-package magit
+        :straight t
+        :bind (("C-c m" . magit-status)
+               ("C-c C-m" . magit-dispatch-popup))
+        :config (progn
+                  (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
+                  (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
+                  (remove-hook 'magit-status-headers-hook 'magit-insert-tags-header)
+                  (setq magit-commit-show-diff nil)
+                  (setq magit-refresh-verbose t)
+                  (setq magit-save-repository-buffers nil)
+                  (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
+                  (setq magit-view-git-manual-method 'man)
+                  (setq magit-auto-revert-tracked-only t)
+                  (magit-auto-revert-mode 1)))
+    #+END_SRC
+
+*** forge
+    This implements an interface to github that
+    integrates with magit.  It's accessible with
+    =N= in magit.
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package forge
+        :straight t
+        :after magit
+        :config
+        (push '("bbgithub.dev.bloomberg.com"         ; GITHOST
+              "bbgithub.dev.bloomberg.com/api/v3"  ; APIHOST
+              "bbgithub.dev.bloomberg.com"         ; WEBHOST and INSTANCE-ID
+              forge-github-repository)             ; CLASS
+            forge-alist))
+    #+END_SRC
+
+*** magit-todo
+
+    Include TODO, etc in the magit buffer
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package magit-todos
+        :after magit
+        :disabled t
+        :straight t
+        :config (magit-todos-mode))
+    #+END_SRC
+
+*** git-link
+    ~git-link~ makes it easy to get the url link directly to a
+    github repo.  The following adds setup for bbgithub.
+    #+BEGIN_SRC emacs-lisp
+      (use-package git-link
+        :straight t
+        :bind (("C-c b l" . 'git-link)
+               ("C-c b h" . 'git-link-homepage))
+        :config
+        (progn
+          (add-to-list 'git-link-remote-alist
+                       '("bbgithub\\.dev\\.bloomberg\\.com" git-link-github))
+          (add-to-list 'git-link-commit-remote-alist
+                       '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
+
+    #+END_SRC
+
 ** Completion
 
    This section isn't entirely about completion and there are
@@ -567,7 +963,6 @@
         :init
         (marginalia-mode))
     #+end_src
-
 
 *** orderless
     This configures so completion does partial word matches
@@ -772,69 +1167,6 @@
         :hook
         (embark-collect-mode . consult-preview-at-point-mode))
     #+end_src
-*** Consult search with silver searcher
-
-    #+begin_src emacs-lisp
-      (use-package consult-ag
-        :disabled t
-        :straight t
-        :bind ("C-c k" . consult-ag))
-    #+end_src
-
-
-*** popper
-    This makes it easy to make temporary (aka popup) buffers
-    take less space and quickly disappear
-    #+begin_src emacs-lisp
-      (use-package popper
-        :straight t
-        :bind (("C-`"   . popper-toggle)
-               ("M-`"   . popper-cycle)
-               ("C-M-`" . popper-toggle-type))
-        :init
-        (setq popper-reference-buffers
-              '("\\*Messages\\*"
-                "Output\\*$"
-                "\\*Async Shell Command\\*"
-                "\\*Flymake Diagnostic\\*"
-                "\\*eldoc\\*"
-                occur-mode
-                flymake-mode
-                flymake-diagnostics-buffer-mode
-                help-mode
-                compilation-mode))
-        (popper-mode +1)
-        (popper-echo-mode +1))
-    #+end_src
-*** Python environments
-
-    This allows one to manually switch the python
-    venv being used by specifying the directory
-    with the venv.
-
-    #+begin_src emacs-lisp
-      (use-package pyvenv
-        :straight t)
-    #+end_src
-
-** Language server protocol
-   Setting up Language Server Protocol (LSP) is rather involved.
-
-   - =copilot= Is not approved for use.
-   - =company=
-*** copilot
-    This sets up completion using copilot.  copilot-chat is not
-    allowed (yet)
-
-    #+begin_src emacs-lisp
-      (use-package copilot
-        :disabled t
-        :straight (:host github :repo "copilot-emacs/copilot.el")
-        :bind (:map copilot-completion-map ("<tab>" . copilot-accept-completion))
-        :hook (prog-mode . copilot-mode))
-      ;(use-package copilot-chat
-      ;  :straight t)
-    #+end_src
 *** company
     =company-mode= adds inline completion based on contents in a file.  It supports many
     backends such as =eglot= (emacs's language server protocol interface).
@@ -851,6 +1183,160 @@
                (LaTeX-mode . company-mode)))
     #+end_src
 
+*** IVY completion (disabled)
+
+   This section implements my preferences for using IVY to do
+   completion.  2023-02-21 switched to using vertico and
+   disabled all of these.
+
+**** prescient
+    Provides better sorting of selections
+    #+begin_src emacs-lisp
+      (use-package prescient
+        :straight t
+        :disabled t
+        :after (ivy counsel)
+        :config
+        (progn
+          (prescient-persist-mode +1)))
+      (use-package ivy-prescient
+        :after (ivy counsel)
+        :disabled t
+        :straight t
+        :config
+        (progn (ivy-prescient-mode +1)))
+    #+end_src
+**** ivy
+    ~ivy~ changes completion so that matches are
+    found via regular expressions and matches are
+    navigable by moving up and down lines.  Replaces
+    ~ido~ and ~iswitchb~.
+    #+BEGIN_SRC emacs-lisp
+      (use-package ivy
+        :straight t
+        :disabled t
+        :delight ivy-mode
+        :bind (("C-c C-r" . 'ivy-resume))
+        :config (progn
+                  (setq ivy-wrap t)
+                  (setq ivy-use-virtual-buffers t)
+                  (setq ivy-count-format "(%d/%d) ")
+                  (ivy-mode 1)))
+    #+END_SRC
+    This adds some nice info when choosing buffers
+    #+BEGIN_SRC emacs-lisp
+      (use-package lsp-ui
+        :straight t)
+      (use-package lsp-ivy
+        :disabled t
+        :straight t
+        :after (ivy counsel lsp-mode))
+
+      (use-package lsp-mode
+        :disabled t
+        :straight t
+        :init
+        ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+        (setq lsp-keymap-prefix "C-c l")
+        :hook ((c++-mode . lsp))
+        :commands lsp)
+    #+END_SRC
+**** counsel
+    ~counsel~ builds on completion for ivy but adds
+    searches across files.
+    #+BEGIN_SRC emacs-lisp
+      (use-package counsel
+        :disabled t
+        :after ivy
+        :straight t
+        :delight counsel-mode
+        :bind (("C-c g" .  'counsel-git)
+               ("C-c j" .  'counsel-file-jump)
+               ("C-c k" .  'counsel-ag)
+               ;("C-x b" .  'counsel-switch-buffer)
+               ;("C-c s" .  'counsel-switch-to-shell-buffer)
+               )
+        :config
+        (progn (counsel-mode -1)
+               (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
+    #+END_SRC
+
+** Programming Languages
+   Setting up Language Server Protocol (LSP) is rather involved.
+
+   - =copilot= Is not approved for use.
+   - =company=
+*** treesit-auto
+
+    I set ~treesit-auto-langs~ to the list of languages I use.  I then ran ~treesit-auto-install-all~
+    to get them all compiled and added.  I also did some extra work to support
+    - =rust=
+    - =typescript-mode= and =tsx-mode=
+    - =yaml-mode=
+    - =cmake-mode= via package =cmake-ts-mode=
+      
+    #+BEGIN_SRC emacs-lisp
+      (use-package treesit-auto
+        :straight t
+        :config
+        (setq treesit-auto-langs '(awk bash c cmake cpp css dockerfile go gomod html java javascript json make markdown org perl python rust sql toml tsx typescript typst yaml))
+        (treesit-auto-add-to-auto-mode-alist)
+        (global-treesit-auto-mode))
+    #+END_SRC
+
+*** tree-sitter
+    This is an experiment system for fast, incremental parsing
+    of programming languages.  This uses highlighting and folding
+    #+begin_src elisp
+      (use-package tree-sitter
+        :disabled t
+        :straight t
+        :delight
+        :config
+        (progn
+          (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+          (global-tree-sitter-mode))
+
+      (use-package tree-sitter-langs
+        :disabled t
+        :straight t)
+      (use-package ts-fold
+        :disabled t
+        :straight (ts-fold :type git :host github :repo "emacs-tree-sitter/ts-fold")
+        :bind ("C-c @ t" . ts-fold-toggle)
+      )
+    #+end_src
+
+*** cc-mode
+    Configure to put .h in c++-mode
+    #+BEGIN_SRC emacs-lisp
+      (use-package cc-mode
+        :commands (c-mode c++-mode)
+        :mode ("\\.h$" . c++-mode)
+        :config
+        (setq c-tab-always-indent nil))
+    #+END_SRC
+*** go-mode
+    Load `go-mode' and enable it in 'lsp-deferred-mode'
+    #+BEGIN_SRC emacs-lisp
+      (use-package go-mode
+        :straight t
+        :hook eglot-ensure)
+    #+END_SRC
+
+*** copilot
+    This sets up completion using copilot.  copilot-chat is not
+    allowed (yet)
+
+    #+begin_src emacs-lisp
+      (use-package copilot
+        :disabled t
+        :straight (:host github :repo "copilot-emacs/copilot.el")
+        :bind (:map copilot-completion-map ("<tab>" . copilot-accept-completion))
+        :hook (prog-mode . copilot-mode))
+      ;(use-package copilot-chat
+      ;  :straight t)
+    #+end_src
 *** eglot
     This enables using language server process (LSP).
 
@@ -902,148 +1388,15 @@
         )
     #+end_src
 
-** IVY completion
+*** pyvenv
+    This allows one to manually switch the python
+    venv being used by specifying the directory
+    with the venv.
 
-   This section implements my preferences for using IVY to do
-   completion.  2023-02-21 switched to using vertico and
-   disabled all of these.
-
-*** prescient
-    Provides better sorting of selections
     #+begin_src emacs-lisp
-      (use-package prescient
-        :straight t
-        :disabled t
-        :after (ivy counsel)
-        :config
-        (progn
-          (prescient-persist-mode +1)))
-      (use-package ivy-prescient
-        :after (ivy counsel)
-        :disabled t
-        :straight t
-        :config
-        (progn (ivy-prescient-mode +1)))
-    #+end_src
-*** ivy
-    ~ivy~ changes completion so that matches are
-    found via regular expressions and matches are
-    navigable by moving up and down lines.  Replaces
-    ~ido~ and ~iswitchb~.
-    #+BEGIN_SRC emacs-lisp
-      (use-package ivy
-        :straight t
-        :disabled t
-        :delight ivy-mode
-        :bind (("C-c C-r" . 'ivy-resume))
-        :config (progn
-                  (setq ivy-wrap t)
-                  (setq ivy-use-virtual-buffers t)
-                  (setq ivy-count-format "(%d/%d) ")
-                  (ivy-mode 1)))
-    #+END_SRC
-    This adds some nice info when choosing buffers
-    #+BEGIN_SRC emacs-lisp
-      (use-package lsp-ui
+      (use-package pyvenv
         :straight t)
-      (use-package lsp-ivy
-        :disabled t
-        :straight t
-        :after (ivy counsel lsp-mode))
-
-      (use-package lsp-mode
-        :disabled t
-        :straight t
-        :init
-        ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-        (setq lsp-keymap-prefix "C-c l")
-        :hook ((c++-mode . lsp))
-        :commands lsp)
-    #+END_SRC
-*** counsel
-    ~counsel~ builds on completion for ivy but adds
-    searches across files.
-    #+BEGIN_SRC emacs-lisp
-      (use-package counsel
-        :disabled t
-        :after ivy
-        :straight t
-        :delight counsel-mode
-        :bind (("C-c g" .  'counsel-git)
-               ("C-c j" .  'counsel-file-jump)
-               ("C-c k" .  'counsel-ag)
-               ;("C-x b" .  'counsel-switch-buffer)
-               ;("C-c s" .  'counsel-switch-to-shell-buffer)
-               )
-        :config
-        (progn (counsel-mode -1)
-               (setq counsel-find-file-ignore-regexp "\\.*\\(pyc\\|.o\\|.tsk\\)$")))
-    #+END_SRC
-
-** Non-standard packages loaded immediately
-
-   These are non-standard packages that are
-   loaded immediately so have some affect on startup
-
-*** bb-style
-    Bloomberg C++ coding style
-    #+BEGIN_SRC emacs-lisp
-      (use-package bb-style
-        :hook (c-mode-common . bb-c-mode))
-    #+END_SRC
-
-*** ctrlf
-    This replaces =swiper= and built in incremental search
-    #+begin_src emacs-lisp
-      (use-package ctrlf
-        :straight t
-        :defer 5
-        :config
-        (progn
-          (setq ctrlf-auto-recenter nil) ; 't fails when multiple buffers open
-          (setq ctrlf-mode-bindings
-                '(([remap isearch-forward        ] . ctrlf-forward-fuzzy-regexp)
-                  ([remap isearch-backward       ] . ctrlf-backward-fuzzy-regexp)
-                  ([remap isearch-forward-regexp ] . ctrlf-forward-regexp)))
-          (ctrlf-mode +1)))
     #+end_src
-*** git-link
-    ~git-link~ makes it easy to get the url link directly to a
-    github repo.  The following adds setup for bbgithub.
-    #+BEGIN_SRC emacs-lisp
-      (use-package git-link
-        :straight t
-        :bind (("C-c b l" . 'git-link)
-               ("C-c b h" . 'git-link-homepage))
-        :config
-        (progn
-          (add-to-list 'git-link-remote-alist
-                       '("bbgithub\\.dev\\.bloomberg\\.com" git-link-github))
-          (add-to-list 'git-link-commit-remote-alist
-                       '("bbgithub\\.dev\\.bloomberg\\.com" git-link-commit-github))))
-
-    #+END_SRC
-*** scratch-ext
-    Make *scratch* buffers get saved
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package scratch-ext
-      :defer 5
-      :straight t
-      :config
-      (save-excursion
-        (setq scratch-ext-log-directory "~/.emacs.d/scratch")
-        (if (not (file-exists-p scratch-ext-log-directory))
-            (mkdir scratch-ext-log-directory t))
-        (scratch-ext-create-scratch-if-necessary)
-        (set-buffer "*scratch*")
-        (scratch-ext-restore-last-scratch)))
-    #+END_SRC
-
-** Standard packages that defer loading
-
-   These packages are not loaded until they are used (e.g. minimal
-   cost on startup)
 
 *** compile
     Setup compilation buffers
@@ -1068,155 +1421,6 @@
     #+BEGIN_SRC emacs-lisp
       (use-package clang-format+
         :straight t)
-    #+END_SRC
-*** ansi-color
-    #+BEGIN_SRC emacs-lisp
-      (use-package ansi-color
-        :after compile
-        :config
-        (progn
-          (defun pw/colorize-compilation-buffer ()
-            (let ((inhibit-read-only t))
-              (ansi-color-apply-on-region compilation-filter-start (point-max))))
-          (add-hook 'compilation-filter-hook 'pw/colorize-compilation-buffer)
-          (setq ansi-color-names-vector ; better contrast colors
-                ["black" "red4" "green4" "yellow4"
-                 "#8be9fd" "magenta4" "cyan4" "white"])
-          (setq ansi-color-map (ansi-color-make-color-map))))
-    #+END_SRC
-
-*** ediff
-    A nice graphical diff Make sure that ediff ignores all whitespace
-    differences and highlights the individual differences
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package ediff
-      :commands ediff-load-version-control
-      :bind (("C-c =" . pw/ediff-current))
-      :config
-      (progn
-        (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-        (setq ediff-split-window-function 'split-window-horizontally)
-        (setq ediff-diff-options "-w")
-        (setq-default ediff-auto-refine 'on))
-      :init
-      (progn
-        (defun pw/ediff-current (arg)
-          "Run ediff-vc-internal on the current file against it's latest revision.
-           If prefix arg, use it as the revision number"
-          (interactive "P")
-          (ediff-load-version-control t)
-          (let ((rev (if arg (format "%d" arg) "")))
-            (funcall
-             (intern (format "ediff-%S-internal" ediff-version-control-package))
-             rev "" nil)))))
-    #+END_SRC
-
-*** follow
-    This makes a single file wrap around between two windows.
-    Try ^X-3 and then move to the top or bottom of the window
-    and the other window scrolls.  I bound F7 to do get
-    rid of the other windows and split.
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package follow
-      :bind ("<f7>" . follow-delete-other-windows-and-split))
-    #+END_SRC
-
-*** grep
-    ~rgrep~ recursively greps for a pattern.  It uses a key to specify
-    filenames and ignores directories like CVS.  "cchh" is all C++
-    files and headers.
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package grep
-      ;:bind (("C-c g" . grep))
-      :defer 5
-      :config
-      (progn
-        (setq grep-files-aliases
-              '(("all" . "* .*")
-                ("el" . "*.el")
-                ("ch" . "*.[ch]")
-                ("c" . "*.c")
-                ("cc" . "*.cc *.cxx *.cpp *.C *.CC *.c++")
-                ("cchh" . "*.cc *.[ch]xx *.[ch]pp *.[CHh] *.CC *.HH *.[ch]++")
-                ("hh" . "*.hxx *.hpp *.[Hh] *.HH *.h++")
-                ("h" . "*.h")
-                ("l" . "[Cc]hange[Ll]og*")
-                ("m" . "[Mm]akefile* *.mk")
-                ("tex" . "*.tex")
-                ("texi" . "*.texi")
-                ("asm" . "*.[sS]")
-                ("code" . "*.c *.C *.h *.cpp *.cc *.f *.py")))))
-    #+END_SRC
-
-*** hideshow
-    Setup commands and menus to hide/show blocks of code
-    #+BEGIN_SRC emacs-lisp
-    (use-package hideshow
-      :commands hs-minor-mode
-      :init
-      (progn
-        (add-hook 'c++-mode-hook 'hs-minor-mode)
-        (add-hook 'c-mode-hook 'hs-minor-mode)))
-    #+END_SRC
-*** org
-    org-mode provides an outline, todo, diary, calendar like interface.
-    #+BEGIN_SRC emacs-lisp
-      (use-package org
-        :mode ("\\.org\\'" . org-mode)
-        :bind (;("C-c l" . org-store-link)
-               ("C-c a" . org-agenda)
-               ("C-c r" . org-capture))
-        :config (progn
-                  (setq org-export-backends '(ascii html icalendar latex md))
-                  (setq org-list-allow-alphabetical t)))
-    #+END_SRC
-
-    Additionally, I have a number of customizations I like to use
-    for org-mode.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package org-prefs
-        :after org)
-    #+END_SRC
-
-*** whitespace
-    Make "bad" whitespace be visible.  This causes tabs, and whitespace
-    at beginning and end of the buffer as well as at the end of the
-    line to highlight
-
-    Use =M-x whitespace-cleanup= to fix all problems
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package whitespace
-      :bind ("C-c SPC" . whitespace-mode)
-      :config
-      (progn
-        (setq whitespace-style '(face trailing tabs empty indentation::space lines-tail))
-        (setq whitespace-line-column nil)))
-    #+END_SRC
-
-** Non-standard packages that defer loading
-
-   These packages are not loaded until used (e.g. minimal cost on
-   startup)
-
-*** anyins
-    Freaky way to insert text
-    1. Enter anyins-mode
-    2. Move around; mark spots you want to insert text with RET
-    3. To insert text
-
-       a. =y= inserts each line from kill ring at each marked spot, or
-       b.  =!= runs a shell command line 'seq -s ". \n" 1 3' generates
-           numbers "1. "  "2. " "3. " and inserts it at each markets tpot
-    #+BEGIN_SRC emacs-lisp
-      (use-package anyins
-        :disabled t
-        :straight t
-        :bind ("C-c i" . anyins-mode))
     #+END_SRC
 
 *** python
@@ -1253,179 +1457,6 @@
           (setq python-black-extra-args '("--line-length" "79")))
         :hook (python-mode . python-black-on-save-mode))
     #+end_src
-
-*** comint-prefs
-
-    Setup preferences for shell, compile and other comint based commands
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package comint-prefs
-        :after comint
-        :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt pw/turn-off-fontlock)
-        :init
-        (progn
-          (setq comint-terminfo-terminal "emacs")
-          (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
-          (add-hook 'comint-mode-hook 'comint-for-pete)
-          (add-hook 'dbx-mode-hook 'dbx-for-pete)
-          (add-hook 'compilation-mode-hook 'pw/turn-off-fontlock)))
-    #+END_SRC
-
-*** csc-mode
-    Bloomberg database schema
-    #+BEGIN_SRC emacs-lisp
-    (use-package csc-mode
-      :mode ("\\.csc2$" . csc-mode))
-    #+END_SRC
-
-*** dash-at-point
-    This integrates with =dash= to lookup documentation.
-    #+begin_src emacs-lisp
-      (use-package dash-at-point
-        :straight t
-        :bind (
-               ("C-c d" . 'dash-at-point)
-               ("C-c D" . 'dash-at-point-with-docset))
-        :config (progn
-                  (add-to-list 'dash-at-point-mode-alist '(c++-mode . "bde,cpp"))))
-    #+end_src
-*** docker
-    Replaces the docker ui with an emacs interface
-
-    #+begin_src emacs-lisp
-      (use-package docker
-        :straight t
-        :bind ("C-c d" . docker))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (use-package dockerfile-mode
-        :straight t
-        :mode
-        ("Dockerfile\\'" . dockerfile-mode)
-        :config
-        (setq-default docker-use-sudo nil))
-    #+end_src
-
-    #+begin_src emacs-lisp
-      (use-package docker-tramp
-        :disabled t
-        :straight t)
-    #+end_src
-*** markdown-mode
-    Highlighting for markdown
-    #+BEGIN_SRC emacs-lisp
-      (use-package markdown-mode
-        :straight t
-        :commands (markdown-mode gfm-mode)
-        :mode (("README\\.md\\'" . gfm-mode)
-               ("\\.md\\'" . markdown-mode)
-               ("\\.markdown\\'" . markdown-mode))
-        :init (setq markdown-command "multimarkdown"))
-    #+END_SRC
-*** lrl-mode
-    Bloomberg database params
-    #+BEGIN_SRC emacs-lisp
-    (use-package lrl-mode
-      :mode ("\\.lrl\\'" . lrl-mode))
-    #+END_SRC
-*** magit
-
-    Provide a way of interacting with a Git repository.
-
-    Download package if not installed!
-    #+BEGIN_SRC emacs-lisp
-      (use-package magit
-        :straight t
-        :bind (("C-c m" . magit-status)
-               ("C-c C-m" . magit-dispatch-popup))
-        :config (progn
-                  (add-hook 'magit-status-headers-hook 'magit-insert-repo-header)
-                  (add-hook 'magit-status-headers-hook 'magit-insert-remote-header)
-                  (remove-hook 'magit-status-headers-hook 'magit-insert-tags-header)
-                  (setq magit-commit-show-diff nil)
-                  (setq magit-refresh-verbose t)
-                  (setq magit-save-repository-buffers nil)
-                  (setq magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
-                  (setq magit-view-git-manual-method 'man)
-                  (setq magit-auto-revert-tracked-only t)
-                  (magit-auto-revert-mode 1)))
-    #+END_SRC
-
-*** forge
-    This implements an interface to github that
-    integrates with magit.  It's accessible with
-    =N= in magit.
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package forge
-        :straight t
-        :after magit
-        :config
-        (push '("bbgithub.dev.bloomberg.com"         ; GITHOST
-              "bbgithub.dev.bloomberg.com/api/v3"  ; APIHOST
-              "bbgithub.dev.bloomberg.com"         ; WEBHOST and INSTANCE-ID
-              forge-github-repository)             ; CLASS
-            forge-alist))
-    #+END_SRC
-
-*** magit-todo
-
-    Include TODO, etc in the magit buffer
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package magit-todos
-        :after magit
-        :disabled t
-        :straight t
-        :config (magit-todos-mode))
-    #+END_SRC
-*** multiple-cursors
-
-    You can place multiple cursors in a buffer
-    and have whatever you do affect each item
-    #+BEGIN_SRC emacs-lisp
-      (use-package multiple-cursors
-        :disabled t
-        :bind (("C-. e" . mc/edit-lines)
-               ("C-. >" . mc/mark-next-like-this)
-               ("C-. <" . mc/mark=previous-like-this)))
-    #+END_SRC
-
-*** ag
-    A fast search across lots of files.  Relies
-    on package silver searcher for the executable
-    to be installed.
-
-    #+BEGIN_SRC emacs-lisp
-    (use-package ag
-      :straight t
-      :bind (("C-c f" . ag))
-      :config (setq ag-reuse-buffers t))
-    #+END_SRC
-
-*** pw-misc
-
-    Some commands I find useful
-
-    #+BEGIN_SRC emacs-lisp
-      (use-package pw-misc
-        :after compile
-        :bind (("C-c p" . pw/prev-frame)
-               ("C-c \\" . pw/reindent)
-               ("C-c e" . pw/eval-region-or-defun))
-        :hook (compilation-mode-hook . pw/no-line-column-number))
-
-    #+END_SRC
-*** pw-trunc-lines
-
-    Toggle truncation of long lines
-    #+BEGIN_SRC emacs-lisp
-      (use-package pw-trunc-lines
-        :commands pw/trunc-lines
-        :bind ("C-c $" . pw/trunc-lines)
-        :hook ((c-mode-common makefile-gmake-mode compilation-mode shell-mode) . pw/trunc-lines))
-    #+END_SRC
 
 *** rust
     Configure rust mode so it has syntax highlighting via tree-sitter and completion via
@@ -1465,6 +1496,68 @@
     #+begin_src emacs-lisp
       (use-package cmake-ts-mode)
     #+end_src
+
+** Personal packages
+*** bb-style
+    Bloomberg C++ coding style
+    #+BEGIN_SRC emacs-lisp
+      (use-package bb-style
+        :hook (c-mode-common . bb-c-mode))
+    #+END_SRC
+
+*** comint-prefs
+
+    Setup preferences for shell, compile and other comint based commands
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package comint-prefs
+        :after comint
+        :commands (comint-for-pete dbx-for-pete comint-watch-for-password-prompt pw/turn-off-fontlock)
+        :init
+        (progn
+          (setq comint-terminfo-terminal "emacs")
+          (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt)
+          (add-hook 'comint-mode-hook 'comint-for-pete)
+          (add-hook 'dbx-mode-hook 'dbx-for-pete)
+          (add-hook 'compilation-mode-hook 'pw/turn-off-fontlock)))
+    #+END_SRC
+
+*** csc-mode
+    Bloomberg database schema
+    #+BEGIN_SRC emacs-lisp
+    (use-package csc-mode
+      :mode ("\\.csc2$" . csc-mode))
+    #+END_SRC
+
+*** lrl-mode
+    Bloomberg database params
+    #+BEGIN_SRC emacs-lisp
+    (use-package lrl-mode
+      :mode ("\\.lrl\\'" . lrl-mode))
+    #+END_SRC
+*** pw-misc
+
+    Some commands I find useful
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package pw-misc
+        :after compile
+        :bind (("C-c p" . pw/prev-frame)
+               ("C-c \\" . pw/reindent)
+               ("C-c e" . pw/eval-region-or-defun))
+        :hook (compilation-mode-hook . pw/no-line-column-number))
+
+    #+END_SRC
+*** pw-trunc-lines
+
+    Toggle truncation of long lines
+    #+BEGIN_SRC emacs-lisp
+      (use-package pw-trunc-lines
+        :commands pw/trunc-lines
+        :bind ("C-c $" . pw/trunc-lines)
+        :hook ((c-mode-common makefile-gmake-mode compilation-mode shell-mode) . pw/trunc-lines))
+    #+END_SRC
+
 *** pw-shell-scomplete
     Use the existing completion framework to switch shell buffers.  This way it
     integrates smoothly with selectrum and prescient
@@ -1474,160 +1567,14 @@
                ("C-c 4 s" . 'pw/shell-scomplete-to-shell-other)))
     #+END_SRC
 
-*** treemacs
-    #+BEGIN_SRC emacs-lisp
-      (use-package treemacs
-        :straight t
-        :bind (("C-c t" . treemacs))
-        :config
-        (progn
-          (defun pw/treemacs-ignore (file path)
-            (string-match-p "\\.pyc$\\|\\.sundev1\\.\\|\\.o$\\|\\.d$\\|__pycache__" file))
-          (add-hook 'treemacs-ignored-file-predicates 'pw/treemacs-ignore)
-          (setq treemacs-show-hidden-files nil)
-          (setq treemacs-collapse-dirs 2)))
-    #+END_SRC
-
-*** tree-sitter
-    This is an experiment system for fast, incremental parsing
-    of programming languages.  This uses highlighting and folding
-    #+begin_src elisp
-      (use-package tree-sitter
-        :disabled t
-        :straight t
-        :delight
-        :config
-        (progn
-          (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
-          (global-tree-sitter-mode))
-
-      (use-package tree-sitter-langs
-        :disabled t
-        :straight t)
-      (use-package ts-fold
-        :disabled t
-        :straight (ts-fold :type git :host github :repo "emacs-tree-sitter/ts-fold")
-        :bind ("C-c @ t" . ts-fold-toggle)
-      )
-    #+end_src
-*** tramp
-    Make connecting through our vpn easier.
-
-**** Setting up ssh/scp
-    I have my =~/.ssh/config= with the following (there's more, but this is what counts) and
-    I've configured my public/private keys.
-    #+begin_example
-      Host v5dev
-          Hostname v5devgateway.bdns.bloomberg.com
-
-      Host v5devgateway.bdns.bloomberg.com
-          RequestTTY force
-
-      Host *.bloomberg.com !bbgithub.dev.bloomberg.com !v5prqsgateway.bdns.bloomberg.com
-          ControlMaster auto
-          ControlPath ~/.ssh/sockets/%r@%h-%p
-          ControlPersist 24h
-          ProxyCommand   ssh -e none v5dev %h nc %h %p
-          ForwardX11      yes
-          ForwardAgent    yes
-    #+end_example
-
-    To confirm this is working you should be able to =ssh= to a dev machine.  For example:
-    #+begin_example
-      $ ssh xlnxdv-ob-490.dev.bloomberg.com
-    #+end_example
-**** How to visit a remote file
-    Finally, I connect using the =scp:= method.  Supposedly that is better for
-    large files but I haven't benchmarked it.  So I'll typically visit:
-    #+begin_example
-      /scp:pware@xlnxdv-ob-490.dev.bloomberg.com:.bashrc
-    #+end_example
-**** Debugging
-    If =ssh= is working from the command line then the most likely
-    issue is tramp is not able to find the prompt for your shell.
-    This is usually caused by having a fancy =PS1=.  Try enabling
-    debug output =(setq tramp-verbose 4)= and the output appears in a
-    buffer =*debug tramp...=.  Succesful output looks like:
-    #+begin_example
-      13:03:26.038202 tramp-maybe-open-connection (3) # Opening connection for pware@xlnxdv-ob-490.dev.bloomberg.com using scp...
-      13:03:26.068906 tramp-maybe-open-connection (3) # Sending command ‘exec ssh -l pware   -e none xlnxdv-ob-490.dev.bloomberg.com’
-      13:03:26.069096 tramp-process-actions (3) # Waiting for prompts from remote shell...
-      13:03:26.596117 tramp-process-actions (3) # Waiting for prompts from remote shell...done
-      13:03:26.596185 tramp-maybe-open-connection (3) # Found remote shell prompt on ‘xlnxdv-ob-490.dev.bloomberg.com’
-    #+end_example
-    If there are problems, you'll need to increase the debug level
-    =(setq tramp-verbose 6)= and now you'll start getting 1000s of
-    lines like:
-    #+begin_example
-      10:38:12.778374 tramp-process-one-action (5) # Looking for regexp ...
-    #+end_example
-    I looked for =Last login= as that is printed out but the actual
-    output may vary.  If you don't see a very recognizable prompt then
-    that is the problem.
-
-    You can use =M-x tramp-cleanup-all-connections= to test your connections.
-
-    Good luck!
-**** tramp config
-    And the actual elisp part of things:
-    #+begin_src emacs-lisp
-      (use-package tramp
-        :config
-        (progn
-          (connection-local-set-profile-variables
-           'remote-bb-zsh
-           '((explicit-shell-file-name . "/opt/bb/bin/zsh")))
-          (connection-local-set-profiles
-           '((:application tramp :machine "folxdi-ob-963.bloomberg.com")
-             (:application tramp :machine "xlnxdv-ob-490.bloomberg.com"))
-           'remote-bb-zsh)
-          (setq remote-file-name-access-timeout 5)
-          (setq tramp-default-remote-shell "/opt/bb/bin/bash")
-          (setq tramp-remote-path  (cons "/home/pware/usr/bin" (cons "/opt/bb/bin" tramp-remote-path)))
-          (setq tramp-use-ssh-controlmaster-options nil)))
-    #+end_src
-*** wgrep
-    This lets you save the results from grep, edit those results and then
-    saving the changes applies them to each file.
-    #+BEGIN_SRC emacs-lisp
-    (use-package wgrep
-      :defer 5
-      :straight t)
-    #+END_SRC
-
-*** zoom-frm
-
-    Much like face-remap that adds test-scale-increase and
-    text-scale-decrease I use this to change the entire window
-    instead of the buffer
-    #+BEGIN_SRC emacs-lisp
-      (use-package zoom-frm
-        :straight t
-        :bind* (("C-c [" . zoom-frm-out)
-                ("C-c ]" . zoom-frm-in)
-                ("C-c 0" . zoom-frm-unzoom)))
-    #+END_SRC
-
-*** powerline
-
-    Make the modeline have lots of pretty graphics.
-
-    For `iterm2` I had to install some extra fonts
-    for these to look good:
-
-         https://github.com/powerline/fonts
-
-    Disabled 2024-11-07 as I liked the basic timu-caribbean-theme
+*** org-prefs
+    I have a number of customizations I like to use
+    for org-mode.
 
     #+BEGIN_SRC emacs-lisp
-      (use-package powerline
-        :disabled t
-        :straight (:host github :repo "milkypostman/powerline")
-        :config
-        (progn
-          (powerline-default-theme)))
+      (use-package org-prefs
+        :after org)
     #+END_SRC
-
 ** Themes
 
 Here's my history of using themes.
@@ -1781,6 +1728,7 @@ Here's my history of using themes.
     (setq hscroll-step 5)
     #+END_SRC
 
+    =ultra-scroll= is a package that makes scrolling much smoother.
     #+begin_src emacs-lisp
       (use-package ultra-scroll
         :straight (:host github
@@ -1841,7 +1789,7 @@ Here's my history of using themes.
     a bunch of screen optimizations are lost.  The
     default is prior to emacs-24 is nil
     #+BEGIN_SRC emacs-lisp
-    (setq redisplay-dont-pause t)
+    ;(setq redisplay-dont-pause t)
     #+END_SRC
 
     I don't like actual tabs being inserted
@@ -1943,3 +1891,40 @@ Emacs.font: Bitstream Vera Sans Mono-16
 ** Disabled packages
    I've disabled these packages for various reasons.  I'm
    not sure why I leave them around.
+*** powerline
+
+    Make the modeline have lots of pretty graphics.
+
+    For `iterm2` I had to install some extra fonts
+    for these to look good:
+
+         https://github.com/powerline/fonts
+
+    Disabled 2024-11-07 as I liked the basic timu-caribbean-theme
+
+    #+BEGIN_SRC emacs-lisp
+      (use-package powerline
+        :disabled t
+        :straight (:host github :repo "milkypostman/powerline")
+        :config
+        (progn
+          (powerline-default-theme)))
+    #+END_SRC
+
+
+*** anyins
+    Freaky way to insert text
+    1. Enter anyins-mode
+    2. Move around; mark spots you want to insert text with RET
+    3. To insert text
+
+       a. =y= inserts each line from kill ring at each marked spot, or
+       b.  =!= runs a shell command line 'seq -s ". \n" 1 3' generates
+           numbers "1. "  "2. " "3. " and inserts it at each markets tpot
+    #+BEGIN_SRC emacs-lisp
+      (use-package anyins
+        :disabled t
+        :straight t
+        :bind ("C-c i" . anyins-mode))
+    #+END_SRC
+
